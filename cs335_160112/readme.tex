@@ -1,0 +1,244 @@
+%!TeX spellcheck = den
+\documentclass[11pt,letterpaper]{article}
+
+
+% \usepackage{fourier}
+\usepackage{amsthm,amsmath,amssymb,amsfonts}
+  \usepackage{epsfig}
+  \usepackage{latexsym,nicefrac,bbm}
+  \usepackage{xspace}
+  \usepackage{color,fancybox,graphicx,subfigure,fullpage}
+  \usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+  % \usepackage{tabularx}
+  \usepackage{hyperref}
+  \usepackage{pdfsync}
+  \usepackage{multicol}
+  \usepackage{cite,cleveref}
+
+\renewcommand{\epsilon}{\varepsilon}
+  \newcommand{\parag}[1]{ {\bf \noindent #1}}
+  \newcommand{\defeq }{\stackrel{\textup{def}}{=}}
+  \newcommand{\nfrac}{\nicefrac}
+  \newcommand{\opt}{\mathrm{opt}}
+  \newcommand{\tO}{\widetilde{O}}
+  \newcommand{\polylog}{\mathop{\mbox{polylog}}}
+  \newcommand{\supp}{\mathrm{supp}}
+  \newcommand{\rank}{\mathrm{rank}}
+  \newcommand{\ptot}{p_{\mathrm{tot}}}
+  \newcommand{\pmin}{p_{\mathrm{min}}}
+  \newcommand{\pmax}{p_{\mathrm{max}}}
+
+\newcommand{\conv}{\mathrm{conv}}
+  \newcommand{\dist}{\mathrm{dist}}
+  \newcommand{\argmin}{\operatornamewithlimits{argmin}}
+  \newcommand{\sgn}{\mathrm{sgn}}
+  \newcommand{\fc}{\mathrm{fc}}
+
+\newcommand{\cM}{\mathcal{M}}
+  \newcommand{\cB}{\mathcal{B}}
+  \newcommand{\cU}{\mathcal{U}}
+  \newcommand{\cY}{\mathcal{Y}}
+  \newcommand{\cF}{\mathcal{V}}
+  \newcommand{\capa}{\mathrm{Cap}}
+  \newcommand{\dcapa}{\underline{\mathrm{Cap}}}
+  \newcommand{\st}{\mathrm{s.t.}}
+  \newcommand{\un}{\mathrm{un}}
+
+\newcommand{\Pb}{\mathbb{P}}
+  \newcommand{\sym}{\mathrm{sym}}
+  \newcommand{\pcount}{\mathbf{PCount}}
+  \newcommand{\mixdet}{\mathbf{MixDisc}}
+  \newcommand{\sbold}{\mathbf{S}}
+  \newcommand{\mb}{{M(\cB)}}
+
+\newcommand{\mlb}{{M_{\mathrm{lin}}(\cB)}}
+  \newcommand{\redc}[1]{ \textcolor{red} {#1}}
+  \newcommand{\newt}{\mathrm{Newt}}
+  \newcommand{\wtf}{\widetilde{f}}
+  \newcommand{\wt}{\widetilde}
+  \newcommand{\diam}{\mathrm{diam}}
+  \newcommand{\lspan}{\mathrm{span}}
+  \newcommand{\interior}{\mathrm{int}}
+  \newcommand{\aff}{\mathrm{aff}}
+  \newcommand{\per}{\mathrm{per}}
+  \newcommand{\bl}{\mathrm{BL}}
+  \newcommand{\cE}{\mathbb{E}}
+  \newcommand{\cR}{\mathbb{R}}
+  \newcommand{\cN}{\mathbb{N}}
+  \newcommand{\cZ}{\mathbb{Z}}
+  \newcommand{\eps}{\varepsilon}
+
+%Anay
+\newcommand{\problem}[2]{\noindent \fbox{ \minipage{\linewidth}
+                          \vspace{1mm}
+                          #1\\
+                        \vspace{-3mm}\hrule
+                        \vspace{1mm}
+                        #2
+                        \vspace{0.5mm}
+                         \endminipage
+                         }
+                        }
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\myeqref}[2]{(\hyperref[#1]{#2})}
+\newcommand{\eqname}[1]{\tag*{#1}}
+\newcommand{\white}[1]{ \textcolor{white} {#1}}
+\usepackage{enumitem}
+\newcommand\labelthis[1]{\addtocounter{equation}{1}\tag{{#1},\ \theequation}}
+\newcommand\emptylabel[1]{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand\labelthisb[1]{\emptylabel{}\\[-\baselineskip]
+\eqname{#1, \hspace{6.5mm}}}
+\newcommand\labelthisc[1]{\emptylabel{}\\[-1.8\baselineskip]
+\eqname{#1, \hspace{6.5mm}}}
+\usepackage{subfiles}
+\usepackage{mathtools}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\DeclareMathOperator*{\eE}{\mathbb{E}}
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cQ}{\mathcal{Q}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cV}{\mathcal{V}}
+\newcommand{\cT}{\mathcal{T}}
+\usepackage{pifont}
+\newcommand{\tick}{\begin{center}$\surd$\end{center}}
+
+
+\usepackage{epsfig}
+\usepackage{verbatim}
+
+\theoremstyle{definition}
+\newtheorem{assumption}{Assumption}
+
+\usepackage{algorithmic}
+  \usepackage{algorithm,caption}
+  % \usepackage{algpseudocode}
+
+\clubpenalty=10000
+\widowpenalty = 10000
+
+
+\def\showauthornotes{0}
+  \def\showkeys{0}
+  \def\showdraftbox{0}
+
+\newcommand{\Snote}{\Authornote{S}}
+  \newcommand{\Scomment}{\Authorcomment{S}}
+
+\usepackage{mhequ}
+  \def \be{\begin{equs}}
+  \def \ee{\end{equs}}
+
+
+\newtheorem{theorem}{Theorem}[section]
+  \newtheorem{lemma}[theorem]{Lemma}
+  \newtheorem{definition}[theorem]{Definition}
+  \newtheorem{conjecture}[theorem]{Conjecture}
+  \newtheorem{corollary}[theorem]{Corollary}
+  \newtheorem{construction}[theorem]{Construction}
+  \newtheorem{claim}[theorem]{Claim}
+  \newtheorem{observation}[theorem]{Observation}
+  \newtheorem{proposition}[theorem]{Proposition}
+  \newtheorem{fact}[theorem]{Fact}
+  \newtheorem{question}[theorem]{Question}
+  \newtheorem*{theorem*}{Theorem}
+  \newtheorem{remark}[theorem]{Remark}
+
+%Anay
+\newtheorem{example}[theorem]{Example}
+
+\crefname{theorem}{Theorem}{Theorems}
+  \crefname{observation}{Observation}{Observations}
+  \crefname{proposition}{Proposition}{Propositions}
+  \crefname{claim}{Claim}{Claims}
+  \crefname{condition}{Condition}{Conditions}
+  \crefname{example}{Example}{Examples}
+  \crefname{fact}{Fact}{Facts}
+  \crefname{lemma}{Lemma}{Lemmas}
+  \crefname{corollary}{Corollary}{Corollaries}
+  \crefname{definition}{Definition}{Definitions}
+  \crefname{remark}{Remark}{Remarks}
+
+
+
+\usepackage{xcolor}
+\usepackage{listings}
+
+\usepackage{xparse}
+
+\NewDocumentCommand{\codeword}{v}{%
+\texttt{\textcolor{blue}{#1}}%
+}
+
+\lstset{language=C,keywordstyle={\bfseries \color{blue}}}
+
+
+\title{\bf CS 335: Assignment 1}
+
+
+\author{Anay Mehrotra (160112)}
+
+\begin{document}
+\date{}
+
+
+\maketitle
+
+\thispagestyle{empty}
+% \begin{abstract}
+%   %
+%
+%   %
+% \end{abstract}
+
+\paragraph{Summary.} I used the \codeword{lex} software package and \codeword{Python3.7} for this assignment.
+%
+The \codeword{run.sh} script installs the necessary python packages and runs the program on the four sample tests in the \codeword{./tests} folder.
+%
+\redc{Please replace }\codeword{$python} \redc{in} \codeword{run.sh} \redc{with your python alias.}
+%
+
+\paragraph{Compilation.}
+%
+Run the following command to install the necessary packages for python3
+
+\codeword{local-python -m pip install argparse PrettyTable ply}
+
+\noindent where please replace \codeword{local-python} by your python alias.
+
+
+\paragraph{Execution.}
+%
+%
+
+Run
+
+\codeword{python main.py test-file | sort > output-file}
+
+\noindent to execute the program. Optionally, you can pass the \codeword{--pretty} flag for a more readable output
+
+\codeword{python main.py test-file --pretty > output-file}
+
+\noindent Note, that the later command (with \codeword{--pretty}) is not be ideal for checking the output with a \codeword{diff} or \codeword{vimdiff} commands.
+
+\medskip
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \bibliography{../combined-bib-v5}
+% \bibliographystyle{plain}
+
+\appendix
+
+
+
+\end{document}
