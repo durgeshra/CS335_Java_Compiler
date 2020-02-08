@@ -16,6 +16,10 @@ WhileForContinue=[]
 # class MyParser(object):
 tokens = lexRule.tokens
 
+# def p_comment(p):
+#     ''' comment : COMMENT '''
+
+
 def p_expression( p):
     '''expression : assignment_expression'''
     p[0] = p[1]
