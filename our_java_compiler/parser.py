@@ -282,7 +282,7 @@ def p_unary_expression_not_name( p):
         p[0] = Unary(p[1], p[2])
 
 def p_pre_increment_expression( p):
-    '''pre_increment_expression : PLUSPLUS unary_expression'''
+    '''pre_increment_expression : INC unary_expression'''
     p[0] = Unary('++x', p[2])
 
 def p_pre_decrement_expression( p):
@@ -323,7 +323,7 @@ def p_postfix_expression_not_name( p):
     p[0] = p[1]
 
 def p_post_increment_expression( p):
-    '''post_increment_expression : postfix_expression PLUSPLUS'''
+    '''post_increment_expression : postfix_expression INC'''
     p[0] = Unary('x++', p[1])
 
 def p_post_decrement_expression( p):
@@ -1071,7 +1071,12 @@ def p_qualified_name( p):
 # class LiteralParser(object):
 
 def p_literal( p):
-    '''literal : NUM
+    '''literal : HEX_LIT
+                | OCTAL_LIT
+                | BINARY_LIT
+                | DECIMAL_LIT
+                | FLOAT_HEX_LIT
+                | FLOAT_DEC_LIT
                 | CHAR_LITERAL
                 | STRING_LITERAL
                 | TRUE
@@ -1871,7 +1876,7 @@ def p_type_declarations( p):
 
 
 def p_start_compilation_unit( p):
-    '''start : PLUSPLUS compilation_unit'''
+    '''start : INC compilation_unit'''
     p[0] = p[2]
 
 def p_start_expression( p):
