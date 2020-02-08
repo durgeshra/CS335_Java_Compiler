@@ -21,6 +21,29 @@ def main():
 
     infile = infile[0]
 
+    def t_FLOAT_HEX_LIT(t):
+        r'((0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[\.]?)|(0[xX]([0-9a-fA-F]([_]*[0-9a-fA-F])*)?\.[0-9a-fA-F]([_]*[0-9a-fA-F])*))[pP][\+\-]?[0-9]+'
+        return t
+
+    def t_FLOAT_DEC_LIT(t):
+        r'([0-9]+([_]*[0-9]+)*\.([0-9]*[_]*)*([eE][\+\-]?([0-9]+[_]*)+)?[fFdD]?)|([0-9]*([_]*[0-9]+)*\.([0-9]+[_]*)+([eE][\+\-]?([0-9]+[_]*)+)?[fFdD]?)|([0-9]+([_]*[0-9]+)*([eE][\+\-]?([0-9]+[_]*)+)[fFdD]?)|([0-9]+([_]*[0-9]+)*([eE][\+\-]?([0-9]+[_]*)+)?[fFdD])'
+        # r'([0-9]+\.[0-9]* ([eE][\+\-]?[0-9]+)? [fFdD]?)|([0-9]*\.[0-9]+ ([eE][\+\-]?[0-9]+)? [fFdD]?)|([0-9]+ ([eE][\+\-]?[0-9]+) [fFdD]?)|([0-9]+ ([eE][\+\-]?[0-9]+)?[fFdD])'
+        return t
+    def t_HEX_LIT(t):
+        r'0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[lL]?'
+        return t
+    def t_BINARY_LIT(t):
+        r'0[bB][0-1]([_]*[0-1])*[lL]?'
+        return t
+    def t_OCTAL_LIT(t):
+        r'0[_]*[1-8]([_]*[0-8])*[lL]?'
+        return t
+    
+
+    def t_DECIMAL_LIT(t):
+        r'0[lL]?|([1-9]([_]*[0-9])*)[lL]?'
+        return t
+
     def t_IDENT(t):
         r'[a-zA-Z_$][a-zA-Z_$0-9]*'
         t.type = reserved.get(t.value,'IDENT')    # Check for reserved words
@@ -37,7 +60,8 @@ def main():
         return t
 
     def t_STRING_LIT(t):
-        r'\"[^\"\\]*(\\.[^\"\\]*)*\"'
+        r'\"([^\\\"\n\r\t]|(\\[btnfr\"\'\\0-7]))*\"'
+        # r'\"[^\"\\\n]*(\\.[^\"\\]*)*\"'
         return t
 
     def t_UNCLOSED_STR(t):
@@ -107,7 +131,7 @@ def main():
             # Comments or unknown
             i+=1;
         # print(tok)
-
+    print("Lexeme,Token,Count")
     t = PrettyTable(['Lexeme', 'Token', 'Count'])
     for k in cnt.keys():
         t.add_row([k, type[k], cnt[k]])

@@ -64,12 +64,7 @@ err = ['UNCLOSED_CHAR', 'UNCLOSED_STR']
 tokens = separators + literals_ + operators + list(reserved.values()) + misc + err
 
 
-t_HEX_LIT = r'0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[lL]?'
-t_OCTAL_LIT = r'0[_]*[1-8]([_]*[0-8])*[lL]?'
-t_BINARY_LIT = r'0[bB][0-1]([_]*[0-1])*[lL]?'
-t_DECIMAL_LIT = r'0[lL]?|([1-9]([_]*[0-9])*)[lL]?'
 
-t_FLOAT_HEX_LIT = r'((0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[\.]?)|(0[xX]([0-9a-fA-F]([_]*[0-9a-fA-F])*)?\.[0-9a-fA-F]([_]*[0-9a-fA-F])*))[pP][\+\-]?[0-9]+'
 
 # Explanation of regex (first two combined with ORs)
 # 0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[\.]?
@@ -81,12 +76,19 @@ t_FLOAT_HEX_LIT = r'((0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[\.]?)|(0[xX]([0-9a-fA-F
 # 0x21111.p-0, 0x0.p-0, 0x.0p-0
 
 
-t_FLOAT_DEC_LIT = r'([0-9]+\.[0-9]* ([eE][\+\-]?[0-9]+)? [fFdD]?)|([0-9]*\.[0-9]+ ([eE][\+\-]?[0-9]+)? [fFdD]?)|([0-9]+ ([eE][\+\-]?[0-9]+) [fFdD]?)|([0-9]+ ([eE][\+\-]?[0-9]+)?[fFdD])'
 # Explanation of regex (combined with ORs)
 # [0-9]+\.[0-9]* ([eE][\+\-]?[0-9]+)? [fFdD]?
 # [0-9]*\.[0-9]+ ([eE][\+\-]?[0-9]+)? [fFdD]?
 # [0-9]+ ([eE][\+\-]?[0-9]+) [fFdD]?
 # [0-9]+ ([eE][\+\-]?[0-9]+)? [fFdD]
+
+# [0-9]+([_]*[0-9]+)*\.([0-9]*[_]*)*([eE][\+\-]?([0-9]+[_]*)+)?[fFdD]?
+# [0-9]*([_]*[0-9]+)*\.([0-9]+[_]*)+([eE][\+\-]?([0-9]+[_]*)+)?[fFdD]?
+# [0-9]+([_]*[0-9]+)*([eE][\+\-]?([0-9]+[_]*)+)[fFdD]?
+# [0-9]+([_]*[0-9]+)*([eE][\+\-]?([0-9]+[_]*)+)?[fFdD]
+
+
+
 
 # Tests
 # 0f, 0F, 0.00, 00.00, 00.0000e-0, 0.0000e-0233, 0.0000e+0233,
