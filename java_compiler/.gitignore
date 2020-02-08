@@ -1,0 +1,10 @@
+*.pyc
+*.swp
+*tab.py
+*.out
+*.png
+.gdb_history
+peda-session-a.out.txt
+a.out
+output.o
+output.s
