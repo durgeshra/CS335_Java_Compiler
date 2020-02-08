@@ -3,7 +3,7 @@ import sys
 import os
 # sys.path.insert(0, './src/')
 import lexRule
-import parser
+from parser import *
 import ply.lex as lex
 import ply.yacc as yacc
 import node_file
@@ -22,15 +22,16 @@ def main(argv):
     except getopt.GetoptError:
         print('Usage : ./bin/final.py [options][-f/-h/-o] [string]')
         sys.exit(2)
-    parse = parser.Parser()
+    # parse = parser.Parser()
     optjump = 0
     for opt, arg in opts:
         if opt in ("-o", "--opt"):
             if arg == "1":
                 optjump = 1
         elif opt in ("-f", "--file"):
-            tree = parse.parse_file((arg))
-            parser.printing()
+            # tree = parse.parse_file((arg))
+            tree = parse_file((arg))
+            printing()
             print("\nAST in txt format:")
             print(tree)
             f = open('AST.txt', 'w')
@@ -39,16 +40,16 @@ def main(argv):
             print(tree, file=f)
             f.close()
             print("\nSymbol Table:")
-            print(parser.ST.SymbolTable)
+            # print(ST.SymbolTable)
             img = Image.open('AST.png')
-            #img.show()
+            # #img.show()
             print("\nSymbol Table Dump Written on ST.csv\nAST written in txt format on AST.txt\nAST dot output written on AST.png")
-            with open('ST.csv', 'w') as csv_file:
-                writer = csv.writer(csv_file)
-                writer.writerow(["function","variable","modifiers","type","dimension"])
-                for a in parser.ST.SymbolTableFunction:
-                     for b in parser.ST.SymbolTableFunction[a]['variables']:
-                             writer.writerow([a , b, parser.ST.SymbolTableFunction[a]['variables'][b]['modifiers'],parser.ST.SymbolTableFunction[a]['variables'][b]['type'],parser.ST.SymbolTableFunction[a]['variables'][b]['dimension']])
+            # with open('ST.csv', 'w') as csv_file:
+            #     writer = csv.writer(csv_file)
+            #     writer.writerow(["function","variable","modifiers","type","dimension"])
+            #     for a in parser.ST.SymbolTableFunction:
+            #          for b in parser.ST.SymbolTableFunction[a]['variables']:
+            #                  writer.writerow([a , b, parser.ST.SymbolTableFunction[a]['variables'][b]['modifiers'],parser.ST.SymbolTableFunction[a]['variables'][b]['type'],parser.ST.SymbolTableFunction[a]['variables'][b]['dimension']])
 
             # t = parser.tac.code
 

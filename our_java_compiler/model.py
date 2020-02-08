@@ -991,7 +991,9 @@ class ArrayAccess(Expression):
             self.depth = 1
             scope_method = ST.getScope('variables',target.value)
             self.dimension = ST.SymbolTable[scope_method]['variables'][target.value]['dimension']
-        if self.depth > self.dimension:
+        # print("##########ERROR#######",self.depth,self.dimension)
+
+        if self.depth > int(self.dimension[0]):
             sys.exit("More than allowed dimension accessed")
         if index.type not in 'int':
             sys.exit("Type Error : Array Indices Must Be Integer")

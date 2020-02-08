@@ -1,8 +1,1 @@
 function,variable,modifiers,type,dimension
-start,ackermann_1,[],[],
-printInt,n_3,[],int,[0]
-Ack,m_4,[],int,[0]
-Ack,n_4,[],int,[0]
-Ack,i_4,[],int,0
-Ack,j_4,[],int,0
-main,i_12,[],int,0
