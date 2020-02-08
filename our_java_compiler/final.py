@@ -6,11 +6,9 @@ import lexRule
 from parser import *
 import ply.lex as lex
 import ply.yacc as yacc
-import node_file
 import genAssembly as ga
 import getopt
 import pydot
-import node_file
 import csv
 import getopt
 from PIL import Image
