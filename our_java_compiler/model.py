@@ -61,32 +61,57 @@ class SourceElement(object):
                         field.accept(visitor)
         getattr(visitor, 'leave_' + class_name)(self)
 
-class node:
-    def __init__(self,*args):
-        global graph
-        global idg
-        node_a = pydot.Node(args[1],label=args[0])
-        graph.add_node(node_a)
-        for x in args[2:]:
-            y = [1,2]
-            z = "Abhinav and Anuj were here!!"
-            if x:
-                if type(x) == type(y):
-                    for k in x:
-                        if type(k) == type(z):
-                            idg+=1;
-                            node_b = pydot.Node(idg,label=k)
-                            graph.add_node(node_b)
-                            graph.add_edge(pydot.Edge(node_a,node_b))
-                        else:
-                            graph.add_edge(pydot.Edge(node_a,pydot.Node(k.id)))
-                elif type(x) == type(z):
-                    idg+=1;
-                    node_b = pydot.Node(idg,label=x)
-                    graph.add_node(node_b)
-                    graph.add_edge(pydot.Edge(node_a,node_b))
-                else:
-                    graph.add_edge(pydot.Edge(node_a,pydot.Node(x.id)))
+# class node:
+#     def __init__(self,*args):
+#         global graph
+#         global idg
+#         node_a = pydot.Node(args[1],label=args[0])
+#         graph.add_node(node_a)
+#         for x in args[2:]:
+#             y = [1,2]
+#             z = "Abhinav and Anuj were here!!"
+#             if x:
+#                 if type(x) == type(y):
+#                     for k in x:
+#                         if type(k) == type(z):
+#                             idg+=1;
+#                             node_b = pydot.Node(idg,label=k)
+#                             graph.add_node(node_b)
+#                             graph.add_edge(pydot.Edge(node_a,node_b))
+#                         else:
+#                             graph.add_edge(pydot.Edge(node_a,pydot.Node(k.id)))
+#                 elif type(x) == type(z):
+#                     idg+=1;
+#                     node_b = pydot.Node(idg,label=x)
+#                     graph.add_node(node_b)
+#                     graph.add_edge(pydot.Edge(node_a,node_b))
+#                 else:
+#                     graph.add_edge(pydot.Edge(node_a,pydot.Node(x.id)))
+def node(*args):
+    global graph
+    global idg
+    node_a = pydot.Node(args[1],label=args[0])
+    graph.add_node(node_a)
+    for x in args[2:]:
+        y = [1,2]
+        z = "Abhinav and Anuj were here!!"
+        if x:
+            if type(x) == type(y):
+                for k in x:
+                    if type(k) == type(z):
+                        idg+=1;
+                        node_b = pydot.Node(idg,label=k)
+                        graph.add_node(node_b)
+                        graph.add_edge(pydot.Edge(node_a,node_b))
+                    else:
+                        graph.add_edge(pydot.Edge(node_a,pydot.Node(k.id)))
+            elif type(x) == type(z):
+                idg+=1;
+                node_b = pydot.Node(idg,label=x)
+                graph.add_node(node_b)
+                graph.add_edge(pydot.Edge(node_a,node_b))
+            else:
+                graph.add_edge(pydot.Edge(node_a,pydot.Node(x.id)))
 def printing():
     global graph
     graph.write_png('./AST.png')
