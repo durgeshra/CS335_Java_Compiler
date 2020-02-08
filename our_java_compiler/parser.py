@@ -39,15 +39,15 @@ def p_assignment( p):
     p[0] = Assignment(p[2], p[1], p[3])
 
 def p_assignment_operator( p):
-    '''assignment_operator : '='
-                            | TIMES_ASSIGN
-                            | DIVIDE_ASSIGN
-                            | REMAINDER_ASSIGN
-                            | PLUS_ASSIGN
-                            | MINUS_ASSIGN
-                            | LSHIFT_ASSIGN
-                            | RSHIFT_ASSIGN
-                            | RRSHIFT_ASSIGN
+    '''assignment_operator : ASSIGN
+                            | MUL_ASSIGN
+                            | QUO_ASSIGN
+                            |  REM_ASSIGN
+                            |  ADD_ASSIGN
+                            | SUB_ASSIGN
+                            | SHL_ASSIGN
+                            | SHR_ASSIGN
+                            | SHR_UN_ASSIGN
                             | AND_ASSIGN
                             | OR_ASSIGN
                             | XOR_ASSIGN'''
@@ -55,7 +55,7 @@ def p_assignment_operator( p):
 
 def p_conditional_expression( p):
     '''conditional_expression : conditional_or_expression
-                                | conditional_or_expression '?' expression ':' conditional_expression'''
+                                | conditional_or_expression QUES expression COLON conditional_expression'''
     if len(p) == 2:
         p[0] = p[1]
     else:
@@ -63,8 +63,8 @@ def p_conditional_expression( p):
 
 def p_conditional_expression_not_name( p):
     '''conditional_expression_not_name : conditional_or_expression_not_name
-                                        | conditional_or_expression_not_name '?' expression ':' conditional_expression
-                                        | name '?' expression ':' conditional_expression'''
+                                        | conditional_or_expression_not_name QUES expression COLON conditional_expression
+                                        | name QUES expression COLON conditional_expression'''
     if len(p) == 2:
         p[0] = p[1]
     else:
@@ -86,7 +86,7 @@ def binopmy( p, ctor):
 
 def p_conditional_or_expression( p):
     '''conditional_or_expression : conditional_and_expression
-                                    | conditional_or_expression OR marker_next_quad conditional_and_expression'''
+                                    | conditional_or_expression LOR marker_next_quad conditional_and_expression'''
     binopmy(p, ConditionalOr)
     if len(p) == 5:
         #print("or");print(p[1].falselist);print('_');print(p[3])
@@ -96,8 +96,8 @@ def p_conditional_or_expression( p):
 
 def p_conditional_or_expression_not_name( p):
     '''conditional_or_expression_not_name : conditional_and_expression_not_name
-                                            | conditional_or_expression_not_name OR marker_next_quad conditional_and_expression
-                                            | name OR marker_next_quad conditional_and_expression'''
+                                            | conditional_or_expression_not_name LOR marker_next_quad conditional_and_expression
+                                            | name LOR marker_next_quad conditional_and_expression'''
     binopmy(p, ConditionalOr)
     if len(p) == 5:
         #print("or")
@@ -109,7 +109,7 @@ def p_conditional_or_expression_not_name( p):
 
 def p_conditional_and_expression( p):
     '''conditional_and_expression : inclusive_or_expression
-                                    | conditional_and_expression AND marker_next_quad inclusive_or_expression'''
+                                    | conditional_and_expression LAND marker_next_quad inclusive_or_expression'''
     binopmy(p, ConditionalAnd)
     if len(p) == 5:
         #print("and");print(p[1].falselist);print('_');print(p[4].falselist);
@@ -119,8 +119,8 @@ def p_conditional_and_expression( p):
 
 def p_conditional_and_expression_not_name( p):
     '''conditional_and_expression_not_name : inclusive_or_expression_not_name
-                                            | conditional_and_expression_not_name AND marker_next_quad inclusive_or_expression
-                                            | name AND marker_next_quad inclusive_or_expression'''
+                                            | conditional_and_expression_not_name LAND marker_next_quad inclusive_or_expression
+                                            | name LAND marker_next_quad inclusive_or_expression'''
     binopmy(p, ConditionalAnd)
     if len(p) == 5:
         #print("and");print(p[1].falselist);print('_');print(p[4].falselist);
@@ -135,47 +135,47 @@ def p_marker_next_quad( p):
 
 def p_inclusive_or_expression( p):
     '''inclusive_or_expression : exclusive_or_expression
-                                | inclusive_or_expression '|' exclusive_or_expression'''
+                                | inclusive_or_expression OR exclusive_or_expression'''
     binop(p, Or)
 
 def p_inclusive_or_expression_not_name( p):
     '''inclusive_or_expression_not_name : exclusive_or_expression_not_name
-                                        | inclusive_or_expression_not_name '|' exclusive_or_expression
-                                        | name '|' exclusive_or_expression'''
+                                        | inclusive_or_expression_not_name OR exclusive_or_expression
+                                        | name OR exclusive_or_expression'''
     binop(p, Or)
 
 def p_exclusive_or_expression( p):
     '''exclusive_or_expression : and_expression
-                                | exclusive_or_expression '^' and_expression'''
+                                | exclusive_or_expression XOR and_expression'''
     binop(p, Xor)
 
 def p_exclusive_or_expression_not_name( p):
     '''exclusive_or_expression_not_name : and_expression_not_name
-                                        | exclusive_or_expression_not_name '^' and_expression
-                                        | name '^' and_expression'''
+                                        | exclusive_or_expression_not_name XOR and_expression
+                                        | name XOR and_expression'''
     binop(p, Xor)
 
 def p_and_expression( p):
     '''and_expression : equality_expression
-                        | and_expression '&' equality_expression'''
+                        | and_expression AND equality_expression'''
     binop(p, And)
 
 def p_and_expression_not_name( p):
     '''and_expression_not_name : equality_expression_not_name
-                                | and_expression_not_name '&' equality_expression
-                                | name '&' equality_expression'''
+                                | and_expression_not_name AND equality_expression
+                                | name AND equality_expression'''
     binop(p, And)
 
 def p_equality_expression( p):
     '''equality_expression : instanceof_expression
-                            | equality_expression EQ instanceof_expression
+                            | equality_expression EQL instanceof_expression
                             | equality_expression NEQ instanceof_expression'''
     binop(p, Equality)
 
 def p_equality_expression_not_name( p):
     '''equality_expression_not_name : instanceof_expression_not_name
-                                    | equality_expression_not_name EQ instanceof_expression
-                                    | name EQ instanceof_expression
+                                    | equality_expression_not_name EQL instanceof_expression
+                                    | name EQL instanceof_expression
                                     | equality_expression_not_name NEQ instanceof_expression
                                     | name NEQ instanceof_expression'''
     binop(p, Equality)
@@ -193,77 +193,77 @@ def p_instanceof_expression_not_name( p):
 
 def p_relational_expression( p):
     '''relational_expression : shift_expression
-                                | relational_expression '>' shift_expression
-                                | relational_expression '<' shift_expression
-                                | relational_expression GTEQ shift_expression
-                                | relational_expression LTEQ shift_expression'''
+                                | relational_expression GTR shift_expression
+                                | relational_expression LSS shift_expression
+                                | relational_expression GEQ shift_expression
+                                | relational_expression LEQ shift_expression'''
     binop(p, Relational)
 
 def p_relational_expression_not_name( p):
     '''relational_expression_not_name : shift_expression_not_name
-                                        | shift_expression_not_name '<' shift_expression
-                                        | name '<' shift_expression
-                                        | shift_expression_not_name '>' shift_expression
-                                        | name '>' shift_expression
-                                        | shift_expression_not_name GTEQ shift_expression
-                                        | name GTEQ shift_expression
-                                        | shift_expression_not_name LTEQ shift_expression
-                                        | name LTEQ shift_expression'''
+                                        | shift_expression_not_name LSS shift_expression
+                                        | name LSS shift_expression
+                                        | shift_expression_not_name GTR shift_expression
+                                        | name GTR shift_expression
+                                        | shift_expression_not_name GEQ shift_expression
+                                        | name GEQ shift_expression
+                                        | shift_expression_not_name LEQ shift_expression
+                                        | name LEQ shift_expression'''
     binop(p, Relational)
 
 def p_shift_expression( p):
     '''shift_expression : additive_expression
-                        | shift_expression LSHIFT additive_expression
-                        | shift_expression RSHIFT additive_expression
-                        | shift_expression RRSHIFT additive_expression'''
+                        | shift_expression SHL additive_expression
+                        | shift_expression SHR additive_expression
+                        | shift_expression SHR_UN  additive_expression'''
     binop(p, Shift)
 
 def p_shift_expression_not_name( p):
     '''shift_expression_not_name : additive_expression_not_name
-                                    | shift_expression_not_name LSHIFT additive_expression
-                                    | name LSHIFT additive_expression
-                                    | shift_expression_not_name RSHIFT additive_expression
-                                    | name RSHIFT additive_expression
-                                    | shift_expression_not_name RRSHIFT additive_expression
-                                    | name RRSHIFT additive_expression'''
+                                    | shift_expression_not_name SHL additive_expression
+                                    | name SHL additive_expression
+                                    | shift_expression_not_name SHR additive_expression
+                                    | name SHR additive_expression
+                                    | shift_expression_not_name SHR_UN  additive_expression
+                                    | name SHR_UN  additive_expression'''
     binop(p, Shift)
 
 def p_additive_expression( p):
     '''additive_expression : multiplicative_expression
-                            | additive_expression '+' multiplicative_expression
-                            | additive_expression '-' multiplicative_expression'''
+                            | additive_expression ADD multiplicative_expression
+                            | additive_expression SUB multiplicative_expression'''
     binop(p, Additive)
 
 def p_additive_expression_not_name( p):
     '''additive_expression_not_name : multiplicative_expression_not_name
-                                    | additive_expression_not_name '+' multiplicative_expression
-                                    | name '+' multiplicative_expression
-                                    | additive_expression_not_name '-' multiplicative_expression
-                                    | name '-' multiplicative_expression'''
+                                    | additive_expression_not_name ADD multiplicative_expression
+                                    | name ADD multiplicative_expression
+                                    | additive_expression_not_name SUB multiplicative_expression
+                                    | name SUB multiplicative_expression'''
     binop(p, Additive)
 
 def p_multiplicative_expression( p):
     '''multiplicative_expression : unary_expression
-                                    | multiplicative_expression '*' unary_expression
-                                    | multiplicative_expression '/' unary_expression
-                                    | multiplicative_expression '%' unary_expression'''
+                                    | multiplicative_expression MUL unary_expression
+                                    | multiplicative_expression QUO unary_expression
+                                    | multiplicative_expression REM unary_expression'''
     binop(p, Multiplicative)
 
 def p_multiplicative_expression_not_name( p):
     '''multiplicative_expression_not_name : unary_expression_not_name
-                                            | multiplicative_expression_not_name '*' unary_expression
-                                            | name '*' unary_expression
-                                            | multiplicative_expression_not_name '/' unary_expression
-                                            | name '/' unary_expression
-                                            | multiplicative_expression_not_name '%' unary_expression
-                                            | name '%' unary_expression'''
+                                            | multiplicative_expression_not_name MUL unary_expression
+                                            | name MUL unary_expression
+                                            | multiplicative_expression_not_name QUO unary_expression
+                                            | name QUO unary_expression
+                                            | multiplicative_expression_not_name REM unary_expression
+                                            | name REM unary_expression'''
     binop(p, Multiplicative)
 
 def p_unary_expression( p):
     '''unary_expression : pre_increment_expression
                         | pre_decrement_expression
-                        | '+' unary_expression
-                        | '-' unary_expression
+                        | ADD unary_expression
+                        | SUB unary_expression
                         | unary_expression_not_plus_minus'''
     if len(p) == 2:
         p[0] = p[1]
@@ -273,8 +273,8 @@ def p_unary_expression( p):
 def p_unary_expression_not_name( p):
     '''unary_expression_not_name : pre_increment_expression
                                     | pre_decrement_expression
-                                    | '+' unary_expression
-                                    | '-' unary_expression
+                                    | ADD unary_expression
+                                    | SUB unary_expression
                                     | unary_expression_not_plus_minus_not_name'''
     if len(p) == 2:
         p[0] = p[1]
@@ -286,13 +286,13 @@ def p_pre_increment_expression( p):
     p[0] = Unary('++x', p[2])
 
 def p_pre_decrement_expression( p):
-    '''pre_decrement_expression : MINUSMINUS unary_expression'''
+    '''pre_decrement_expression : DEC unary_expression'''
     p[0] = Unary('--x', p[2])
 
 def p_unary_expression_not_plus_minus( p):
     '''unary_expression_not_plus_minus : postfix_expression
-                                        | '~' unary_expression
-                                        | '!' unary_expression
+                                        | LNOT unary_expression
+                                        | NOT unary_expression
                                         | cast_expression'''
     if len(p) == 2:
         p[0] = p[1]
@@ -301,8 +301,8 @@ def p_unary_expression_not_plus_minus( p):
 
 def p_unary_expression_not_plus_minus_not_name( p):
     '''unary_expression_not_plus_minus_not_name : postfix_expression_not_name
-                                                | '~' unary_expression
-                                                | '!' unary_expression
+                                                | LNOT unary_expression
+                                                | NOT unary_expression
                                                 | cast_expression'''
     if len(p) == 2:
         p[0] = p[1]
@@ -327,7 +327,7 @@ def p_post_increment_expression( p):
     p[0] = Unary('x++', p[1])
 
 def p_post_decrement_expression( p):
-    '''post_decrement_expression : postfix_expression MINUSMINUS'''
+    '''post_decrement_expression : postfix_expression DEC'''
     p[0] = Unary('x--', p[1])
 
 def p_primary( p):
@@ -346,21 +346,21 @@ def p_primary_no_new_array( p):
     p[0] = p[1]
 
 def p_primary_no_new_array2( p):
-    '''primary_no_new_array : '(' name ')'
-                            | '(' expression_not_name ')' '''
+    '''primary_no_new_array : LPAREN name RPAREN
+                            | LPAREN expression_not_name RPAREN '''
     p[0] = p[2]
 
 def p_primary_no_new_array3( p):
-    '''primary_no_new_array : name '.' THIS
-                            | name '.' SUPER'''
+    '''primary_no_new_array : name PERIOD THIS
+                            | name PERIOD SUPER'''
     p[1].append_name(p[3])
     p[0] = p[1]
 
 def p_primary_no_new_array4( p):
-    '''primary_no_new_array : name '.' CLASS
-                            | name dims '.' CLASS
-                            | primitive_type dims '.' CLASS
-                            | primitive_type '.' CLASS'''
+    '''primary_no_new_array : name PERIOD CLASS
+                            | name dims PERIOD CLASS
+                            | primitive_type dims PERIOD CLASS
+                            | primitive_type PERIOD CLASS'''
     if len(p) == 4:
         p[0] = ClassLiteral(Type(p[1]))
     else:
@@ -387,37 +387,37 @@ def p_dims_loop( p):
         p[0] = 1 + p[1]
 
 def p_one_dim_loop( p):
-    '''one_dim_loop : '[' ']' '''
+    '''one_dim_loop : LBRACK RBRACK '''
     # ignore
 
 def p_cast_expression( p):
-    '''cast_expression : '(' primitive_type dims_opt ')' unary_expression'''
+    '''cast_expression : LPAREN primitive_type dims_opt RPAREN unary_expression'''
     p[0] = Cast(Type(p[2], dimensions=p[3]), p[5])
 
 def p_cast_expression2( p):
-    '''cast_expression : '(' name type_arguments dims_opt ')' unary_expression_not_plus_minus'''
+    '''cast_expression : LPAREN name type_arguments dims_opt RPAREN unary_expression_not_plus_minus'''
     p[0] = Cast(Type(p[2], type_arguments=p[3], dimensions=p[4]), p[6])
 
 def p_cast_expression3( p):
-    '''cast_expression : '(' name type_arguments '.' class_or_interface_type dims_opt ')' unary_expression_not_plus_minus'''
+    '''cast_expression : LPAREN name type_arguments PERIOD class_or_interface_type dims_opt RPAREN unary_expression_not_plus_minus'''
     p[5].dimensions = p[6]
     p[5].enclosed_in = Type(p[2], type_arguments=p[3])
     p[0] = Cast(p[5], p[8])
 
 def p_cast_expression4( p):
-    '''cast_expression : '(' name ')' unary_expression_not_plus_minus'''
-    # technically it's not necessarily a type but could be a type parameter
+    '''cast_expression : LPAREN name RPAREN unary_expression_not_plus_minus'''
+    # technically itMULs not necessarily a type but could be a type parameter
     p[0] = Cast(Type(p[2]), p[4])
 
 def p_cast_expression5( p):
-    '''cast_expression : '(' name dims ')' unary_expression_not_plus_minus'''
-    # technically it's not necessarily a type but could be a type parameter
+    '''cast_expression : LPAREN name dims RPAREN unary_expression_not_plus_minus'''
+    # technically itMULs not necessarily a type but could be a type parameter
     p[0] = Cast(Type(p[2], dimensions=p[3]), p[5])
 
 # class StatementParser(object):
 
 def p_block( p):
-    '''block : '{' inc_scope block_statements_opt dec_scope '}' '''
+    '''block : LBRACE inc_scope block_statements_opt dec_scope RBRACE '''
     p[0] = Block(p[3])
 
 def p_block_statements_opt( p):
@@ -445,7 +445,7 @@ def p_block_statement( p):
     p[0] = p[1]
 
 def p_local_variable_declaration_statement( p):
-    '''local_variable_declaration_statement : local_variable_declaration ';' '''
+    '''local_variable_declaration_statement : local_variable_declaration SEMICOLON '''
     p[0] = p[1]
 
 def p_local_variable_declaration( p):
@@ -459,7 +459,7 @@ def p_local_variable_declaration2( p):
 
 def p_variable_declarators( p):
     '''variable_declarators : variable_declarator
-                            | variable_declarators ',' variable_declarator'''
+                            | variable_declarators COMMA variable_declarator'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -467,14 +467,14 @@ def p_variable_declarators( p):
 
 def p_variable_declarator( p):
     '''variable_declarator : variable_declarator_id
-                            | variable_declarator_id '=' variable_initializer'''
+                            | variable_declarator_id ASSIGN variable_initializer'''
     if len(p) == 2:
         p[0] = VariableDeclarator(p[1])
     else:
         p[0] = VariableDeclarator(p[1], initializer=p[3])
 
 def p_variable_declarator_id( p):
-    '''variable_declarator_id : NAME dims_opt'''
+    '''variable_declarator_id : IDENT dims_opt'''
     p[0] = Variable(p[1], dimensions=p[2])
 
 def p_variable_initializer( p):
@@ -509,7 +509,7 @@ def p_statement_without_trailing_substatement( p):
     p[0] = p[1]
 
 def p_expression_statement( p):
-    '''expression_statement : statement_expression ';'
+    '''expression_statement : statement_expression SEMICOLON
                             | explicit_constructor_invocation'''
     if len(p) == 2:
         p[0] = p[1]
@@ -527,60 +527,60 @@ def p_statement_expression( p):
     p[0] = p[1]
 
 def p_comma_opt( p):
-    '''comma_opt : ','
+    '''comma_opt : COMMA
                     | empty'''
     # ignore
 
 def p_array_initializer( p):
-    '''array_initializer : '{' comma_opt '}' '''
+    '''array_initializer : LBRACE comma_opt RBRACE '''
     p[0] = ArrayInitializer()
 
 def p_array_initializer2( p):
-    '''array_initializer : '{' variable_initializers '}'
-                            | '{' variable_initializers ',' '}' '''
+    '''array_initializer : LBRACE variable_initializers RBRACE
+                            | LBRACE variable_initializers COMMA RBRACE '''
     p[0] = ArrayInitializer(p[2])
 
 def p_variable_initializers( p):
     '''variable_initializers : variable_initializer
-                                | variable_initializers ',' variable_initializer'''
+                                | variable_initializers COMMA variable_initializer'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
         p[0] = p[1] + [p[3]]
 
 def p_method_invocation( p):
-    '''method_invocation : NAME '(' argument_list_opt ')' '''
+    '''method_invocation : IDENT LPAREN argument_list_opt RPAREN '''
     #We are currently only dealing with this
     p[0] = MethodInvocation(p[1], arguments=p[3])
 
 def p_method_invocation2( p):
-    '''method_invocation : name '.' type_arguments NAME '(' argument_list_opt ')'
-                            | primary '.' type_arguments NAME '(' argument_list_opt ')'
-                            | SUPER '.' type_arguments NAME '(' argument_list_opt ')' '''
+    '''method_invocation : name PERIOD type_arguments IDENT LPAREN argument_list_opt RPAREN
+                            | primary PERIOD type_arguments IDENT LPAREN argument_list_opt RPAREN
+                            | SUPER PERIOD type_arguments IDENT LPAREN argument_list_opt RPAREN '''
     p[0] = MethodInvocation(p[4], target=p[1], type_arguments=p[3], arguments=p[6])
 
 def p_method_invocation3( p):
-    '''method_invocation : name '.' NAME '(' argument_list_opt ')'
-                            | primary '.' NAME '(' argument_list_opt ')'
-                            | SUPER '.' NAME '(' argument_list_opt ')' '''
+    '''method_invocation : name PERIOD IDENT LPAREN argument_list_opt RPAREN
+                            | primary PERIOD IDENT LPAREN argument_list_opt RPAREN
+                            | SUPER PERIOD IDENT LPAREN argument_list_opt RPAREN '''
     p[0] = MethodInvocation(p[3], target=p[1], arguments=p[5])
 
 def p_labeled_statement( p):
-    '''labeled_statement : label ':' statement'''
+    '''labeled_statement : label COLON statement'''
     p[3].label = p[1]
     p[0] = p[3]
 
 def p_labeled_statement_no_short_if( p):
-    '''labeled_statement_no_short_if : label ':' statement_no_short_if'''
+    '''labeled_statement_no_short_if : label COLON statement_no_short_if'''
     p[3].label = p[1]
     p[0] = p[3]
 
 def p_label( p):
-    '''label : NAME'''
+    '''label : IDENT'''
     p[0] = p[1]
 
 def p_if_then_statement( p):
-    '''if_then_statement : IF '(' inc_scope expression ')' label_for_if1 statement label_for_if1'''
+    '''if_then_statement : IF LPAREN inc_scope expression RPAREN label_for_if1 statement label_for_if1'''
     p[0] = IfThenElse(p[4], p[7])
     tac.backpatch(p[4].truelist,p[6])
     tac.backpatch(p[4].falselist,p[8])
@@ -592,7 +592,7 @@ def p_label_for_if1(p):
     #pdb.set_trace()
     #tac.emit('ifgoto', p[-2].place, 'eq0', l1)
     p[0] = l1
-    tac.emit('label :','', '', l1)
+    tac.emit('label :','','',l1)
 
 def p_label_for_if2(p):
     '''label_for_if2 : '''
@@ -603,8 +603,8 @@ def p_label_for_if2(p):
 def p_label_for_if3(p):
     '''label_for_if3 : '''
     #l1 = ST.new_label()
-    #tac.emit('goto',l1,'','')
-    #tac.emit('label : ',p[-3],'','')
+    #tac.emit('goto',l1,'COMMA')
+    #tac.emit('label : ',p[-3],'COMMA')
     #p[0] = l1
     l1 = ST.new_label()
     l2 = ST.new_label()
@@ -613,19 +613,19 @@ def p_label_for_if3(p):
     tac.emit('label :','', '', l2)
 
 def p_if_then_else_statement( p):
-    '''if_then_else_statement : IF '(' inc_scope expression ')' label_for_if1 statement_no_short_if ELSE label_for_if3 statement label_for_if2'''
+    '''if_then_else_statement : IF LPAREN inc_scope expression RPAREN label_for_if1 statement_no_short_if ELSE label_for_if3 statement label_for_if2'''
     p[0] = IfThenElse(p[4], p[7], p[10])
     tac.backpatch(p[4].truelist,p[6])
     tac.backpatch(p[4].falselist,p[9][1])
 
 def p_if_then_else_statement_no_short_if( p):
-    '''if_then_else_statement_no_short_if : IF '(' inc_scope expression ')' label_for_if1 statement_no_short_if ELSE label_for_if3 statement_no_short_if label_for_if2'''
+    '''if_then_else_statement_no_short_if : IF LPAREN inc_scope expression RPAREN label_for_if1 statement_no_short_if ELSE label_for_if3 statement_no_short_if label_for_if2'''
     p[0] = IfThenElse(p[4], p[7], p[10])
     tac.backpatch(p[4].truelist,p[6])
     tac.backpatch(p[4].falselist,p[9][1])
 
 def p_while_statement( p):
-    '''while_statement : WHILE inc_for_while_stack '(' inc_scope label_for_while1 expression ')' label_for_while1 statement label_for_while2'''
+    '''while_statement : WHILE inc_for_while_stack LPAREN inc_scope label_for_while1 expression RPAREN label_for_while1 statement label_for_while2'''
     p[0] = While(p[6], p[9])
     print(p[5])
     #pdb.set_trace()
@@ -638,7 +638,7 @@ def p_while_statement( p):
     WhileForContinue.pop()
 
 def p_while_statement_no_short_if( p):
-    '''while_statement_no_short_if : WHILE inc_for_while_stack '(' inc_scope label_for_while1 expression ')' label_for_while1 statement_no_short_if label_for_while2'''
+    '''while_statement_no_short_if : WHILE inc_for_while_stack LPAREN inc_scope label_for_while1 expression RPAREN label_for_while1 statement_no_short_if label_for_while2'''
     p[0] = While(p[6], p[9])
     tac.backpatch(WhileForContinue[-1],p[5])
     tac.backpatch(WhileForBreak[-1],p[10])
@@ -666,7 +666,7 @@ def p_label_for_while2(p):
     tac.emit('label :','', '', l1)
 
 def p_for_statement( p):
-    '''for_statement : FOR inc_for_while_stack '(' inc_scope for_init_opt ';' label_for_for1 expression_opt ';' label_for_for1 for_update_opt label_for_for3 ')' label_for_for1 statement label_for_for2'''
+    '''for_statement : FOR inc_for_while_stack LPAREN inc_scope for_init_opt SEMICOLON label_for_for1 expression_opt SEMICOLON label_for_for1 for_update_opt label_for_for3 RPAREN label_for_for1 statement label_for_for2'''
     p[0] = For(p[5], p[8], p[11], p[15])
     #pdb.set_trace()
     tac.backpatch(WhileForContinue[-1],p[10])
@@ -677,7 +677,7 @@ def p_for_statement( p):
     WhileForBreak.pop()
 
 def p_for_statement_no_short_if( p):
-    '''for_statement_no_short_if : FOR inc_for_while_stack '(' inc_scope for_init_opt ';' label_for_for1 expression_opt ';' label_for_for1 for_update_opt label_for_for3 ')' label_for_for1 statement_no_short_if label_for_for2'''
+    '''for_statement_no_short_if : FOR inc_for_while_stack LPAREN inc_scope for_init_opt SEMICOLON label_for_for1 expression_opt SEMICOLON label_for_for1 for_update_opt label_for_for3 RPAREN label_for_for1 statement_no_short_if label_for_for2'''
     p[0] = For(p[5], p[8], p[11], p[15])
     tac.backpatch(WhileForContinue[-1],p[10])
     tac.backpatch(WhileForBreak[-1],p[16])
@@ -715,7 +715,7 @@ def p_for_init( p):
 
 def p_statement_expression_list( p):
     '''statement_expression_list : statement_expression
-                                    | statement_expression_list ',' statement_expression'''
+                                    | statement_expression_list COMMA statement_expression'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -744,18 +744,18 @@ def p_enhanced_for_statement_no_short_if( p):
     p[0] = ForEach(p[1]['type'], p[1]['variable'], p[1]['iterable'], p[2], modifiers=p[1]['modifiers'])
 
 def p_enhanced_for_statement_header( p):
-    '''enhanced_for_statement_header : enhanced_for_statement_header_init ':' expression ')' '''
+    '''enhanced_for_statement_header : enhanced_for_statement_header_init COLON expression RPAREN '''
     p[1]['iterable'] = p[3]
     p[0] = p[1]
 
 def p_enhanced_for_statement_header_init( p):
-    '''enhanced_for_statement_header_init : FOR inc_for_while_stack '(' inc_scope type NAME dims_opt'''
+    '''enhanced_for_statement_header_init : FOR inc_for_while_stack LPAREN inc_scope type IDENT dims_opt'''
     p[0] = {'modifiers': [], 'type': p[5], 'variable': Variable(p[6], dimensions=p[7])}
     WhileForContinue.pop()
     WhileForBreak.pop()
 
 def p_enhanced_for_statement_header_init2( p):
-    '''enhanced_for_statement_header_init : FOR inc_for_while_stack '(' inc_scope modifiers type NAME dims_opt'''
+    '''enhanced_for_statement_header_init : FOR inc_for_while_stack LPAREN inc_scope modifiers type IDENT dims_opt'''
     p[0] = {'modifiers': p[5], 'type': p[6], 'variable': Variable(p[7], dimensions=p[8])}
     WhileForContinue.pop()
     WhileForBreak.pop()
@@ -770,35 +770,35 @@ def p_statement_no_short_if( p):
     p[0] = p[1]
 
 def p_assert_statement( p):
-    '''assert_statement : ASSERT expression ';'
-                        | ASSERT expression ':' expression ';' '''
+    '''assert_statement : ASSERT expression SEMICOLON
+                        | ASSERT expression COLON expression SEMICOLON '''
     if len(p) == 4:
         p[0] = Assert(p[2])
     else:
         p[0] = Assert(p[2], message=p[4])
 
 def p_empty_statement( p):
-    '''empty_statement : ';' '''
+    '''empty_statement : SEMICOLON '''
     p[0] = Empty()
 
 def p_switch_statement( p):
-    '''switch_statement : SWITCH '(' inc_scope expression ')' switch_block'''
+    '''switch_statement : SWITCH LPAREN inc_scope expression RPAREN switch_block'''
     p[0] = Switch(p[4], p[6])
 
 def p_switch_block( p):
-    '''switch_block : '{' '}' '''
+    '''switch_block : LBRACE RBRACE '''
     p[0] = []
 
 def p_switch_block2( p):
-    '''switch_block : '{' switch_block_statements dec_scope '}' '''
+    '''switch_block : LBRACE switch_block_statements dec_scope RBRACE '''
     p[0] = p[2]
 
 def p_switch_block3( p):
-    '''switch_block : '{' switch_labels dec_scope '}' '''
+    '''switch_block : LBRACE switch_labels dec_scope RBRACE '''
     p[0] = [SwitchCase(p[2])]
 
 def p_switch_block4( p):
-    '''switch_block : '{' switch_block_statements switch_labels dec_scope '}' '''
+    '''switch_block : LBRACE switch_block_statements switch_labels dec_scope RBRACE '''
     p[0] = p[2] + [SwitchCase(p[3])]
 
 def p_switch_block_statements( p):
@@ -822,8 +822,8 @@ def p_switch_labels( p):
         p[0] = p[1] + [p[2]]
 
 def p_switch_label( p):
-    '''switch_label : CASE constant_expression ':'
-                    | DEFAULT ':' '''
+    '''switch_label : CASE constant_expression COLON
+                    | DEFAULT COLON '''
     if len(p) == 3:
         p[0] = 'default'
     else:
@@ -834,12 +834,12 @@ def p_constant_expression( p):
     p[0] = p[1]
 
 def p_do_statement( p):
-    '''do_statement : DO statement WHILE '(' expression ')' ';' '''
+    '''do_statement : DO statement WHILE LPAREN expression RPAREN SEMICOLON '''
     p[0] = DoWhile(p[5], body=p[2])
 
 def p_break_statement( p):
-    '''break_statement : BREAK ';'
-                        | BREAK NAME ';' '''
+    '''break_statement : BREAK SEMICOLON
+                        | BREAK IDENT SEMICOLON '''
     if len(p) == 3:
         WhileForBreak[-1].append(len(tac.code))
         tac.emit('goto','','','')
@@ -848,8 +848,8 @@ def p_break_statement( p):
         p[0] = Break(p[2])
 
 def p_continue_statement( p):
-    '''continue_statement : CONTINUE ';'
-                            | CONTINUE NAME ';' '''
+    '''continue_statement : CONTINUE SEMICOLON
+                            | CONTINUE IDENT SEMICOLON '''
     if len(p) == 3:
         WhileForContinue[-1].append(len(tac.code))
         tac.emit('goto','','','')
@@ -858,15 +858,15 @@ def p_continue_statement( p):
         p[0] = Continue(p[2])
 
 def p_return_statement( p):
-    '''return_statement : RETURN expression_opt ';' '''
+    '''return_statement : RETURN expression_opt SEMICOLON '''
     p[0] = Return(p[2])
 
 def p_synchronized_statement( p):
-    '''synchronized_statement : SYNCHRONIZED '(' expression ')' block'''
+    '''synchronized_statement : SYNCHRONIZED LPAREN expression RPAREN block'''
     p[0] = Synchronized(p[3], p[5])
 
 def p_throw_statement( p):
-    '''throw_statement : THROW expression ';' '''
+    '''throw_statement : THROW expression SEMICOLON '''
     p[0] = Throw(p[2])
 
 def p_try_statement( p):
@@ -898,7 +898,7 @@ def p_catches_opt2( p):
     p[0] = []
 
 def p_catch_clause( p):
-    '''catch_clause : CATCH '(' catch_formal_parameter ')' block'''
+    '''catch_clause : CATCH LPAREN catch_formal_parameter RPAREN block'''
     p[0] = Catch(p[3]['variable'], types=p[3]['types'], modifiers=p[3]['modifiers'], block=p[5])
 
 def p_catch_formal_parameter( p):
@@ -911,7 +911,7 @@ def p_catch_type( p):
 
 def p_union_type( p):
     '''union_type : type
-                    | union_type '|' type'''
+                    | union_type OR type'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -926,11 +926,11 @@ def p_try_statement_with_resources( p):
         p[0] = Try(p[3], resources=p[2], catches=p[4], _finally=p[5])
 
 def p_resource_specification( p):
-    '''resource_specification : '(' resources semi_opt ')' '''
+    '''resource_specification : LPAREN resources semi_opt RPAREN '''
     p[0] = p[2]
 
 def p_semi_opt( p):
-    '''semi_opt : ';'
+    '''semi_opt : SEMICOLON
                 | empty'''
     # ignore
 
@@ -943,15 +943,15 @@ def p_resources( p):
         p[0] = p[1] + [p[3]]
 
 def p_trailing_semicolon( p):
-    '''trailing_semicolon : ';' '''
+    '''trailing_semicolon : SEMICOLON '''
     # ignore
 
 def p_resource( p):
-    '''resource : type variable_declarator_id '=' variable_initializer'''
+    '''resource : type variable_declarator_id ASSIGN variable_initializer'''
     p[0] = Resource(p[2], type=p[1], initializer=p[4])
 
 def p_resource2( p):
-    '''resource : modifiers type variable_declarator_id '=' variable_initializer'''
+    '''resource : modifiers type variable_declarator_id ASSIGN variable_initializer'''
     p[0] = Resource(p[3], type=p[2], modifiers=p[1], initializer=p[5])
 
 def p_finally( p):
@@ -959,55 +959,55 @@ def p_finally( p):
     p[0] = p[2]
 
 def p_explicit_constructor_invocation( p):
-    '''explicit_constructor_invocation : THIS '(' argument_list_opt ')' ';'
-                                        | SUPER '(' argument_list_opt ')' ';' '''
+    '''explicit_constructor_invocation : THIS LPAREN argument_list_opt RPAREN SEMICOLON
+                                        | SUPER LPAREN argument_list_opt RPAREN SEMICOLON '''
     p[0] = ConstructorInvocation(p[1], arguments=p[3])
 
 def p_explicit_constructor_invocation2( p):
-    '''explicit_constructor_invocation : type_arguments SUPER '(' argument_list_opt ')' ';'
-                                        | type_arguments THIS '(' argument_list_opt ')' ';' '''
+    '''explicit_constructor_invocation : type_arguments SUPER LPAREN argument_list_opt RPAREN SEMICOLON
+                                        | type_arguments THIS LPAREN argument_list_opt RPAREN SEMICOLON '''
     p[0] = ConstructorInvocation(p[2], type_arguments=p[1], arguments=p[4])
 
 def p_explicit_constructor_invocation3( p):
-    '''explicit_constructor_invocation : primary '.' SUPER '(' argument_list_opt ')' ';'
-                                        | name '.' SUPER '(' argument_list_opt ')' ';'
-                                        | primary '.' THIS '(' argument_list_opt ')' ';'
-                                        | name '.' THIS '(' argument_list_opt ')' ';' '''
+    '''explicit_constructor_invocation : primary PERIOD SUPER LPAREN argument_list_opt RPAREN SEMICOLON
+                                        | name PERIOD SUPER LPAREN argument_list_opt RPAREN SEMICOLON
+                                        | primary PERIOD THIS LPAREN argument_list_opt RPAREN SEMICOLON
+                                        | name PERIOD THIS LPAREN argument_list_opt RPAREN SEMICOLON '''
     p[0] = ConstructorInvocation(p[3], target=p[1], arguments=p[5])
 
 def p_explicit_constructor_invocation4( p):
-    '''explicit_constructor_invocation : primary '.' type_arguments SUPER '(' argument_list_opt ')' ';'
-                                        | name '.' type_arguments SUPER '(' argument_list_opt ')' ';'
-                                        | primary '.' type_arguments THIS '(' argument_list_opt ')' ';'
-                                        | name '.' type_arguments THIS '(' argument_list_opt ')' ';' '''
+    '''explicit_constructor_invocation : primary PERIOD type_arguments SUPER LPAREN argument_list_opt RPAREN SEMICOLON
+                                        | name PERIOD type_arguments SUPER LPAREN argument_list_opt RPAREN SEMICOLON
+                                        | primary PERIOD type_arguments THIS LPAREN argument_list_opt RPAREN SEMICOLON
+                                        | name PERIOD type_arguments THIS LPAREN argument_list_opt RPAREN SEMICOLON '''
     p[0] = ConstructorInvocation(p[4], target=p[1], type_arguments=p[3], arguments=p[6])
 
 def p_class_instance_creation_expression( p):
-    '''class_instance_creation_expression : NEW type_arguments class_type '(' argument_list_opt ')' class_body_opt'''
+    '''class_instance_creation_expression : NEW type_arguments class_type LPAREN argument_list_opt RPAREN class_body_opt'''
     p[0] = InstanceCreation(p[3], type_arguments=p[3], arguments=p[5], body=p[7])
 
 def p_class_instance_creation_expression2( p):
-    '''class_instance_creation_expression : NEW class_type '(' argument_list_opt ')' class_body_opt'''
+    '''class_instance_creation_expression : NEW class_type LPAREN argument_list_opt RPAREN class_body_opt'''
     p[0] = InstanceCreation(p[2], arguments=p[4], body=p[6])
 
 def p_class_instance_creation_expression3( p):
-    '''class_instance_creation_expression : primary '.' NEW type_arguments class_type '(' argument_list_opt ')' class_body_opt'''
+    '''class_instance_creation_expression : primary PERIOD NEW type_arguments class_type LPAREN argument_list_opt RPAREN class_body_opt'''
     p[0] = InstanceCreation(p[5], enclosed_in=p[1], type_arguments=p[4], arguments=p[7], body=p[9])
 
 def p_class_instance_creation_expression4( p):
-    '''class_instance_creation_expression : primary '.' NEW class_type '(' argument_list_opt ')' class_body_opt'''
+    '''class_instance_creation_expression : primary PERIOD NEW class_type LPAREN argument_list_opt RPAREN class_body_opt'''
     p[0] = InstanceCreation(p[4], enclosed_in=p[1], arguments=p[6], body=p[8])
 
 def p_class_instance_creation_expression5( p):
-    '''class_instance_creation_expression : class_instance_creation_expression_name NEW class_type '(' argument_list_opt ')' class_body_opt'''
+    '''class_instance_creation_expression : class_instance_creation_expression_name NEW class_type LPAREN argument_list_opt RPAREN class_body_opt'''
     p[0] = InstanceCreation(p[3], enclosed_in=p[1], arguments=p[5], body=p[7])
 
 def p_class_instance_creation_expression6( p):
-    '''class_instance_creation_expression : class_instance_creation_expression_name NEW type_arguments class_type '(' argument_list_opt ')' class_body_opt'''
+    '''class_instance_creation_expression : class_instance_creation_expression_name NEW type_arguments class_type LPAREN argument_list_opt RPAREN class_body_opt'''
     p[0] = InstanceCreation(p[4], enclosed_in=p[1], type_arguments=p[3], arguments=p[6], body=p[8])
 
 def p_class_instance_creation_expression_name( p):
-    '''class_instance_creation_expression_name : name '.' '''
+    '''class_instance_creation_expression_name : name PERIOD '''
     p[0] = p[1]
 
 def p_class_body_opt( p):
@@ -1016,14 +1016,14 @@ def p_class_body_opt( p):
     p[0] = p[1]
 
 def p_field_access( p):
-    '''field_access : primary '.' NAME
-                    | SUPER '.' NAME'''
+    '''field_access : primary PERIOD IDENT
+                    | SUPER PERIOD IDENT'''
     p[0] = FieldAccess(p[3], p[1])
 
 def p_array_access( p):
-    '''array_access : name '[' expression ']'
-                    | primary_no_new_array '[' expression ']'
-                    | array_creation_with_array_initializer '[' expression ']' '''
+    '''array_access : name LBRACK expression RBRACK
+                    | primary_no_new_array LBRACK expression RBRACK
+                    | array_creation_with_array_initializer LBRACK expression RBRACK '''
     p[0] = ArrayAccess(p[3], p[1])
 
 def p_array_creation_with_array_initializer( p):
@@ -1040,8 +1040,8 @@ def p_dim_with_or_without_exprs( p):
         p[0] = p[1] + [p[2]]
 
 def p_dim_with_or_without_expr( p):
-    '''dim_with_or_without_expr : '[' expression ']'
-                                | '[' ']' '''
+    '''dim_with_or_without_expr : LBRACK expression RBRACK
+                                | LBRACK RBRACK '''
     if len(p) == 3:
         p[0] = None
     else:
@@ -1060,11 +1060,11 @@ def p_name( p):
     p[0] = p[1]
 
 def p_simple_name( p):
-    '''simple_name : NAME'''
+    '''simple_name : IDENT'''
     p[0] = Name(p[1])
 
 def p_qualified_name( p):
-    '''qualified_name : name '.' simple_name'''
+    '''qualified_name : name PERIOD simple_name'''
     p[1].append_name(p[3])
     p[0] = p[1]
 
@@ -1077,11 +1077,10 @@ def p_literal( p):
                 | DECIMAL_LIT
                 | FLOAT_HEX_LIT
                 | FLOAT_DEC_LIT
-                | CHAR_LITERAL
-                | STRING_LITERAL
-                | TRUE
-                | FALSE
-                | NULL'''
+                | CHAR_LIT
+                | STRING_LIT
+                | BOOL_LIT
+                | NULL_LIT'''
     p[0] = Literal(p[1])
 
 # class TypeParser(object):
@@ -1150,7 +1149,7 @@ def p_class_type( p):
 
 def p_class_or_interface( p):
     '''class_or_interface : name
-                            | generic_type '.' name'''
+                            | generic_type PERIOD name'''
     if len(p) == 2:
         p[0] = Type(p[1])
     else:
@@ -1162,7 +1161,7 @@ def p_generic_type( p):
     p[0] = p[1]
 
 def p_generic_type2( p):
-    '''generic_type : class_or_interface '<' '>' '''
+    '''generic_type : class_or_interface LSS GTR '''
     p[0] = Type(p[1], type_arguments='diamond')
 
 #    def p_array_type( p):
@@ -1170,11 +1169,11 @@ def p_generic_type2( p):
 #                      | name dims
 #                      | array_type_with_type_arguments_name dims
 #                      | generic_type dims'''
-#        p[0] = p[1] + '[' + p[2] + ']'
+#        p[0] = p[1] + LBRACK + p[2] + RBRACK
 #
 #    def p_array_type_with_type_arguments_name( p):
-#        '''array_type_with_type_arguments_name : generic_type '.' name'''
-#        p[0] = p[1] + '.' + p[3]
+#        '''array_type_with_type_arguments_name : generic_type PERIOD name'''
+#        p[0] = p[1] + PERIOD + p[3]
 
 def p_array_type( p):
     '''array_type : primitive_type dims
@@ -1187,16 +1186,16 @@ def p_array_type2( p):
     p[0] = p[1]
 
 def p_array_type3( p):
-    '''array_type : generic_type '.' name dims'''
+    '''array_type : generic_type PERIOD name dims'''
     p[0] = Type(p[3], enclosed_in=p[1], dimensions=p[4])
 
 def p_type_arguments( p):
-    '''type_arguments : '<' type_argument_list1'''
+    '''type_arguments : LSS type_argument_list1'''
     p[0] = p[2]
 
 def p_type_argument_list1( p):
     '''type_argument_list1 : type_argument1
-                            | type_argument_list ',' type_argument1'''
+                            | type_argument_list COMMA type_argument1'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -1204,7 +1203,7 @@ def p_type_argument_list1( p):
 
 def p_type_argument_list( p):
     '''type_argument_list : type_argument
-                            | type_argument_list ',' type_argument'''
+                            | type_argument_list COMMA type_argument'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -1221,8 +1220,8 @@ def p_type_argument1( p):
     p[0] = p[1]
 
 def p_reference_type1( p):
-    '''reference_type1 : reference_type '>'
-                        | class_or_interface '<' type_argument_list2'''
+    '''reference_type1 : reference_type GTR
+                        | class_or_interface LSS type_argument_list2'''
     if len(p) == 3:
         p[0] = p[1]
     else:
@@ -1231,7 +1230,7 @@ def p_reference_type1( p):
 
 def p_type_argument_list2( p):
     '''type_argument_list2 : type_argument2
-                            | type_argument_list ',' type_argument2'''
+                            | type_argument_list COMMA type_argument2'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -1243,8 +1242,8 @@ def p_type_argument2( p):
     p[0] = p[1]
 
 def p_reference_type2( p):
-    '''reference_type2 : reference_type RSHIFT
-                        | class_or_interface '<' type_argument_list3'''
+    '''reference_type2 : reference_type SHR
+                        | class_or_interface LSS type_argument_list3'''
     if len(p) == 3:
         p[0] = p[1]
     else:
@@ -1253,7 +1252,7 @@ def p_reference_type2( p):
 
 def p_type_argument_list3( p):
     '''type_argument_list3 : type_argument3
-                            | type_argument_list ',' type_argument3'''
+                            | type_argument_list COMMA type_argument3'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -1265,12 +1264,12 @@ def p_type_argument3( p):
     p[0] = p[1]
 
 def p_reference_type3( p):
-    '''reference_type3 : reference_type RRSHIFT'''
+    '''reference_type3 : reference_type SHR_UN '''
     p[0] = p[1]
 
 def p_wildcard( p):
-    '''wildcard : '?'
-                | '?' wildcard_bounds'''
+    '''wildcard : QUES
+                | QUES wildcard_bounds'''
     if len(p) == 2:
         p[0] = Wildcard()
     else:
@@ -1285,9 +1284,9 @@ def p_wildcard_bounds( p):
         p[0] = WildcardBound(p[2], _super=True)
 
 def p_wildcard1( p):
-    '''wildcard1 : '?' '>'
-                    | '?' wildcard_bounds1'''
-    if p[2] == '>':
+    '''wildcard1 : QUES GTR
+                    | QUES wildcard_bounds1'''
+    if p[2] == GTR:
         p[0] = Wildcard()
     else:
         p[0] = Wildcard(bounds=p[2])
@@ -1301,8 +1300,8 @@ def p_wildcard_bounds1( p):
         p[0] = WildcardBound(p[2], _super=True)
 
 def p_wildcard2( p):
-    '''wildcard2 : '?' RSHIFT
-                    | '?' wildcard_bounds2'''
+    '''wildcard2 : QUES SHR
+                    | QUES wildcard_bounds2'''
     if p[2] == '>>':
         p[0] = Wildcard()
     else:
@@ -1317,8 +1316,8 @@ def p_wildcard_bounds2( p):
         p[0] = WildcardBound(p[2], _super=True)
 
 def p_wildcard3( p):
-    '''wildcard3 : '?' RRSHIFT
-                    | '?' wildcard_bounds3'''
+    '''wildcard3 : QUES SHR_UN 
+                    | QUES wildcard_bounds3'''
     if p[2] == '>>>':
         p[0] = Wildcard()
     else:
@@ -1333,16 +1332,16 @@ def p_wildcard_bounds3( p):
         p[0] = WildcardBound(p[2], _super=True)
 
 def p_type_parameter_header( p):
-    '''type_parameter_header : NAME'''
+    '''type_parameter_header : IDENT'''
     p[0] = p[1]
 
 def p_type_parameters( p):
-    '''type_parameters : '<' type_parameter_list1'''
+    '''type_parameters : LSS type_parameter_list1'''
     p[0] = p[2]
 
 def p_type_parameter_list( p):
     '''type_parameter_list : type_parameter
-                            | type_parameter_list ',' type_parameter'''
+                            | type_parameter_list COMMA type_parameter'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -1368,19 +1367,19 @@ def p_additional_bound_list( p):
         p[0] = p[1] + [p[2]]
 
 def p_additional_bound( p):
-    '''additional_bound : '&' reference_type'''
+    '''additional_bound : AND reference_type'''
     p[0] = p[2]
 
 def p_type_parameter_list1( p):
     '''type_parameter_list1 : type_parameter1
-                            | type_parameter_list ',' type_parameter1'''
+                            | type_parameter_list COMMA type_parameter1'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
         p[0] = p[1] + [p[3]]
 
 def p_type_parameter1( p):
-    '''type_parameter1 : type_parameter_header '>'
+    '''type_parameter1 : type_parameter_header GTR
                         | type_parameter_header EXTENDS reference_type1
                         | type_parameter_header EXTENDS reference_type additional_bound_list1'''
     if len(p) == 3:
@@ -1399,7 +1398,7 @@ def p_additional_bound_list1( p):
         p[0] = p[1] + [p[2]]
 
 def p_additional_bound1( p):
-    '''additional_bound1 : '&' reference_type1'''
+    '''additional_bound1 : AND reference_type1'''
     p[0] = p[2]
 
 # class ClassParser(object):
@@ -1410,7 +1409,7 @@ def p_type_declaration( p):
     p[0] = p[1]
 
 def p_type_declaration2( p):
-    '''type_declaration : ';' '''
+    '''type_declaration : SEMICOLON '''
     p[0] = EmptyDeclaration()
 
 def p_class_declaration( p):
@@ -1436,14 +1435,14 @@ def p_class_header_name( p):
     ST.Add('classes',p[0]['name'],None,p[0]['type_parameters'],p[0]['modifiers'])
 
 def p_class_header_name1( p):
-    '''class_header_name1 : modifiers_opt CLASS NAME'''
+    '''class_header_name1 : modifiers_opt CLASS IDENT'''
     p[0] = {'modifiers': p[1], 'name': p[3]}
 
 
 
 def p_interface_type_list( p):
     '''interface_type_list : interface_type
-                            | interface_type_list ',' interface_type'''
+                            | interface_type_list COMMA interface_type'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -1454,7 +1453,7 @@ def p_interface_type( p):
     p[0] = p[1]
 
 def p_class_body( p):
-    '''class_body : '{' inc_scope class_body_declarations_opt dec_scope '}' '''
+    '''class_body : LBRACE inc_scope class_body_declarations_opt dec_scope RBRACE '''
     p[0] = p[3]
 
 def p_class_body_declarations_opt( p):
@@ -1491,11 +1490,11 @@ def p_class_member_declaration( p):
     p[0] = p[1]
 
 def p_class_member_declaration2( p):
-    '''class_member_declaration : ';' '''
+    '''class_member_declaration : SEMICOLON '''
     p[0] = EmptyDeclaration()
 
 def p_field_declaration( p):
-    '''field_declaration : modifiers_opt type variable_declarators ';' '''
+    '''field_declaration : modifiers_opt type variable_declarators SEMICOLON '''
     p[0] = FieldDeclaration(p[2], p[3], modifiers=p[1])
 
 def p_static_initializer( p):
@@ -1509,14 +1508,14 @@ def p_constructor_declaration( p):
                                     parameters=p[1]['parameters'], throws=p[1]['throws'])
 
 def p_constructor_header( p):
-    '''constructor_header : constructor_header_name formal_parameter_list_opt ')' method_header_throws_clause_opt'''
+    '''constructor_header : constructor_header_name formal_parameter_list_opt RPAREN method_header_throws_clause_opt'''
     p[1]['parameters'] = p[2]
     p[1]['throws'] = p[4]
     p[0] = p[1]
 
 def p_constructor_header_name( p):
-    '''constructor_header_name : modifiers_opt type_parameters NAME '('
-                                | modifiers_opt NAME '(' '''
+    '''constructor_header_name : modifiers_opt type_parameters IDENT LPAREN
+                                | modifiers_opt IDENT LPAREN '''
     if len(p) == 4:
         p[0] = {'modifiers': p[1], 'type_parameters': [], 'name': p[2]}
     else:
@@ -1532,7 +1531,7 @@ def p_formal_parameter_list_opt2( p):
 
 def p_formal_parameter_list( p):
     '''formal_parameter_list : formal_parameter
-                                | formal_parameter_list ',' formal_parameter'''
+                                | formal_parameter_list COMMA formal_parameter'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -1557,7 +1556,7 @@ def p_method_header_throws_clause( p):
 
 def p_class_type_list( p):
     '''class_type_list : class_type_elt
-                        | class_type_list ',' class_type_elt'''
+                        | class_type_list COMMA class_type_elt'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -1568,7 +1567,7 @@ def p_class_type_elt( p):
     p[0] = p[1]
 
 def p_method_body( p):
-    '''method_body : '{' block_statements_opt dec_scope '}' '''
+    '''method_body : LBRACE block_statements_opt dec_scope RBRACE '''
     p[0] = p[2]
 
 def p_method_declaration( p):
@@ -1583,14 +1582,14 @@ def p_method_declaration( p):
                                     throws=p[1]['throws'], body=p[2])
 
 def p_abstract_method_declaration( p):
-    '''abstract_method_declaration : method_header101 ';' '''
+    '''abstract_method_declaration : method_header101 SEMICOLON '''
     p[0] = MethodDeclaration(p[1]['name'], abstract=True, parameters=p[1]['parameters'],
                                 extended_dims=p[1]['extended_dims'], type_parameters=p[1]['type_parameters'],
                                 return_type=p[1]['type'], modifiers=p[1]['modifiers'],
                                 throws=p[1]['throws'])
 
 def p_method_header101( p):
-    '''method_header101 : method_header_name formal_parameter_list_opt ')' method_header_extended_dims method_header_throws_clause_opt dec_scope'''
+    '''method_header101 : method_header_name formal_parameter_list_opt RPAREN method_header_extended_dims method_header_throws_clause_opt dec_scope'''
     p[1]['parameters'] = p[2]
     p[1]['extended_dims'] = p[4]
     p[1]['throws'] = p[5]
@@ -1600,7 +1599,7 @@ def p_method_header101( p):
 
 
 def p_method_header( p):
-    '''method_header : method_header_name formal_parameter_list_opt ')' method_header_extended_dims method_header_throws_clause_opt'''
+    '''method_header : method_header_name formal_parameter_list_opt RPAREN method_header_extended_dims method_header_throws_clause_opt'''
     p[1]['parameters'] = p[2]
     p[1]['extended_dims'] = p[4]
     p[1]['throws'] = p[5]
@@ -1614,8 +1613,8 @@ def p_method_header( p):
     ST.makeMethodArgument()
 
 def p_method_header_name( p):
-    '''method_header_name : modifiers_opt type_parameters type NAME '('
-                            | modifiers_opt type NAME '(' '''
+    '''method_header_name : modifiers_opt type_parameters type IDENT LPAREN
+                            | modifiers_opt type IDENT LPAREN '''
     if len(p) == 5:
         p[0] = {'modifiers': p[1], 'type_parameters': [], 'type': p[2], 'name': p[3]}
     else:
@@ -1649,7 +1648,7 @@ def p_interface_header_name( p):
     p[0] = p[1]
 
 def p_interface_header_name1( p):
-    '''interface_header_name1 : modifiers_opt INTERFACE NAME'''
+    '''interface_header_name1 : modifiers_opt INTERFACE IDENT'''
     p[0] = {'modifiers': p[1], 'name': p[3]}
 
 def p_interface_header_extends_opt( p):
@@ -1665,7 +1664,7 @@ def p_interface_header_extends( p):
     p[0] = p[2]
 
 def p_interface_body( p):
-    '''interface_body : '{' interface_member_declarations_opt '}' '''
+    '''interface_body : LBRACE interface_member_declarations_opt RBRACE '''
     p[0] = p[2]
 
 def p_interface_member_declarations_opt( p):
@@ -1692,7 +1691,7 @@ def p_interface_member_declaration( p):
     p[0] = p[1]
 
 def p_interface_member_declaration2( p):
-    '''interface_member_declaration : ';' '''
+    '''interface_member_declaration : SEMICOLON '''
     p[0] = EmptyDeclaration()
 
 def p_constant_declaration( p):
@@ -1709,7 +1708,7 @@ def p_argument_list_opt2( p):
 
 def p_argument_list( p):
     '''argument_list : expression
-                        | argument_list ',' expression'''
+                        | argument_list COMMA expression'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -1723,18 +1722,18 @@ def p_member_value( p):
     p[0] = p[1]
 
 def p_member_value_array_initializer( p):
-    '''member_value_array_initializer : '{' member_values ',' '}'
-                                        | '{' member_values '}' '''
+    '''member_value_array_initializer : LBRACE member_values COMMA RBRACE
+                                        | LBRACE member_values RBRACE '''
     p[0] = ArrayInitializer(p[2])
 
 def p_member_value_array_initializer2( p):
-    '''member_value_array_initializer : '{' ',' '}'
-                                        | '{' '}' '''
+    '''member_value_array_initializer : LBRACE COMMA RBRACE
+                                        | LBRACE RBRACE '''
     # ignore
 
 def p_member_values( p):
     '''member_values : member_value
-                        | member_values ',' member_value'''
+                        | member_values COMMA member_value'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -1747,11 +1746,11 @@ def p_annotation( p):
     p[0] = p[1]
 
 def p_normal_annotation( p):
-    '''normal_annotation : annotation_name '(' member_value_pairs_opt ')' '''
+    '''normal_annotation : annotation_name LPAREN member_value_pairs_opt RPAREN '''
     p[0] = Annotation(p[1], members=p[3])
 
 def p_annotation_name( p):
-    '''annotation_name : '@' name'''
+    '''annotation_name : ATRATE name'''
     p[0] = p[2]
 
 def p_member_value_pairs_opt( p):
@@ -1764,14 +1763,14 @@ def p_member_value_pairs_opt2( p):
 
 def p_member_value_pairs( p):
     '''member_value_pairs : member_value_pair
-                            | member_value_pairs ',' member_value_pair'''
+                            | member_value_pairs COMMA member_value_pair'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
         p[0] = p[1] + [p[3]]
 
 def p_member_value_pair( p):
-    '''member_value_pair : simple_name '=' member_value'''
+    '''member_value_pair : simple_name ASSIGN member_value'''
     p[0] = AnnotationMember(p[1], p[3])
 
 def p_marker_annotation( p):
@@ -1779,7 +1778,7 @@ def p_marker_annotation( p):
     p[0] = Annotation(p[1])
 
 def p_single_member_annotation( p):
-    '''single_member_annotation : annotation_name '(' single_member_annotation_member_value ')' '''
+    '''single_member_annotation : annotation_name LPAREN single_member_annotation_member_value RPAREN '''
     p[0] = Annotation(p[1], single_member=p[3])
 
 def p_single_member_annotation_member_value( p):
@@ -1821,7 +1820,7 @@ def p_compilation_unit8( p):
     p[0] = CompilationUnit()
 
 def p_package_declaration( p):
-    '''package_declaration : package_declaration_name ';' '''
+    '''package_declaration : package_declaration_name SEMICOLON '''
     if p[1][0]:
         p[0] = PackageDeclaration(p[1][1], modifiers=p[1][0])
     else:
@@ -1851,19 +1850,19 @@ def p_import_declaration( p):
     p[0] = p[1]
 
 def p_single_type_import_declaration( p):
-    '''single_type_import_declaration : IMPORT name ';' '''
+    '''single_type_import_declaration : IMPORT name SEMICOLON '''
     p[0] = ImportDeclaration(p[2])
 
 def p_type_import_on_demand_declaration( p):
-    '''type_import_on_demand_declaration : IMPORT name '.' '*' ';' '''
+    '''type_import_on_demand_declaration : IMPORT name PERIOD MUL SEMICOLON '''
     p[0] = ImportDeclaration(p[2], on_demand=True)
 
 def p_single_static_import_declaration( p):
-    '''single_static_import_declaration : IMPORT STATIC name ';' '''
+    '''single_static_import_declaration : IMPORT STATIC name SEMICOLON '''
     p[0] = ImportDeclaration(p[3], static=True)
 
 def p_static_import_on_demand_declaration( p):
-    '''static_import_on_demand_declaration : IMPORT STATIC name '.' '*' ';' '''
+    '''static_import_on_demand_declaration : IMPORT STATIC name PERIOD MUL SEMICOLON '''
     p[0] = ImportDeclaration(p[3], static=True, on_demand=True)
 
 def p_type_declarations( p):
@@ -1880,12 +1879,12 @@ def p_start_compilation_unit( p):
     p[0] = p[2]
 
 def p_start_expression( p):
-    '''start : MINUSMINUS expression'''
+    '''start : DEC expression'''
     p[0] = p[2]
 
 
 def p_start_statement( p):
-    '''start : '*' block_statement'''
+    '''start : MUL block_statement'''
     p[0] = p[2]
 
 
@@ -1947,7 +1946,7 @@ def p_dec_scope(p):
 
 
 lexer = lex.lex(module=lexRule)
-parser = yacc.yacc(start='start', debug = 0)
+parser = yacc.yacc(start='start', debug = 1)
         # parser = yacc.yacc(start='start', debug = 0)
 
     # def tokenize_string( code):
@@ -1971,6 +1970,7 @@ parser = yacc.yacc(start='start', debug = 0)
 global HASH_MAP
 def parse_string(code, debug=0, lineno=1, prefix='++'):
     lexer.input(code)
+    print("In parse_string!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
     while True:
         tok = lexer.token()
@@ -1986,6 +1986,7 @@ def parse_string(code, debug=0, lineno=1, prefix='++'):
     return parser.parse(prefix + code, lexer=lexer, debug=debug)
 
 def parse_file(_file, debug=0):
+    print("In parse_file!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     if type(_file) == str:
         _file = open(_file)
     content = _file.read()
