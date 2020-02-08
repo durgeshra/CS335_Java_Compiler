@@ -52,11 +52,13 @@ def t_UNCLOSED_CHAR(t):
     t.lexer.skip(0)
     return t
 
-def t_COMMENT(t):
-    r'(/\*([^*]|\n|(\*+([^*/]|\n)))*\*+/)|(//.*)'
-    t.lexer.lineno += t.value.count('\n');
-    return t
+# def t_COMMENT(t):
+#     r'(/\*([^*]|\n|(\*+([^*/]|\n)))*\*+/)|(//.*)'
+#     t.lexer.lineno += t.value.count('\n');
+#     return t
 
+#Todo :: Line not increasing
+t_ignore_COMMENT = r'(/\*([^*]|\n|(\*+([^*/]|\n)))*\*+/)|(//.*)'
 # Error handling rule
 def t_error(t):
     print("Invalid character '" + t.value[0] + "' at line %d" % t.lexer.lineno)
