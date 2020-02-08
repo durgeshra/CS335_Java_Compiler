@@ -1963,8 +1963,20 @@ parser = yacc.yacc(start='start', debug = 0)
 
     # def parse_statement( code, debug=0, lineno=1):
     #     return parse_string(code, debug, lineno, prefix='* ')
-
+global HASH_MAP
 def parse_string(code, debug=0, lineno=1, prefix='++'):
+    lexer.input(code)
+
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break      # No more input
+        if tok.value not in HASH_MAP:
+            HASH_MAP[tok.value] = tok.type
+        # print(tok)
+        
+        print(tok)
+        
     lexer.lineno = lineno
     return parser.parse(prefix + code, lexer=lexer, debug=debug)
 

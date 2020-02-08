@@ -5,9 +5,11 @@ import sys
 import SymbolTable
 global graph
 global outputfile
+
 from tac import *
 
 global tac
+HASH_MAP  = {}
 tac = TAC()
 
 idg = 0
@@ -90,6 +92,7 @@ class SourceElement(object):
 def node(*args):
     global graph
     global idg
+    global HASH_MAP
     node_a = pydot.Node(args[1],label=args[0])
     graph.add_node(node_a)
     for x in args[2:]:
@@ -107,7 +110,10 @@ def node(*args):
                         graph.add_edge(pydot.Edge(node_a,pydot.Node(k.id)))
             elif type(x) == type(z):
                 idg+=1;
-                node_b = pydot.Node(idg,label=x)
+                if( x  in HASH_MAP):
+                    node_b = pydot.Node(idg,label=x+"("+HASH_MAP[x]+")")
+                else:
+                    node_b = pydot.Node(idg,label=x)
                 graph.add_node(node_b)
                 graph.add_edge(pydot.Edge(node_a,node_b))
             else:
