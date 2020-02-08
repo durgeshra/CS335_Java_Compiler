@@ -11,7 +11,7 @@ global tac
 tac = TAC()
 
 idg = 0
-graph = pydot.Dot(graph_type='digraph',ranksep=0.02,nodesep=0.02,size="8.5,11")
+graph = pydot.Dot(graph_type='digraph')
 
 class SourceElement(object):
     '''

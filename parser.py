@@ -12,8 +12,10 @@ def p_empty(p):
     '''epsilon : '''
     p[0] = "epsilon"
 
-# Add rules here
 
+# Add rules here
+def p_type(t):
+    
 
 
 parser = yacc.yacc()

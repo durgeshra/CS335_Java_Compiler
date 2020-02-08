@@ -1937,3 +1937,9 @@ class Parser(object):
             _file = open(_file)
         content = _file.read()
         return self.parse_string(content, debug=debug)
+
+# get_parse = Parser()
+# parse_out = get_parse.parse_file("../test/ackermann.java")
+# print(parse_out)
+# t = tac.code
+# print(t)
