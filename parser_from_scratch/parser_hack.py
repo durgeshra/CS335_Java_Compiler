@@ -46,10 +46,14 @@ def p_InterfaceDeclaration(p):
     p[0] = mytuple(["InterfaceDeclaration"]+p[1 :])
 
 def p_NormalInterfaceDeclaration(p):
-    '''NormalInterfaceDeclaration :  InterfaceModifierS INTERFACE IDENT TypeParameters ExtendsInterfaces InterfaceBody
-                             | InterfaceModifierS INTERFACE IDENT TypeParameters InterfaceBody
-                              | InterfaceModifierS INTERFACE IDENT ExtendsInterfaces InterfaceBody
-                               | InterfaceModifierS INTERFACE IDENT InterfaceBody
+    '''NormalInterfaceDeclaration :  CommonModifierS INTERFACE IDENT TypeParameters ExtendsInterfaces InterfaceBody
+                             | CommonModifierS INTERFACE IDENT TypeParameters InterfaceBody
+                              | CommonModifierS INTERFACE IDENT ExtendsInterfaces InterfaceBody
+                               | CommonModifierS INTERFACE IDENT InterfaceBody
+                                | INTERFACE IDENT TypeParameters ExtendsInterfaces InterfaceBody
+                            | INTERFACE IDENT TypeParameters InterfaceBody
+                             | INTERFACE IDENT ExtendsInterfaces InterfaceBody
+                              | INTERFACE IDENT InterfaceBody
     '''
     p[0] = mytuple(["NormalInterfaceDeclaration"]+p[1 :])
 
@@ -64,16 +68,16 @@ def p_ZooExtendsInterfaces(p):
     p[0] = mytuple(["ZooExtendsInterfaces"]+p[1 :])
 
 
-def p_InterfaceModifierS(p):
-    '''InterfaceModifierS : Annotation InterfaceModifierS
-                          | PUBLIC InterfaceModifierS
-                          | PROTECTED InterfaceModifierS
-                          | PRIVATE InterfaceModifierS
-                          | ABSTRACT InterfaceModifierS
-                          | STATIC InterfaceModifierS
-                          | STRICTFP InterfaceModifierS
-                          | empty'''
-    p[0] = mytuple(["InterfaceModifierS"]+p[1 :])
+# def p_InterfaceModifierS(p):
+#     '''InterfaceModifierS : Annotation InterfaceModifierS
+#                           | PUBLIC InterfaceModifierS
+#                           | PROTECTED InterfaceModifierS
+#                           | PRIVATE InterfaceModifierS
+#                           | ABSTRACT InterfaceModifierS
+#                           | STATIC InterfaceModifierS
+#                           | STRICTFP InterfaceModifierS
+#                           | empty'''
+#     p[0] = mytuple(["InterfaceModifierS"]+p[1 :])
 
 # def p_InterfaceModifier(p):
 #     '''InterfaceModifier :
@@ -108,42 +112,46 @@ def p_InterfaceMemberDeclaration(p):
     p[0] = mytuple(["InterfaceMemberDeclaration"]+p[1 :])
 
 def p_ConstantDeclaration(p):
-    '''ConstantDeclaration : ConstantModifierS UnannType VariableDeclaratorList SEMICOLON
-                            | ConstantModifierS IDENT VariableDeclaratorList SEMICOLON'''
+    '''ConstantDeclaration : CommonModifierS UnannType VariableDeclaratorList SEMICOLON
+                            | CommonModifierS IDENT VariableDeclaratorList SEMICOLON
+                            | UnannType VariableDeclaratorList SEMICOLON
+                            | IDENT VariableDeclaratorList SEMICOLON'''
     p[0] = mytuple(["ConstantDeclaration"]+p[1 :])
 
-def p_ConstantModifierS(p):
-    '''ConstantModifierS : ConstantModifier ConstantModifierS
-                        | empty '''
-    p[0] = mytuple(["ConstantModifierS"]+p[1 :])
+# def p_ConstantModifierS(p):
+#     '''ConstantModifierS : ConstantModifier ConstantModifierS
+#                         | empty '''
+#     p[0] = mytuple(["ConstantModifierS"]+p[1 :])
 
-def p_ConstantModifier(p):
-    '''ConstantModifier : Annotation
-                       | PUBLIC
-                       | STATIC
-                       | FINAL'''
-    p[0] = mytuple(["ConstantModifier"]+p[1 :])
+# def p_ConstantModifier(p):
+#     '''ConstantModifier : Annotation
+#                        | PUBLIC
+#                        | STATIC
+#                        | FINAL'''
+#     p[0] = mytuple(["ConstantModifier"]+p[1 :])
 
 def p_InterfaceMethodDeclaration(p):
-    '''InterfaceMethodDeclaration : InterfaceMethodModifierS MethodHeader MethodBody'''
+    '''InterfaceMethodDeclaration : CommonModifierS MethodHeader MethodBody
+                                |  MethodHeader MethodBody'''
     p[0] = mytuple(["InterfaceMethodDeclaration"]+p[1 :])
 
-def p_InterfaceMethodModifierS(p):
-    '''InterfaceMethodModifierS : InterfaceMethodModifier InterfaceMethodModifierS
-                               | empty'''
-    p[0] = mytuple(["InterfaceMethodModifierS"]+p[1 :])
+# def p_InterfaceMethodModifierS(p):
+#     '''InterfaceMethodModifierS : InterfaceMethodModifier InterfaceMethodModifierS
+#                                | empty'''
+#     p[0] = mytuple(["InterfaceMethodModifierS"]+p[1 :])
 
-def p_InterfaceMethodModifier(p):
-    '''InterfaceMethodModifier :  Annotation
-                                | PUBLIC
-                                | ABSTRACT
-                                | DEFAULT
-                                | STATIC
-                                | STRICTFP'''
-    p[0] = mytuple(["InterfaceMethodModifier"]+p[1 :])
+# def p_InterfaceMethodModifier(p):
+#     '''InterfaceMethodModifier :  Annotation
+#                                 | PUBLIC
+#                                 | ABSTRACT
+#                                 | DEFAULT
+#                                 | STATIC
+#                                 | STRICTFP'''
+#     p[0] = mytuple(["InterfaceMethodModifier"]+p[1 :])
 
 def p_AnnotationTypeDeclaration(p):
-    '''AnnotationTypeDeclaration : InterfaceModifierS ATRATE INTERFACE IDENT AnnotationTypeBody'''
+    '''AnnotationTypeDeclaration : CommonModifierS ATRATE INTERFACE IDENT AnnotationTypeBody
+                            | ATRATE INTERFACE IDENT AnnotationTypeBody'''
     p[0] = mytuple(["AnnotationTypeDeclaration"]+p[1 :])
 
 # def p_InterfaceModifierS(p):
@@ -169,14 +177,22 @@ def p_AnnotationTypeMemberDeclaration(p):
     p[0] = mytuple(["AnnotationTypeMemberDeclaration"]+p[1 :])
 
 def p_AnnotationTypeElementDeclaration(p):
-    '''AnnotationTypeElementDeclaration :  AnnotationTypeElementModifierS UnannType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
-                                        |  AnnotationTypeElementModifierS IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
-                                    |    AnnotationTypeElementModifierS UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |  AnnotationTypeElementModifierS IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |    AnnotationTypeElementModifierS UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |  AnnotationTypeElementModifierS IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |    AnnotationTypeElementModifierS UnannType IDENT LPAREN RPAREN SEMICOLON
-                                    |  AnnotationTypeElementModifierS IDENT IDENT LPAREN RPAREN SEMICOLON'''
+    '''AnnotationTypeElementDeclaration :  CommonModifierS UnannType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                        |  CommonModifierS IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                    |    CommonModifierS UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |  CommonModifierS IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |    CommonModifierS UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |  CommonModifierS IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |    CommonModifierS UnannType IDENT LPAREN RPAREN SEMICOLON
+                                    |  CommonModifierS IDENT IDENT LPAREN RPAREN SEMICOLON
+                                    | UnannType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                        |  IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                    |    UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |  IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |    UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |  IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |    UnannType IDENT LPAREN RPAREN SEMICOLON
+                                    |  IDENT IDENT LPAREN RPAREN SEMICOLON'''
     p[0] = mytuple(["AnnotationTypeElementDeclaration"]+p[1 :])
 
 def p_ZooDims(p):
@@ -190,16 +206,16 @@ def p_ZooDefaultValue(p):
     p[0] = mytuple(["ZooDefaultValue"]+p[1 :])
 
 
-def p_AnnotationTypeElementModifierS(p):
-    '''AnnotationTypeElementModifierS : AnnotationTypeElementModifier AnnotationTypeElementModifierS
-                                      | empty'''
-    p[0] = mytuple(["AnnotationTypeElementModifierS"]+p[1 :])
+# def p_AnnotationTypeElementModifierS(p):
+#     '''AnnotationTypeElementModifierS : AnnotationTypeElementModifier AnnotationTypeElementModifierS
+#                                       | empty'''
+#     p[0] = mytuple(["AnnotationTypeElementModifierS"]+p[1 :])
 
-def p_AnnotationTypeElementModifier(p):
-    '''AnnotationTypeElementModifier : Annotation
-                                     | PUBLIC
-                                     | ABSTRACT'''
-    p[0] = mytuple(["AnnotationTypeElementModifier"]+p[1 :])
+# def p_AnnotationTypeElementModifier(p):
+#     '''AnnotationTypeElementModifier : Annotation
+#                                      | PUBLIC
+#                                      | ABSTRACT'''
+#     p[0] = mytuple(["AnnotationTypeElementModifier"]+p[1 :])
 
 def p_DefaultValue(p):
     '''DefaultValue : DEFAULT ElementValue'''
@@ -872,8 +888,10 @@ def p_ZooSuperinterfaces(p):
     p[0] = mytuple(["ZooSuperinterfaces"]+p[1 :])
 
 def p_NormalClassDeclaration(p):
-    '''NormalClassDeclaration : ClassModifierS CLASS IDENT TypeParameters
-                            | ClassModifierS CLASS IDENT
+    '''NormalClassDeclaration : CommonModifierS CLASS IDENT TypeParameters
+                            | CommonModifierS CLASS IDENT
+                            | CLASS IDENT TypeParameters
+                            | CLASS IDENT
                               | SuperClass Superinterfaces ClassBody
                               | SuperClass  ClassBody
                               | Superinterfaces ClassBody
@@ -1191,11 +1209,11 @@ def p_FormalParameters (p):
     '''
     p[0] = mytuple(["FormalParameters"]+p[1 :])
 
-def p_ZooVariableModifier (p):
-    '''ZooVariableModifier : CommonModifier
-                            | empty
-    '''
-    p[0] = mytuple(["ZooVariableModifier"] + p[1 :])
+# def p_ZooVariableModifier (p):
+#     '''ZooVariableModifier : CommonModifier
+#                             | empty
+#     '''
+#     p[0] = mytuple(["ZooVariableModifier"] + p[1 :])
 
 def p_FormalParameter (p):
     '''FormalParameter : CommonModifier UnannType VariableDeclaratorId
@@ -1307,15 +1325,15 @@ def p_StaticInitializer (p):
     '''
     p[0] = mytuple(["StaticInitializer"] + p[1 :])
 
-def p_ConstructorModifierS (p):
-    '''ConstructorModifierS : ConstructorModifier ConstructorModifierS
-                            | ConstructorModifier
-    '''
-    p[0] = mytuple(["ConstructorModifierS"] + p[1 :])
+# def p_ConstructorModifierS (p):
+#     '''ConstructorModifierS : ConstructorModifier ConstructorModifierS
+#                             | ConstructorModifier
+#     '''
+#     p[0] = mytuple(["ConstructorModifierS"] + p[1 :])
 
 def p_ConstructorDeclaration (p):
-    '''ConstructorDeclaration : ConstructorModifierS ConstructorDeclarator ConstructorBody
-                                | ConstructorModifierS ConstructorDeclarator Throws ConstructorBody
+    '''ConstructorDeclaration : CommonModifierS ConstructorDeclarator ConstructorBody
+                                | CommonModifierS ConstructorDeclarator Throws ConstructorBody
                                 |  ConstructorDeclarator ConstructorBody
                                 |  ConstructorDeclarator Throws ConstructorBody
     '''
@@ -1323,13 +1341,13 @@ def p_ConstructorDeclaration (p):
 
 
 
-def p_ConstructorModifier (p):
-    '''ConstructorModifier : Annotation
-                            | PUBLIC
-                            | PROTECTED
-                            | PRIVATE
-    '''
-    p[0] = mytuple(["ConstructorModifier"] + p[1 :])
+# def p_ConstructorModifier (p):
+#     '''ConstructorModifier : Annotation
+#                             | PUBLIC
+#                             | PROTECTED
+#                             | PRIVATE
+#     '''
+#     p[0] = mytuple(["ConstructorModifier"] + p[1 :])
 
 def p_ConstructorDeclarator (p):
     '''ConstructorDeclarator : TypeParameters IDENT LPAREN FormalParameterList RPAREN
@@ -1394,23 +1412,25 @@ def p_ExplicitConstructorInvocation (p):
     '''
     p[0] = mytuple(["ExplicitConstructorInvocation"] + p[1:])
 
-def p_ClassModifierS (p):
-    '''ClassModifierS : Annotation ClassModifierS
-                        | PUBLIC ClassModifierS
-                        | PROTECTED ClassModifierS
-                        | PRIVATE ClassModifierS
-                        | FINAL ClassModifierS
-                        | ABSTRACT ClassModifierS
-                        | STATIC ClassModifierS
-                        | STRICTFP ClassModifierS
-                        | empty
-    '''
-    p[0] = mytuple(["ClassModifierS"] + p[1 :])
+# def p_ClassModifierS (p):
+#     '''ClassModifierS : Annotation ClassModifierS
+#                         | PUBLIC ClassModifierS
+#                         | PROTECTED ClassModifierS
+#                         | PRIVATE ClassModifierS
+#                         | FINAL ClassModifierS
+#                         | ABSTRACT ClassModifierS
+#                         | STATIC ClassModifierS
+#                         | STRICTFP ClassModifierS
+#                         | empty
+#     '''
+#     p[0] = mytuple(["ClassModifierS"] + p[1 :])
 
 
 def p_EnumDeclaration (p):
-    '''EnumDeclaration : ClassModifierS ENUM IDENT Superinterfaces EnumBody
-                    | ClassModifierS ENUM IDENT EnumBody
+    '''EnumDeclaration : CommonModifierS ENUM IDENT Superinterfaces EnumBody
+                    | CommonModifierS ENUM IDENT EnumBody
+                    |  ENUM IDENT Superinterfaces EnumBody
+                    |  ENUM IDENT EnumBody
     '''
     p[0] = mytuple(["EnumDeclaration"] + p[1 :])
 
