@@ -57,16 +57,16 @@ def p_NormalInterfaceDeclaration(p):
     '''
     p[0] = mytuple(["NormalInterfaceDeclaration"]+p[1 :])
 
-def p_ZooTypeParameters(p):
-    '''ZooTypeParameters :  TypeParameters
-                        | empty'''
-    p[0] = mytuple(["ZooTypeParameters"]+p[1 :])
-
-def p_ZooExtendsInterfaces(p):
-    '''ZooExtendsInterfaces : ExtendsInterfaces
-                            | empty '''
-    p[0] = mytuple(["ZooExtendsInterfaces"]+p[1 :])
-
+# def p_ZooTypeParameters(p):
+#     '''ZooTypeParameters :  TypeParameters
+#                         | empty'''
+#     p[0] = mytuple(["ZooTypeParameters"]+p[1 :])
+#
+# def p_ZooExtendsInterfaces(p):
+#     '''ZooExtendsInterfaces : ExtendsInterfaces
+#                             | empty '''
+#     p[0] = mytuple(["ZooExtendsInterfaces"]+p[1 :])
+#
 
 # def p_InterfaceModifierS(p):
 #     '''InterfaceModifierS : Annotation InterfaceModifierS
@@ -115,7 +115,11 @@ def p_ConstantDeclaration(p):
     '''ConstantDeclaration : CommonModifierS UnannType VariableDeclaratorList SEMICOLON
                             | CommonModifierS IDENT VariableDeclaratorList SEMICOLON
                             | UnannType VariableDeclaratorList SEMICOLON
-                            | IDENT VariableDeclaratorList SEMICOLON'''
+                            | IDENT VariableDeclaratorList SEMICOLON
+                            | CommonModifierS UnannType IDENT SEMICOLON
+                            | CommonModifierS IDENT IDENT SEMICOLON
+                            | UnannType IDENT SEMICOLON
+                            | IDENT IDENT SEMICOLON'''
     p[0] = mytuple(["ConstantDeclaration"]+p[1 :])
 
 # def p_ConstantModifierS(p):
@@ -197,16 +201,16 @@ def p_AnnotationTypeElementDeclaration(p):
                                     |  IDENT IDENT LPAREN RPAREN SEMICOLON'''
     p[0] = mytuple(["AnnotationTypeElementDeclaration"]+p[1 :])
 
-def p_ZooDims(p):
-    '''ZooDims : Dims
-              | empty'''
-    p[0] = mytuple(["ZooDims"]+p[1 :])
-
-def p_ZooDefaultValue(p):
-    '''ZooDefaultValue : DefaultValue
-              | empty'''
-    p[0] = mytuple(["ZooDefaultValue"]+p[1 :])
-
+# def p_ZooDims(p):
+#     '''ZooDims : Dims
+#               | empty'''
+#     p[0] = mytuple(["ZooDims"]+p[1 :])
+#
+# def p_ZooDefaultValue(p):
+#     '''ZooDefaultValue : DefaultValue
+#               | empty'''
+#     p[0] = mytuple(["ZooDefaultValue"]+p[1 :])
+#
 
 # def p_AnnotationTypeElementModifierS(p):
 #     '''AnnotationTypeElementModifierS : AnnotationTypeElementModifier AnnotationTypeElementModifierS
@@ -235,10 +239,10 @@ def p_NormalAnnotation(p):
     p[0] = mytuple(["NormalAnnotation"]+p[1 :])
 
 
-def p_ZooElementValuePairList(p):
-    '''ZooElementValuePairList : ElementValuePairList
-              | empty'''
-    p[0] = mytuple(["ZooElementValuePairList"]+p[1 :])
+# def p_ZooElementValuePairList(p):
+#     '''ZooElementValuePairList : ElementValuePairList
+#               | empty'''
+#     p[0] = mytuple(["ZooElementValuePairList"]+p[1 :])
 
 
 def p_ElementValuePairList(p):
@@ -268,15 +272,15 @@ def p_ElementValueArrayInitializer(p):
     p[0] = mytuple(["ElementValueArrayInitializer"]+p[1 :])
 
 
-def p_ZooElementValueList(p):
-    '''ZooElementValueList : ElementValueList
-                          | empty '''
-    p[0] = mytuple(["ZooElementValueList"]+p[1 :])
+# def p_ZooElementValueList(p):
+#     '''ZooElementValueList : ElementValueList
+#                           | empty '''
+#     p[0] = mytuple(["ZooElementValueList"]+p[1 :])
 
-def p_ZooCOMMA(p):
-    '''ZooCOMMA : COMMA
-               | empty '''
-    p[0] = mytuple(["ZooCOMMA"]+p[1 :])
+# def p_ZooCOMMA(p):
+#     '''ZooCOMMA : COMMA
+#                | empty '''
+#     p[0] = mytuple(["ZooCOMMA"]+p[1 :])
 
 def p_ElementValueList(p):
     '''ElementValueList : ElementValue  COMMAElementValueS'''
@@ -309,10 +313,10 @@ def p_ArrayInitializer(p):
     p[0] = mytuple(["ArrayInitializer"]+p[1 :])
 
 
-def p_ZooVariableInitializerList(p):
-    '''ZooVariableInitializerList : VariableInitializerList
-                                 | empty'''
-    p[0] = mytuple(["ZooVariableInitializerList"]+p[1 :])
+# def p_ZooVariableInitializerList(p):
+#     '''ZooVariableInitializerList : VariableInitializerList
+#                                  | empty'''
+#     p[0] = mytuple(["ZooVariableInitializerList"]+p[1 :])
 
 def p_VariableInitializerList(p):
     '''VariableInitializerList : VariableInitializer COMMAVariableInitializerS'''
@@ -544,10 +548,10 @@ def p_LambdaParameters(p):
                        | LPAREN InferredFormalParameterList RPAREN'''
     p[0] = mytuple(["LambdaParameters"]+p[1 :])
 
-def p_ZooFormalParameterList(p):
-    '''ZooFormalParameterList : FormalParameterList
-                       | empty'''
-    p[0] = mytuple(["ZooFormalParameterList"]+p[1 :])
+# def p_ZooFormalParameterList(p):
+#     '''ZooFormalParameterList : FormalParameterList
+#                        | empty'''
+#     p[0] = mytuple(["ZooFormalParameterList"]+p[1 :])
 
 
 def p_InferredFormalParameterList(p):
@@ -757,10 +761,10 @@ def p_CompilationUnit(p):
                     | PackageDeclaration ImportDeclarationS TypeDeclarationS'''
     p[0] = mytuple(["CompilationUnit"]+p[1 :])
 
-def p_ZooPackageDeclaration(p):
-    '''ZooPackageDeclaration :  PackageDeclaration
-                             | empty'''
-    p[0] = mytuple(["ZooPackageDeclaration"]+p[1 :])
+# def p_ZooPackageDeclaration(p):
+#     '''ZooPackageDeclaration :  PackageDeclaration
+#                              | empty'''
+#     p[0] = mytuple(["ZooPackageDeclaration"]+p[1 :])
 
 def p_ImportDeclarationS(p):
     '''ImportDeclarationS : ImportDeclaration ImportDeclarationS
@@ -883,22 +887,22 @@ def p_SuperClass(p):
     p[0] = mytuple(["SuperClass"] + p[1:])
 
 
-def p_ZooSuperClass(p):
-    ''' ZooSuperClass : SuperClass
-                          | empty
-    '''
-    p[0] = mytuple(["ZooSuperClass"]+p[1 :])
+# def p_ZooSuperClass(p):
+#     ''' ZooSuperClass : SuperClass
+#                           | empty
+#     '''
+#     p[0] = mytuple(["ZooSuperClass"]+p[1 :])
 
 # def p_Superinterfaces(p):
 #     '''Superinterfaces : IMPLEMENTS InterfaceTypeList
 #     '''
 #     p[0] = mytuple(["Superinterfaces"] + p[1:])
 
-def p_ZooSuperinterfaces(p):
-    ''' ZooSuperinterfaces : Superinterfaces
-                          | empty
-    '''
-    p[0] = mytuple(["ZooSuperinterfaces"]+p[1 :])
+# def p_ZooSuperinterfaces(p):
+#     ''' ZooSuperinterfaces : Superinterfaces
+#                           | empty
+#     '''
+#     p[0] = mytuple(["ZooSuperinterfaces"]+p[1 :])
 
 def p_NormalClassDeclaration(p):
     '''NormalClassDeclaration : CommonModifierS CLASS IDENT TypeParameters
@@ -1014,7 +1018,11 @@ def p_FieldDeclaration(p):
                         | CommonModifierS IDENT VariableDeclaratorList SEMICOLON
                         | UnannType VariableDeclaratorList SEMICOLON
                         | IDENT VariableDeclaratorList SEMICOLON
-    '''
+                        | CommonModifierS UnannType IDENT SEMICOLON
+                        | CommonModifierS IDENT IDENT SEMICOLON
+                        | UnannType IDENT SEMICOLON
+                        | IDENT IDENT SEMICOLON
+                        '''
     p[0] = mytuple(["FieldDeclaration"]+p[1 :])
 
 # def p_FieldModifier(p):
@@ -1030,23 +1038,29 @@ def p_FieldDeclaration(p):
 #     p[0] = mytuple(["CommonModifier"]+p[1 :])
 def p_COMMAVariableDeclaratorS(p):
     '''COMMAVariableDeclaratorS : COMMA VariableDeclarator COMMAVariableDeclaratorS
-                                | empty
+                            | COMMA IDENT COMMAVariableDeclaratorS
+                                | COMMA IDENT
+                                | COMMA VariableDeclarator
     '''
     p[0] = mytuple(["COMMAVariableDeclaratorS"]+p[1 :])
 
 def p_VariableDeclaratorList(p):
     '''VariableDeclaratorList : VariableDeclarator COMMAVariableDeclaratorS
+                    | IDENT COMMAVariableDeclaratorS
+                    | VariableDeclarator
     '''
     p[0] = mytuple(["VariableDeclaratorList"]+p[1 :])
+#
+# def p_ZooASSIGNVariableInitializer(p):
+#     '''ZooASSIGNVariableInitializer : ASSIGN VariableInitializer
+#                                     | empty
+#     '''
+#     p[0] = mytuple(["ZooASSIGNVariableInitializer"]+p[1 :])
 
-def p_ZooASSIGNVariableInitializer(p):
-    '''ZooASSIGNVariableInitializer : ASSIGN VariableInitializer
-                                    | empty
-    '''
-    p[0] = mytuple(["ZooASSIGNVariableInitializer"]+p[1 :])
 def p_VariableDeclarator(p):
-    '''VariableDeclarator : VariableDeclaratorId ZooASSIGNVariableInitializer
-                        | IDENT ZooASSIGNVariableInitializer
+    '''VariableDeclarator : VariableDeclaratorId ASSIGN VariableInitializer
+                        | IDENT ASSIGN VariableInitializer
+                        | VariableDeclaratorId
     '''
     p[0] = mytuple(["VariableDeclarator"]+p[1 :])
 
@@ -1156,11 +1170,11 @@ def p_MethodDeclaration (p):
 #     p[0] = mytuple(["CommonModifier"]+p[1 :])
 
 
-def p_ZooThrows(p):
-    '''ZooThrows : Throws
-                | empty
-    '''
-    p[0] = mytuple(["ZooThrows"]+p[1 :])
+# def p_ZooThrows(p):
+#     '''ZooThrows : Throws
+#                 | empty
+#     '''
+#     p[0] = mytuple(["ZooThrows"]+p[1 :])
 
 def p_MethodHeader (p):
     '''MethodHeader : UnannType MethodDeclarator Throws
@@ -1189,11 +1203,11 @@ def p_MethodHeader (p):
 #     '''
 #     p[0] = mytuple(["Result"]+p[1 :])
 
-def p_ZooFormalParameterList (p):
-    '''ZooFormalParameterList : FormalParameterList
-                                | empty
-    '''
-    p[0] = mytuple(["ZooFormalParameterList"]+p[1 :])
+# def p_ZooFormalParameterList (p):
+#     '''ZooFormalParameterList : FormalParameterList
+#                                 | empty
+#     '''
+#     p[0] = mytuple(["ZooFormalParameterList"]+p[1 :])
 
 def p_MethodDeclarator (p):
     '''MethodDeclarator : IDENT LPAREN FormalParameterList RPAREN Dims
@@ -1279,11 +1293,11 @@ def p_LastFormalParameter (p):
     '''
     p[0] = mytuple(["LastFormalParameter"] + p[1 :])
 
-def p_ZooIDENTPERIOD (p):
-    '''ZooIDENTPERIOD : IDENT PERIOD
-                        | empty
-    '''
-    p[0] = mytuple(["ZooIDENTPERIOD"] + p[1 :])
+# def p_ZooIDENTPERIOD (p):
+#     '''ZooIDENTPERIOD : IDENT PERIOD
+#                         | empty
+#     '''
+#     p[0] = mytuple(["ZooIDENTPERIOD"] + p[1 :])
 
 def p_ReceiverParameter (p):
     '''ReceiverParameter : AnnotationS UnannType IDENT PERIOD THIS
@@ -1450,23 +1464,23 @@ def p_EnumDeclaration (p):
     '''
     p[0] = mytuple(["EnumDeclaration"] + p[1 :])
 
-def p_ZooEnumConstantList (p):
-    '''ZooEnumConstantList : EnumConstantList
-                            | empty
-    '''
-    p[0] = mytuple(["ZooEnumConstantList"] + p[1 :])
-
-def p_ZooCOMMA (p):
-    '''ZooCOMMA : COMMA
-                | empty
-    '''
-    p[0] = mytuple(["ZooCOMMA"] + p[1 :])
-
-def p_ZooEnumBodyDeclarations (p):
-    '''ZooEnumBodyDeclarations : EnumBodyDeclarations
-                                | empty
-    '''
-    p[0] = mytuple(["ZooEnumBodyDeclarations"] + p[1 :])
+# def p_ZooEnumConstantList (p):
+#     '''ZooEnumConstantList : EnumConstantList
+#                             | empty
+#     '''
+#     p[0] = mytuple(["ZooEnumConstantList"] + p[1 :])
+#
+# def p_ZooCOMMA (p):
+#     '''ZooCOMMA : COMMA
+#                 | empty
+#     '''
+#     p[0] = mytuple(["ZooCOMMA"] + p[1 :])
+#
+# def p_ZooEnumBodyDeclarations (p):
+#     '''ZooEnumBodyDeclarations : EnumBodyDeclarations
+#                                 | empty
+#     '''
+#     p[0] = mytuple(["ZooEnumBodyDeclarations"] + p[1 :])
 
 
 def p_EnumBody (p):
@@ -1512,12 +1526,12 @@ def p_EnumConstantModifierS (p):
     p[0] = mytuple(["EnumConstantModifierS"] + p[1 :])
 
 
-def p_ZooClassBody (p):
-    '''ZooClassBody : ClassBody
-                    | empty
-    '''
-    p[0] = mytuple(["ZooClassBody"] + p[1 :])
-
+# def p_ZooClassBody (p):
+#     '''ZooClassBody : ClassBody
+#                     | empty
+#     '''
+#     p[0] = mytuple(["ZooClassBody"] + p[1 :])
+#
 
 # def p_ZooLPARENZooArgumentListRPAREN (p):
 #     '''ZooLPARENZooArgumentListRPAREN : LPAREN ZooArgumentList RPAREN
@@ -1674,12 +1688,12 @@ def p_TypeParameterModifierS(p):
                               | empty '''
     p[0]=mytuple(["TypeParameterModifierS"]+p[1 :])
 
-def p_ZooTypeBound(p):
-    '''ZooTypeBound : TypeBound
-                    | empty '''
-    p[0]=mytuple(["ZooTypeBound"]+p[1 :])
-
+# def p_ZooTypeBound(p):
+#     '''ZooTypeBound : TypeBound
+#                     | empty '''
+#     p[0]=mytuple(["ZooTypeBound"]+p[1 :])
 #
+# #
 
 
 def p_TypeParameterModifier(p):
@@ -1743,10 +1757,10 @@ def p_Wildcard(p):
                 | QUES'''
     p[0]=mytuple(["Wildcard"]+p[1 :])
 
-def p_ZooWildcardBounds(p):
-    '''ZooWildcardBounds : WildcardBounds
-                         | empty '''
-    p[0]=mytuple(["ZooWildcardBounds"]+p[1 :])
+# def p_ZooWildcardBounds(p):
+#     '''ZooWildcardBounds : WildcardBounds
+#                          | empty '''
+#     p[0]=mytuple(["ZooWildcardBounds"]+p[1 :])
 
 #
 
@@ -1809,6 +1823,10 @@ def p_LocalVariableDeclaration(p):
                                 | CommonModifierS IDENT VariableDeclaratorList
                                 |  UnannType VariableDeclaratorList
                                 |  IDENT VariableDeclaratorList
+                                | CommonModifierS UnannType IDENT
+                                | CommonModifierS IDENT IDENT
+                                |  UnannType IDENT
+                                |  IDENT IDENT
 '''
     p[0]=mytuple(["LocalVariableDeclaration"]+p[1 :])
 # def p_VariableModifierS(p):
@@ -2006,20 +2024,20 @@ def p_BasicForStatement(p):
 '''
     p[0]=mytuple(["BasicForStatement"]+p[1 :])
 
-def p_ZooForUpdate(p):
-    '''ZooForUpdate : ForUpdate
-| empty'''
-    p[0]=mytuple(["ZooForUpdate"]+p[1 :])
-
-def p_ZooExpression(p):
-    '''ZooExpression : Expression
-| empty'''
-    p[0]=mytuple(["ZooExpression"]+p[1 :])
-
-def p_ZooForInit(p):
-    '''ZooForInit : ForInit
-| empty'''
-    p[0]=mytuple(["ZooForInit"]+p[1 :])
+# def p_ZooForUpdate(p):
+#     '''ZooForUpdate : ForUpdate
+# | empty'''
+#     p[0]=mytuple(["ZooForUpdate"]+p[1 :])
+#
+# def p_ZooExpression(p):
+#     '''ZooExpression : Expression
+# | empty'''
+#     p[0]=mytuple(["ZooExpression"]+p[1 :])
+#
+# def p_ZooForInit(p):
+#     '''ZooForInit : ForInit
+# | empty'''
+#     p[0]=mytuple(["ZooForInit"]+p[1 :])
 
 def p_BasicForStatementNoShortIf(p):
     '''BasicForStatementNoShortIf : FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN StatementNoShortIf
@@ -2111,10 +2129,10 @@ def p_BreakStatement(p):
                     | BREAK IDENT SEMICOLON
 '''
     p[0]=mytuple(["BreakStatement"]+p[1 :])
-def p_ZooIDENT(p):
-    '''ZooIDENT : IDENT
-| empty'''
-    p[0]=mytuple(["ZooIDENT"]+p[1 :])
+# def p_ZooIDENT(p):
+#     '''ZooIDENT : IDENT
+# | empty'''
+#     p[0]=mytuple(["ZooIDENT"]+p[1 :])
 
 def p_ContinueStatement(p):
     '''ContinueStatement : CONTINUE IDENT SEMICOLON
@@ -2149,10 +2167,10 @@ def p_TryStatement(p):
 | TryWithResourcesStatement
 '''
     p[0]=mytuple(["TryStatement"]+p[1 :])
-def p_ZooCatches(p):
-    '''ZooCatches : Catches
-| empty'''
-    p[0]=mytuple(["ZooCatches"]+p[1 :])
+# def p_ZooCatches(p):
+#     '''ZooCatches : Catches
+# | empty'''
+#     p[0]=mytuple(["ZooCatches"]+p[1 :])
 
 def p_Catches(p):
     '''Catches : CatchClause CatchClauseS
@@ -2201,16 +2219,16 @@ def p_TryWithResourcesStatement(p):
                                 | TRY ResourceSpecification Block
 '''
     p[0]=mytuple(["TryWithResourcesStatement"]+p[1 :])
-def p_ZooFinally(p):
-    '''ZooFinally : Finally
-| empty'''
-    p[0]=mytuple(["ZooFinally"]+p[1 :])
-
-
-def p_ZooSEMICOLON(p):
-    '''ZooSEMICOLON : SEMICOLON
-| empty'''
-    p[0]=mytuple(["ZooSEMICOLON"]+p[1 :])
+# def p_ZooFinally(p):
+#     '''ZooFinally : Finally
+# | empty'''
+#     p[0]=mytuple(["ZooFinally"]+p[1 :])
+#
+#
+# def p_ZooSEMICOLON(p):
+#     '''ZooSEMICOLON : SEMICOLON
+# | empty'''
+#     p[0]=mytuple(["ZooSEMICOLON"]+p[1 :])
 
 def p_ResourceSpecification(p):
     '''ResourceSpecification : LPAREN ResourceList SEMICOLON RPAREN
@@ -2337,7 +2355,7 @@ def parse_string(code, debug=0, lineno=1, prefix='++'):
 #
     print("END of TOKENS")
     lexer.lineno = lineno
-    return parser.parse(prefix + code, lexer=lexer, debug=debug)
+    return parser.parse(prefix + code, lexer=lexer, debug=1)
 
 def parse_file(_file, debug=0):
     print("In parse_file!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
