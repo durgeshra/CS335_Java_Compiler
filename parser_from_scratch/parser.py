@@ -275,7 +275,7 @@ def p_ZooVariableInitializerList(p):
 
 def p_VariableInitializerList(p):
     '''VariableInitializerList : VariableInitializer COMMAVariableInitializerS'''
-    p[0] = mytuple([""]+p[1 :])
+    p[0] = mytuple(["VariableInitializerList"]+p[1 :])
 
 def p_COMMAVariableInitializerS(p):
     '''COMMAVariableInitializerS : COMMA VariableInitializer COMMAVariableInitializerS
@@ -305,7 +305,7 @@ def p_PrimaryNoNewArray(p):
                         | ArrayAccess
                         | MethodInvocation
                         | MethodReference'''
-    p[0] = mytuple([""]+p[1 :])
+    p[0] = mytuple(["PrimaryNoNewArray"]+p[1 :])
 
 def p_ClassLiteral(p):
     '''ClassLiteral : TypeName LBRACKRBRACKS PERIOD CLASS
@@ -912,7 +912,7 @@ def p_VariableInitializer (p):
     '''
     p[0] = mytuple(["VariableInitializer"]+p[1 :])
 
-def p_UnannType (p):
+def p_UnannType(p):
     '''UnannType :  UnannPrimitiveType
                 | UnannReferenceType 
     '''
@@ -1163,7 +1163,7 @@ def p_SimpleTypeName (p):
 def p_ConstructorBody (p):
     '''ConstructorBody : LBRACE  ZooExplicitConstructorInvocation ZooBlockStatements  RBRACE
     '''
-    p[0] = mytuple([""] + p[1 :])
+    p[0] = mytuple(["ConstructorBody"] + p[1 :])
 
 def p_ZooExplicitConstructorInvocation (p):
     '''ZooExplicitConstructorInvocation : ExplicitConstructorInvocation
@@ -1264,7 +1264,7 @@ def p_ZooLPARENZooArgumentListRPAREN (p):
     '''ZooLPARENZooArgumentListRPAREN : LPAREN ZooArgumentList RPAREN
                                         | empty
     '''
-    p[0] = mytuple([""] + p[1 :])
+    p[0] = mytuple(["ZooLPARENZooArgumentListRPAREN"] + p[1 :])
 
 def p_EnumConstantModifier (p):
     '''EnumConstantModifier : Annotation

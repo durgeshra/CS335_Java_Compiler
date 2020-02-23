@@ -1,4 +1,5 @@
 class ackermann{
+    int printInt ;
     int printInt(float n);
 
     int Ack(int m,int n) {
