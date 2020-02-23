@@ -972,31 +972,31 @@ def p_ClassMemberDeclaration(p):
     '''
     p[0] = mytuple(["ClassMemberDeclaration"]+p[1 :])
 
-def p_FieldModifierS(p):
-    '''FieldModifierS : FieldModifier FieldModifierS
-                        | FieldModifier
-    '''
-    p[0] = mytuple(["FieldModifierS"]+p[1 :])
+# def p_FieldModifierS(p):
+#     '''CommonModifierS : CommonModifier CommonModifierS
+#                         | CommonModifier
+#     '''
+#     p[0] = mytuple(["CommonModifierS"]+p[1 :])
 
 def p_FieldDeclaration(p):
-    '''FieldDeclaration : FieldModifierS UnannType VariableDeclaratorList SEMICOLON
-                        | FieldModifierS IDENT VariableDeclaratorList SEMICOLON
+    '''FieldDeclaration : CommonModifierS UnannType VariableDeclaratorList SEMICOLON
+                        | CommonModifierS IDENT VariableDeclaratorList SEMICOLON
                         | UnannType VariableDeclaratorList SEMICOLON
                         | IDENT VariableDeclaratorList SEMICOLON
     '''
     p[0] = mytuple(["FieldDeclaration"]+p[1 :])
 
-def p_FieldModifier(p):
-    '''FieldModifier : Annotation
-                    | PUBLIC
-                    | PROTECTED
-                    | PRIVATE
-                     | STATIC
-                     | FINAL
-                     | TRANSIENT
-                     | VOLATILE
-    '''
-    p[0] = mytuple(["FieldModifier"]+p[1 :])
+# def p_FieldModifier(p):
+#     '''CommonModifier : Annotation
+#                     | PUBLIC
+#                     | PROTECTED
+#                     | PRIVATE
+#                      | STATIC
+#                      | FINAL
+#                      | TRANSIENT
+#                      | VOLATILE
+#     '''
+#     p[0] = mytuple(["CommonModifier"]+p[1 :])
 def p_COMMAVariableDeclaratorS(p):
     '''COMMAVariableDeclaratorS : COMMA VariableDeclarator COMMAVariableDeclaratorS
                                 | empty
@@ -1097,30 +1097,30 @@ def p_UnannArrayType (p):
     p[0] = mytuple(["UnannArrayType"]+p[1 :])
 
 
-def p_MethodModifierS(p):
-    '''MethodModifierS : MethodModifier MethodModifierS
-                        | MethodModifier
-    '''
-    p[0] = mytuple(["MethodModifierS"]+p[1 :])
+# def p_MethodModifierS(p):
+#     '''CommonModifierS : CommonModifier CommonModifierS
+#                         | CommonModifier
+#     '''
+#     p[0] = mytuple(["CommonModifierS"]+p[1 :])
 def p_MethodDeclaration (p):
-    '''MethodDeclaration : MethodModifierS MethodHeader MethodBody
+    '''MethodDeclaration : CommonModifierS MethodHeader MethodBody
                          | MethodHeader MethodBody
     '''
     p[0] = mytuple(["MethodDeclaration"]+p[1 :])
 
-def p_MethodModifier (p):
-    '''MethodModifier : Annotation
-                    | PUBLIC
-                    | PROTECTED
-                    | PRIVATE
-                    | ABSTRACT
-                    | STATIC
-                    | FINAL
-                    | SYNCHRONIZED
-                    | NATIVE
-                    | STRICTFP
-    '''
-    p[0] = mytuple(["MethodModifier"]+p[1 :])
+# def p_MethodModifier (p):
+#     '''CommonModifier : Annotation
+#                     | PUBLIC
+#                     | PROTECTED
+#                     | PRIVATE
+#                     | ABSTRACT
+#                     | STATIC
+#                     | FINAL
+#                     | SYNCHRONIZED
+#                     | NATIVE
+#                     | STRICTFP
+#     '''
+#     p[0] = mytuple(["CommonModifier"]+p[1 :])
 
 
 def p_ZooThrows(p):
@@ -1192,16 +1192,16 @@ def p_FormalParameters (p):
     p[0] = mytuple(["FormalParameters"]+p[1 :])
 
 def p_ZooVariableModifier (p):
-    '''ZooVariableModifier : VariableModifier
+    '''ZooVariableModifier : CommonModifier
                             | empty
     '''
     p[0] = mytuple(["ZooVariableModifier"] + p[1 :])
 
 def p_FormalParameter (p):
-    '''FormalParameter : VariableModifier UnannType VariableDeclaratorId
-                        | VariableModifier IDENT VariableDeclaratorId
-                        | VariableModifier UnannType IDENT
-                        | VariableModifier IDENT IDENT
+    '''FormalParameter : CommonModifier UnannType VariableDeclaratorId
+                        | CommonModifier IDENT VariableDeclaratorId
+                        | CommonModifier UnannType IDENT
+                        | CommonModifier IDENT IDENT
                         |  UnannType VariableDeclaratorId
                         |  IDENT VariableDeclaratorId
                         |  UnannType IDENT
@@ -1211,29 +1211,37 @@ def p_FormalParameter (p):
 
 
 
-def p_VariableModifier (p):
-    '''VariableModifier : Annotation
-                        | FINAL
-    '''
-    p[0] = mytuple(["VariableModifier"] + p[1 :])
+# def p_VariableModifier (p):
+#     '''CommonModifier : Annotation
+#                         | FINAL
+#     '''
+#     p[0] = mytuple(["CommonModifier"] + p[1 :])
 
 
-def p_VariableModifierS (p):
-    '''VariableModifierS : VariableModifier VariableModifierS
-                        | empty
-    '''
-    p[0] = mytuple(["VariableModifierS"] + p[1 :])
+# def p_VariableModifierS (p):
+#     '''CommonModifierS : CommonModifier CommonModifierS
+#                         | empty
+#     '''
+#     p[0] = mytuple(["CommonModifierS"] + p[1 :])
 
 def p_LastFormalParameter (p):
-    '''LastFormalParameter : VariableModifierS UnannType AnnotationS ELLIPSIS VariableDeclaratorId
-                            | VariableModifierS IDENT AnnotationS ELLIPSIS VariableDeclaratorId
+    '''LastFormalParameter : CommonModifierS UnannType AnnotationS ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS IDENT AnnotationS ELLIPSIS VariableDeclaratorId
                             | FormalParameter
-                            | VariableModifierS UnannType ELLIPSIS VariableDeclaratorId
-                            | VariableModifierS IDENT ELLIPSIS VariableDeclaratorId
-                            | VariableModifierS UnannType AnnotationS ELLIPSIS IDENT
-                            | VariableModifierS IDENT AnnotationS ELLIPSIS IDENT
-                            | VariableModifierS UnannType ELLIPSIS IDENT
-                            | VariableModifierS IDENT ELLIPSIS IDENT
+                            | CommonModifierS UnannType ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS IDENT ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS UnannType AnnotationS ELLIPSIS IDENT
+                            | CommonModifierS IDENT AnnotationS ELLIPSIS IDENT
+                            | CommonModifierS UnannType ELLIPSIS IDENT
+                            | CommonModifierS IDENT ELLIPSIS IDENT
+                            |  UnannType AnnotationS ELLIPSIS VariableDeclaratorId
+                            |  IDENT AnnotationS ELLIPSIS VariableDeclaratorId
+                            |  UnannType ELLIPSIS VariableDeclaratorId
+                            |  IDENT ELLIPSIS VariableDeclaratorId
+                            |  UnannType AnnotationS ELLIPSIS IDENT
+                            |  IDENT AnnotationS ELLIPSIS IDENT
+                            |  UnannType ELLIPSIS IDENT
+                            |  IDENT ELLIPSIS IDENT
 
     '''
     p[0] = mytuple(["LastFormalParameter"] + p[1 :])
@@ -1753,14 +1761,16 @@ def p_LocalVariableDeclarationStatement(p):
     p[0]=mytuple(["LocalVariableDeclarationStatement"]+p[1 :])
 
 def p_LocalVariableDeclaration(p):
-    '''LocalVariableDeclaration : VariableModifierS UnannType VariableDeclaratorList
-                                | VariableModifierS IDENT VariableDeclaratorList
+    '''LocalVariableDeclaration : CommonModifierS UnannType VariableDeclaratorList
+                                | CommonModifierS IDENT VariableDeclaratorList
+                                |  UnannType VariableDeclaratorList
+                                |  IDENT VariableDeclaratorList
 '''
     p[0]=mytuple(["LocalVariableDeclaration"]+p[1 :])
-def p_VariableModifierS(p):
-    '''VariableModifierS : VariableModifier VariableModifierS
-| empty'''
-    p[0]=mytuple(["VariableModifierS"]+p[1 :])
+# def p_VariableModifierS(p):
+#     '''CommonModifierS : CommonModifier CommonModifierS
+# | empty'''
+#     p[0]=mytuple(["CommonModifierS"]+p[1 :])
 
 def p_Statement(p):
     '''Statement : StatementWithoutTrailingSubstatement
@@ -1985,18 +1995,26 @@ def p_COMMAStatementExpressionS(p):
 
 
 def p_EnhancedForStatement(p):
-    '''EnhancedForStatement : FOR LPAREN VariableModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN Statement
-                            | FOR LPAREN VariableModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN Statement
-                            | FOR LPAREN VariableModifierS UnannType IDENT  COLON  Expression RPAREN Statement
-                            | FOR LPAREN VariableModifierS IDENT IDENT  COLON  Expression RPAREN Statement
+    '''EnhancedForStatement : FOR LPAREN CommonModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN Statement
+                            | FOR LPAREN CommonModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN Statement
+                            | FOR LPAREN CommonModifierS UnannType IDENT  COLON  Expression RPAREN Statement
+                            | FOR LPAREN CommonModifierS IDENT IDENT  COLON  Expression RPAREN Statement
+                            | FOR LPAREN  UnannType VariableDeclaratorId  COLON  Expression RPAREN Statement
+                            | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN Statement
+                            | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN Statement
+                            | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN Statement
 '''
     p[0]=mytuple(["EnhancedForStatement"]+p[1 :])
 
 def p_EnhancedForStatementNoShortIf(p):
-    '''EnhancedForStatementNoShortIf : FOR LPAREN VariableModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
-                                    | FOR LPAREN VariableModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
-                                    | FOR LPAREN VariableModifierS UnannType IDENT  COLON  Expression RPAREN StatementNoShortIf
-                                    | FOR LPAREN VariableModifierS IDENT IDENT  COLON  Expression RPAREN StatementNoShortIf
+    '''EnhancedForStatementNoShortIf : FOR LPAREN CommonModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN CommonModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN CommonModifierS UnannType IDENT  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN CommonModifierS IDENT IDENT  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN  UnannType VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN StatementNoShortIf
 '''
     p[0]=mytuple(["EnhancedForStatementNoShortIf"]+p[1 :])
 
@@ -2063,8 +2081,10 @@ def p_CatchClause(p):
     p[0]=mytuple(["CatchClause"]+p[1 :])
 
 def p_CatchFormalParameter(p):
-    '''CatchFormalParameter : VariableModifierS CatchType VariableDeclaratorId
-                            | VariableModifierS CatchType IDENT
+    '''CatchFormalParameter : CommonModifierS CatchType VariableDeclaratorId
+                            | CommonModifierS CatchType IDENT
+                            |  CatchType VariableDeclaratorId
+                            |  CatchType IDENT
 '''
     p[0]=mytuple(["CatchFormalParameter"]+p[1 :])
 
@@ -2123,11 +2143,41 @@ def p_SEMICOLONResourceS(p):
 
 
 
+
+def p_CommonModifierS(p):
+    '''CommonModifierS : CommonModifier CommonModifierS
+                        | CommonModifier
+    '''
+    p[0]=mytuple(["CommonModifierS"]+p[1 :])
+
+
+def p_CommonModifier(p):
+    '''CommonModifier : Annotation
+                    | PUBLIC
+                    | PROTECTED
+                    | PRIVATE
+                     | STATIC
+                     | FINAL
+                     | TRANSIENT
+                     | VOLATILE
+                     | ABSTRACT
+                     | SYNCHRONIZED
+                    | NATIVE
+                    | STRICTFP
+                    | DEFAULT
+    '''
+    p[0]=mytuple(["CommonModifier"]+p[1 :])
+
+
 def p_Resource(p):
-    '''Resource : VariableModifierS UnannType VariableDeclaratorId ASSIGN Expression
-                | VariableModifierS IDENT VariableDeclaratorId ASSIGN Expression
-                | VariableModifierS UnannType IDENT ASSIGN Expression
-                | VariableModifierS IDENT IDENT ASSIGN Expression'''
+    '''Resource : CommonModifierS UnannType VariableDeclaratorId ASSIGN Expression
+                | CommonModifierS IDENT VariableDeclaratorId ASSIGN Expression
+                | CommonModifierS UnannType IDENT ASSIGN Expression
+                | CommonModifierS IDENT IDENT ASSIGN Expression
+                |  UnannType VariableDeclaratorId ASSIGN Expression
+                |  IDENT VariableDeclaratorId ASSIGN Expression
+                |  UnannType IDENT ASSIGN Expression
+                |  IDENT IDENT ASSIGN Expression'''
     p[0]=mytuple(["Resource"]+p[1 :])
 
 def p_StartCompilationUnit( p):
