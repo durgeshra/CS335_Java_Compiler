@@ -46,33 +46,41 @@ def p_InterfaceDeclaration(p):
     p[0] = mytuple(["InterfaceDeclaration"]+p[1 :])
 
 def p_NormalInterfaceDeclaration(p):
-    '''NormalInterfaceDeclaration :  InterfaceModifierS INTERFACE IDENT ZooTypeParameters ZooExtendsInterfaces InterfaceBody'''
+    '''NormalInterfaceDeclaration :  InterfaceModifierS INTERFACE IDENT TypeParameters ExtendsInterfaces InterfaceBody
+                             | InterfaceModifierS INTERFACE IDENT TypeParameters InterfaceBody
+                              | InterfaceModifierS INTERFACE IDENT ExtendsInterfaces InterfaceBody
+                               | InterfaceModifierS INTERFACE IDENT InterfaceBody
+    '''
     p[0] = mytuple(["NormalInterfaceDeclaration"]+p[1 :])
 
 def p_ZooTypeParameters(p):
-    '''ZooTypeParameters :  TypeParameters 
+    '''ZooTypeParameters :  TypeParameters
                         | empty'''
     p[0] = mytuple(["ZooTypeParameters"]+p[1 :])
 
 def p_ZooExtendsInterfaces(p):
-    '''ZooExtendsInterfaces : ExtendsInterfaces 
+    '''ZooExtendsInterfaces : ExtendsInterfaces
                             | empty '''
     p[0] = mytuple(["ZooExtendsInterfaces"]+p[1 :])
 
+
 def p_InterfaceModifierS(p):
-    '''InterfaceModifierS : InterfaceModifier InterfaceModifierS
+    '''InterfaceModifierS : Annotation InterfaceModifierS
+                          | PUBLIC InterfaceModifierS
+                          | PROTECTED InterfaceModifierS
+                          | PRIVATE InterfaceModifierS
+                          | ABSTRACT InterfaceModifierS
+                          | STATIC InterfaceModifierS
+                          | STRICTFP InterfaceModifierS
                           | empty'''
     p[0] = mytuple(["InterfaceModifierS"]+p[1 :])
 
-def p_InterfaceModifier(p):
-    '''InterfaceModifier : Annotation
-                         | PUBLIC
-                         | PROTECTED
-                         | PRIVATE
-                         | ABSTRACT
-                         | STATIC
-                         | STRICTFP'''
-    p[0] = mytuple(["InterfaceModifier"]+p[1 :])
+# def p_InterfaceModifier(p):
+#     '''InterfaceModifier :
+#                          | ABSTRACT
+#                          | STATIC
+#                          | STRICTFP'''
+#     p[0] = mytuple(["InterfaceModifier"]+p[1 :])
 
 
 def p_ExtendsInterfaces(p):
@@ -161,8 +169,14 @@ def p_AnnotationTypeMemberDeclaration(p):
     p[0] = mytuple(["AnnotationTypeMemberDeclaration"]+p[1 :])
 
 def p_AnnotationTypeElementDeclaration(p):
-    '''AnnotationTypeElementDeclaration :  AnnotationTypeElementModifierS UnannType IDENT LPAREN RPAREN ZooDims ZooDefaultValue SEMICOLON
-                                        |  AnnotationTypeElementModifierS IDENT IDENT LPAREN RPAREN ZooDims ZooDefaultValue SEMICOLON'''
+    '''AnnotationTypeElementDeclaration :  AnnotationTypeElementModifierS UnannType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                        |  AnnotationTypeElementModifierS IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                    |    AnnotationTypeElementModifierS UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |  AnnotationTypeElementModifierS IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |    AnnotationTypeElementModifierS UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |  AnnotationTypeElementModifierS IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |    AnnotationTypeElementModifierS UnannType IDENT LPAREN RPAREN SEMICOLON
+                                    |  AnnotationTypeElementModifierS IDENT IDENT LPAREN RPAREN SEMICOLON'''
     p[0] = mytuple(["AnnotationTypeElementDeclaration"]+p[1 :])
 
 def p_ZooDims(p):
@@ -198,7 +212,8 @@ def p_Annotation(p):
     p[0] = mytuple(["Annotation"]+p[1 :])
 
 def p_NormalAnnotation(p):
-    '''NormalAnnotation : ATRATE TypeName LPAREN ZooElementValuePairList RPAREN '''
+    '''NormalAnnotation : ATRATE TypeName LPAREN ElementValuePairList RPAREN
+                        | ATRATE TypeName LPAREN  RPAREN '''
     p[0] = mytuple(["NormalAnnotation"]+p[1 :])
 
 
@@ -228,7 +243,10 @@ def p_ElementValue(p):
     p[0] = mytuple(["ElementValue"]+p[1 :])
 
 def p_ElementValueArrayInitializer(p):
-    '''ElementValueArrayInitializer : LBRACE ZooElementValueList ZooCOMMA RBRACE '''
+    '''ElementValueArrayInitializer : LBRACE ElementValueList COMMA RBRACE
+    | LBRACE ElementValueList  RBRACE
+    | LBRACE  COMMA RBRACE
+    | LBRACE   RBRACE'''
     p[0] = mytuple(["ElementValueArrayInitializer"]+p[1 :])
 
 
@@ -266,7 +284,10 @@ def p_SingleElementAnnotation(p):
 ### Section 10 : Arrays
 ################################################
 def p_ArrayInitializer(p):
-    '''ArrayInitializer : LBRACE ZooVariableInitializerList ZooCOMMA RBRACE '''
+    '''ArrayInitializer : LBRACE VariableInitializerList COMMA RBRACE
+    | LBRACE VariableInitializerList RBRACE
+    | LBRACE COMMA RBRACE
+    | LBRACE RBRACE '''
     p[0] = mytuple(["ArrayInitializer"]+p[1 :])
 
 
@@ -329,7 +350,14 @@ def p_ClassInstanceCreationExpression(p):
     p[0] = mytuple(["ClassInstanceCreationExpression"]+p[1 :])
 
 def p_UnqualifiedClassInstanceCreationExpression(p):
-    '''UnqualifiedClassInstanceCreationExpression : NEW ZooTypeArguments ClassOrInterfaceTypeToInstantiate LPAREN ZooArgumentList RPAREN ZooClassBody '''
+    '''UnqualifiedClassInstanceCreationExpression : NEW TypeArguments ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN ClassBody
+    | NEW TypeArguments ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN ClassBody
+    | NEW TypeArguments ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN
+    | NEW TypeArguments ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN
+    | NEW ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN ClassBody
+    | NEW ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN ClassBody
+    | NEW ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN
+    | NEW ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN'''
     p[0] = mytuple(["UnqualifiedClassInstanceCreationExpression"]+p[1 :])
 
 def p_ZooTypeArguments(p):
@@ -348,8 +376,10 @@ def p_ZooClassBody(p):
     p[0] = mytuple(["ZooClassBody"]+p[1 :])
 
 def p_ClassOrInterfaceTypeToInstantiate(p):
-    '''ClassOrInterfaceTypeToInstantiate : AnnotationS IDENT PERIODAnnotationSIDENTS ZooTypeArgumentsOrDiamond
-                                         |  IDENT PERIODAnnotationSIDENTS ZooTypeArgumentsOrDiamond'''
+    '''ClassOrInterfaceTypeToInstantiate : AnnotationS IDENT PERIODAnnotationSIDENTS TypeArgumentsOrDiamond
+                                        | AnnotationS IDENT PERIODAnnotationSIDENTS
+                                         |  IDENT PERIODAnnotationSIDENTS
+                                         |  IDENT PERIODAnnotationSIDENTS TypeArgumentsOrDiamond'''
     p[0] = mytuple(["ClassOrInterfaceTypeToInstantiate"]+p[1 :])
 
 def p_AnnotationS(p):
@@ -390,13 +420,32 @@ def p_ArrayAccess(p):
     p[0] = mytuple(["ArrayAccess"]+p[1 :])
 
 def p_MethodInvocation(p):
-    '''MethodInvocation : IDENT LPAREN ZooArgumentList RPAREN
-                       | TypeName PERIOD ZooTypeArguments IDENT LPAREN ZooArgumentList RPAREN
-                       | ExpressionName PERIOD ZooTypeArguments IDENT LPAREN ZooArgumentList RPAREN
-                       | IDENT PERIOD ZooTypeArguments IDENT LPAREN ZooArgumentList RPAREN
-                       | Primary PERIOD ZooTypeArguments IDENT LPAREN ZooArgumentList RPAREN
-                       | SUPER PERIOD ZooTypeArguments IDENT LPAREN ZooArgumentList RPAREN
-                       | TypeName PERIOD SUPER PERIOD ZooTypeArguments IDENT LPAREN ZooArgumentList RPAREN '''
+    '''MethodInvocation : IDENT LPAREN RPAREN
+                        | IDENT LPAREN ArgumentList RPAREN
+                       | TypeName PERIOD TypeArguments IDENT LPAREN ArgumentList RPAREN
+                       | TypeName PERIOD TypeArguments IDENT LPAREN  RPAREN
+                       | TypeName PERIOD  IDENT LPAREN ArgumentList RPAREN
+                       | TypeName PERIOD  IDENT LPAREN  RPAREN
+                       | ExpressionName PERIOD TypeArguments IDENT LPAREN ArgumentList RPAREN
+                       | ExpressionName PERIOD  IDENT LPAREN ArgumentList RPAREN
+                       | ExpressionName PERIOD TypeArguments IDENT LPAREN  RPAREN
+                       | ExpressionName PERIOD  IDENT LPAREN  RPAREN
+                       | IDENT PERIOD TypeArguments IDENT LPAREN ArgumentList RPAREN
+                       | IDENT PERIOD TypeArguments IDENT LPAREN  RPAREN
+                       | IDENT PERIOD  IDENT LPAREN ArgumentList RPAREN
+                       | IDENT PERIOD  IDENT LPAREN  RPAREN
+                       | Primary PERIOD TypeArguments IDENT LPAREN ArgumentList RPAREN
+                       | Primary PERIOD TypeArguments IDENT LPAREN  RPAREN
+                       | Primary PERIOD  IDENT LPAREN ArgumentList RPAREN
+                       | Primary PERIOD  IDENT LPAREN  RPAREN
+                       | SUPER PERIOD TypeArguments IDENT LPAREN ArgumentList RPAREN
+                       | SUPER PERIOD TypeArguments IDENT LPAREN  RPAREN
+                       | SUPER PERIOD  IDENT LPAREN ArgumentList RPAREN
+                       | SUPER PERIOD  IDENT LPAREN  RPAREN
+                       | TypeName PERIOD SUPER PERIOD TypeArguments IDENT LPAREN ArgumentList RPAREN
+                       | TypeName PERIOD SUPER PERIOD TypeArguments IDENT LPAREN  RPAREN
+                       | TypeName PERIOD SUPER PERIOD  IDENT LPAREN ArgumentList RPAREN
+                       | TypeName PERIOD SUPER PERIOD  IDENT LPAREN  RPAREN '''
     p[0] = mytuple(["MethodInvocation"]+p[1 :])
 
 
@@ -410,21 +459,35 @@ def p_COMMAExpressionS(p):
     p[0] = mytuple(["COMMAExpressionS"]+p[1 :])
 
 def p_MethodReference(p):
-    '''MethodReference : ExpressionName COLON_SEP ZooTypeArguments IDENT
-                        | IDENT COLON_SEP ZooTypeArguments IDENT
-                      | ReferenceType COLON_SEP ZooTypeArguments IDENT
-                      | Primary COLON_SEP ZooTypeArguments IDENT
-                      | SUPER COLON_SEP ZooTypeArguments IDENT
-                      | TypeName PERIOD SUPER COLON_SEP ZooTypeArguments IDENT
-                      | ClassType COLON_SEP ZooTypeArguments NEW
+    '''MethodReference : ExpressionName COLON_SEP TypeArguments IDENT
+                      | ReferenceType COLON_SEP TypeArguments IDENT
+                      | IDENT COLON_SEP TypeArguments IDENT
+                      | Primary COLON_SEP TypeArguments IDENT
+                      | SUPER COLON_SEP TypeArguments IDENT
+                      | TypeName PERIOD SUPER COLON_SEP TypeArguments IDENT
+                      | ClassType COLON_SEP TypeArguments NEW
+                      | IDENT COLON_SEP TypeArguments NEW
+                      | ExpressionName COLON_SEP IDENT
+                    | ReferenceType COLON_SEP IDENT
+                    | IDENT COLON_SEP IDENT
+                    | Primary COLON_SEP IDENT
+                    | SUPER COLON_SEP IDENT
+                    | TypeName PERIOD SUPER COLON_SEP IDENT
+                    | ClassType COLON_SEP NEW
+                    | IDENT COLON_SEP NEW
                       | ArrayType COLON_SEP NEW'''
     p[0] = mytuple(["MethodReference"]+p[1 :])
 
 def p_ArrayCreationExpression(p):
-    '''ArrayCreationExpression : NEW PrimitiveType DimExprs ZooDims
-                              | NEW ClassType DimExprs ZooDims
+    '''ArrayCreationExpression : NEW PrimitiveType DimExprs Dims
+                              | NEW ClassType DimExprs Dims
+                              | NEW IDENT DimExprs Dims
+                              | NEW PrimitiveType DimExprs
+                              | NEW ClassType DimExprs
+                              | NEW IDENT DimExprs
                               | NEW PrimitiveType Dims ArrayInitializer
-                              | NEW ClassType Dims ArrayInitializer'''
+                              | NEW ClassType Dims ArrayInitializer
+                              | NEW IDENT Dims ArrayInitializer'''
     p[0] = mytuple(["ArrayCreationExpression : "]+p[1 :])
 
 
@@ -455,7 +518,8 @@ def p_LambdaExpression(p):
 
 def p_LambdaParameters(p):
     '''LambdaParameters : IDENT
-                       | LPAREN ZooFormalParameterList RPAREN
+                       | LPAREN FormalParameterList RPAREN
+                       | LPAREN  RPAREN
                        | LPAREN InferredFormalParameterList RPAREN'''
     p[0] = mytuple(["LambdaParameters"]+p[1 :])
 
@@ -485,12 +549,12 @@ def p_AssignmentExpression(p):
     p[0] = mytuple(["AssignmentExpression"]+p[1 :])
 
 def p_Assignment(p):
-    '''Assignment : LeftHandSide AssignmentOperator Expression'''
+    '''Assignment : LeftHandSide AssignmentOperator Expression
+                    | IDENT AssignmentOperator Expression'''
     p[0] = mytuple(["Assignment"]+p[1 :])
 
 def p_LeftHandSide(p):
     '''LeftHandSide : ExpressionName
-                    | IDENT
                    | FieldAccess
                    | ArrayAccess'''
     p[0] = mytuple(["LeftHandSide"]+p[1 :])
@@ -553,7 +617,8 @@ def p_RelationalExpression(p):
                            | RelationalExpression GTR ShiftExpression
                            | RelationalExpression LEQ ShiftExpression
                            | RelationalExpression GEQ ShiftExpression
-                           | RelationalExpression INSTANCEOF ReferenceType'''
+                           | RelationalExpression INSTANCEOF ReferenceType
+                           | RelationalExpression INSTANCEOF IDENT'''
     p[0] = mytuple(["RelationalExpression"]+p[1 :])
 
 def p_ShiftExpression(p):
@@ -566,18 +631,25 @@ def p_ShiftExpression(p):
 def p_AdditiveExpression(p):
     '''AdditiveExpression : MultiplicativeExpression
                          | AdditiveExpression ADD MultiplicativeExpression
-                         | AdditiveExpression SUB MultiplicativeExpression'''
+                         | AdditiveExpression SUB MultiplicativeExpression
+                          | AdditiveExpression ADD IDENT
+                          | AdditiveExpression SUB IDENT'''
     p[0] = mytuple(["AdditiveExpression"]+p[1 :])
 
 def p_MultiplicativeExpression(p):
     '''MultiplicativeExpression : UnaryExpression
-                                | IDENT
                                | MultiplicativeExpression MUL UnaryExpression
                                | MultiplicativeExpression QUO UnaryExpression
                                | MultiplicativeExpression REM UnaryExpression
                                | MultiplicativeExpression MUL IDENT
                                | MultiplicativeExpression QUO IDENT
-                               | MultiplicativeExpression REM IDENT'''
+                               | MultiplicativeExpression REM IDENT
+                               | IDENT MUL UnaryExpression
+                               | IDENT QUO UnaryExpression
+                               | IDENT REM UnaryExpression
+                               | IDENT MUL IDENT
+                               | IDENT QUO IDENT
+                               | IDENT REM IDENT'''
     p[0] = mytuple(["MultiplicativeExpression"]+p[1 :])
 
 def p_UnaryExpression(p):
@@ -630,7 +702,10 @@ def p_CastExpression(p):
                      | LPAREN PrimitiveType RPAREN IDENT
                      | LPAREN ReferenceType AdditionalBoundS RPAREN UnaryExpressionNotPlusMinus
                      | LPAREN ReferenceType AdditionalBoundS RPAREN IDENT
-                     | LPAREN ReferenceType AdditionalBoundS RPAREN LambdaExpression'''
+                     | LPAREN ReferenceType AdditionalBoundS RPAREN LambdaExpression
+                  | LPAREN IDENT AdditionalBoundS RPAREN UnaryExpressionNotPlusMinus
+                  | LPAREN IDENT AdditionalBoundS RPAREN IDENT
+                  | LPAREN IDENT AdditionalBoundS RPAREN LambdaExpression'''
     p[0] = mytuple(["CastExpression"]+p[1 :])
 
 def p_AdditionalBoundS(p):
@@ -649,7 +724,8 @@ def p_ConstantExpression(p):
 ### Section 7 : Packages
 ################################################
 def p_CompilationUnit(p):
-    '''CompilationUnit : ZooPackageDeclaration ImportDeclarationS TypeDeclarationS'''
+    '''CompilationUnit : ImportDeclarationS TypeDeclarationS
+                    | PackageDeclaration ImportDeclarationS TypeDeclarationS'''
     p[0] = mytuple(["CompilationUnit"]+p[1 :])
 
 def p_ZooPackageDeclaration(p):
@@ -717,11 +793,9 @@ def p_TypeDeclaration(p):
 
 #</editor-fold>############################################
 
-
-
-
+#<editor-fold Section 6 #########################
 ####################################
-########## SECTION #6 ##############
+########## Section 6 : ##############
 ####################################
 
 # def p_TypeName(p):
@@ -774,7 +848,8 @@ def p_ClassDeclaration(p):
 #     '''
 #     p[0] = mytuple(["ZooTypeParameters"]+p[1 :])
 def p_SuperClass(p):
-    '''SuperClass : EXTENDS ClassType 
+    '''SuperClass : EXTENDS ClassType
+                    | EXTENDS IDENT
     '''
     p[0] = mytuple(["SuperClass"] + p[1:])
 
@@ -797,9 +872,12 @@ def p_ZooSuperinterfaces(p):
     p[0] = mytuple(["ZooSuperinterfaces"]+p[1 :])
 
 def p_NormalClassDeclaration(p):
-    '''NormalClassDeclaration : ClassModifierS CLASS IDENT ZooTypeParameters
-                              | ZooSuperClass ZooSuperinterfaces ClassBody
-    '''
+    '''NormalClassDeclaration : ClassModifierS CLASS IDENT TypeParameters
+                            | ClassModifierS CLASS IDENT
+                              | SuperClass Superinterfaces ClassBody
+                              | SuperClass  ClassBody
+                              | Superinterfaces ClassBody
+                              | ClassBody'''
     p[0] = mytuple(["NormalClassDeclaration"]+p[1 :])
 
 # def p_ClassModifier(p):
@@ -807,18 +885,25 @@ def p_NormalClassDeclaration(p):
 #                     | PUBLIC
 #                     | PROTECTED
 #                     | PRIVATE
-#                     | ABSTRACT 
+#                     | ABSTRACT
 #                     | STATIC
 #                     | FINAL
 #                     | STRICTFP
 #     '''
 #     p[0] = mytuple(["ClassModifier"]+p[1 :])
 
-def p_ClassModifier(p):
-    '''ClassModifier : InterfaceModifier
-                    | FINAL
-    '''
-    p[0] = mytuple(["ClassModifier"]+p[1 :])
+# def p_ClassModifier(p):
+#     '''ClassModifier : Annotation
+#                     | Annotation
+#                     | PUBLIC
+#                     | PROTECTED
+#                     | PRIVATE
+#                     | FINAL
+#                     | ABSTRACT
+#                     | STATIC
+#                     | STRICTFP
+#     '''
+#     p[0] = mytuple(["ClassModifier"]+p[1 :])
 
 def p_TypeParameters(p):
     '''TypeParameters : LSS TypeParameterList GTR
@@ -836,10 +921,10 @@ def p_TypeParameterList(p):
     '''
     p[0] = mytuple(["TypeParameterList"]+p[1 :])
 
-def p_Superclass(p):
-    '''Superclass : EXTENDS ClassType
-    '''
-    p[0] = mytuple(["Superclass"]+p[1 :])
+# def p_Superclass(p):
+#     '''Superclass : EXTENDS ClassType
+#     '''
+#     p[0] = mytuple(["Superclass"]+p[1 :])
 
 def p_Superinterfaces(p):
     '''Superinterfaces : IMPLEMENTS InterfaceTypeList
@@ -848,12 +933,14 @@ def p_Superinterfaces(p):
 
 def p_COMMAInterfaceTypeS(p):
     '''COMMAInterfaceTypeS : COMMA ClassType COMMAInterfaceTypeS
+                            | COMMA IDENT COMMAInterfaceTypeS
                             | empty
     '''
     p[0] = mytuple(["COMMAInterfaceTypeS"]+p[1 :])
 
 def p_InterfaceTypeList(p):
     '''InterfaceTypeList : ClassType COMMAInterfaceTypeS
+                    | IDENT COMMAInterfaceTypeS
     '''
     p[0] = mytuple(["InterfaceTypeList"]+p[1 :])
 
@@ -926,6 +1013,7 @@ def p_ZooASSIGNVariableInitializer(p):
     p[0] = mytuple(["ZooASSIGNVariableInitializer"]+p[1 :])
 def p_VariableDeclarator(p):
     '''VariableDeclarator : VariableDeclaratorId ZooASSIGNVariableInitializer
+                        | IDENT ZooASSIGNVariableInitializer
     '''
     p[0] = mytuple(["VariableDeclarator"]+p[1 :])
 
@@ -936,8 +1024,7 @@ def p_VariableDeclarator(p):
 #     p[0] = mytuple(["ZooDims"]+p[1 :])
 
 def p_VariableDeclaratorId(p):
-    '''VariableDeclaratorId : IDENT ZooDims
-    '''
+    '''VariableDeclaratorId : IDENT Dims'''
     p[0] = mytuple(["VariableDeclaratorId"]+p[1 :])
 
 def p_VariableInitializer (p):
@@ -948,7 +1035,7 @@ def p_VariableInitializer (p):
 
 def p_UnannType(p):
     '''UnannType :  UnannPrimitiveType
-                | UnannReferenceType 
+                | UnannReferenceType
     '''
     p[0] = mytuple(["UnannType"]+p[1 :])
 
@@ -959,16 +1046,14 @@ def p_UnannPrimitiveType (p):
     p[0] = mytuple(["UnannPrimitiveType"]+p[1 :])
 
 def p_UnannReferenceType (p):
-    '''UnannReferenceType :  UnannClassOrInterfaceType
-                        | UnannArrayType 
+    '''UnannReferenceType :  UnannClassType
+                        | UnannArrayType
     '''
     p[0] = mytuple(["UnannReferenceType"]+p[1 :])
 
-def p_UnannClassOrInterfaceType (p):
-    '''UnannClassOrInterfaceType :  UnannClassType
-                                | UnannInterfaceType 
-    '''
-    p[0] = mytuple(["UnannClassOrInterfaceType"]+p[1 :])
+# def p_UnannClassOrInterfaceType (p):
+#     '''UnannClassType :  UnannClassType'''
+#     p[0] = mytuple(["UnannClassType"]+p[1 :])
 
 # def p_ZooTypeArguments(p):
 #     '''ZooTypeArguments : TypeArguments
@@ -980,16 +1065,22 @@ def p_UnannClassOrInterfaceType (p):
 #     '''
 
 def p_UnannClassType (p):
-    '''UnannClassType : IDENT ZooTypeArguments
-                        | UnannClassOrInterfaceType PERIOD IDENT ZooTypeArguments 
-                        | UnannClassOrInterfaceType PERIOD AnnotationS IDENT ZooTypeArguments 
+    '''UnannClassType : IDENT TypeArguments
+                        | UnannClassType PERIOD IDENT
+                        | UnannClassType PERIOD IDENT TypeArguments
+                        | UnannClassType PERIOD AnnotationS IDENT
+                        | UnannClassType PERIOD AnnotationS IDENT TypeArguments
+                        | IDENT PERIOD IDENT
+                        | IDENT PERIOD IDENT TypeArguments
+                        | IDENT PERIOD AnnotationS IDENT
+                        | IDENT PERIOD AnnotationS IDENT TypeArguments
     '''
     p[0] = mytuple(["UnannClassType"]+p[1 :])
 
-def p_UnannInterfaceType (p):
-    '''UnannInterfaceType : UnannClassType
-    '''
-    p[0] = mytuple(["UnannInterfaceType"]+p[1 :])
+# def p_UnannInterfaceType (p):
+#     '''UnannClassType : UnannClassType
+#     '''
+#     p[0] = mytuple(["UnannClassType"]+p[1 :])
 
 # def p_UnannTypeVariable (p):
 #     '''IDENT : IDENT
@@ -998,8 +1089,8 @@ def p_UnannInterfaceType (p):
 
 def p_UnannArrayType (p):
     '''UnannArrayType :  UnannPrimitiveType Dims
-                        | UnannClassOrInterfaceType Dims
-                        | IDENT Dims 
+                        | UnannClassType Dims
+                        | IDENT Dims
     '''
     p[0] = mytuple(["UnannArrayType"]+p[1 :])
 
@@ -1036,18 +1127,31 @@ def p_ZooThrows(p):
     p[0] = mytuple(["ZooThrows"]+p[1 :])
 
 def p_MethodHeader (p):
-    '''MethodHeader : Result MethodDeclarator ZooThrows
-                    | TypeParameters AnnotationS Result MethodDeclarator ZooThrows 
-                    | TypeParameters Result MethodDeclarator ZooThrows
+    '''MethodHeader : UnannType MethodDeclarator Throws
+                    | TypeParameters AnnotationS UnannType MethodDeclarator Throws
+                    | TypeParameters UnannType MethodDeclarator Throws
+                    | VOID MethodDeclarator Throws
+                    | TypeParameters AnnotationS VOID MethodDeclarator Throws
+                    | TypeParameters VOID MethodDeclarator Throws
+                    | IDENT MethodDeclarator Throws
+                    | TypeParameters AnnotationS IDENT MethodDeclarator Throws
+                    | TypeParameters IDENT MethodDeclarator Throws
+                    | UnannType MethodDeclarator
+                    | TypeParameters AnnotationS UnannType MethodDeclarator
+                    | TypeParameters UnannType MethodDeclarator
+                    | VOID MethodDeclarator
+                    | TypeParameters AnnotationS VOID MethodDeclarator
+                    | TypeParameters VOID MethodDeclarator
+                    | IDENT MethodDeclarator
+                    | TypeParameters AnnotationS IDENT MethodDeclarator
+                    | TypeParameters IDENT MethodDeclarator
     '''
     p[0] = mytuple(["MethodHeader"]+p[1 :])
 
-def p_Result (p):
-    '''Result :  UnannType
-                | IDENT
-                | VOID 
-    '''
-    p[0] = mytuple(["Result"]+p[1 :])
+# def p_Result (p):
+#     '''Result :  UnannType
+#     '''
+#     p[0] = mytuple(["Result"]+p[1 :])
 
 def p_ZooFormalParameterList (p):
     '''ZooFormalParameterList : FormalParameterList
@@ -1056,7 +1160,10 @@ def p_ZooFormalParameterList (p):
     p[0] = mytuple(["ZooFormalParameterList"]+p[1 :])
 
 def p_MethodDeclarator (p):
-    '''MethodDeclarator : IDENT LPAREN ZooFormalParameterList RPAREN ZooDims
+    '''MethodDeclarator : IDENT LPAREN FormalParameterList RPAREN Dims
+                        | IDENT LPAREN FormalParameterList RPAREN
+                        | IDENT LPAREN RPAREN Dims
+                        | IDENT LPAREN RPAREN
     '''
     p[0] = mytuple(["MethodDeclarator"]+p[1 :])
 
@@ -1065,7 +1172,7 @@ def p_MethodDeclarator (p):
 def p_FormalParameterList (p):
     '''FormalParameterList :  ReceiverParameter
                             | FormalParameters COMMA LastFormalParameter
-                            | LastFormalParameter 
+                            | LastFormalParameter
     '''
     p[0] = mytuple(["FormalParameterList"]+p[1 :])
 
@@ -1088,15 +1195,21 @@ def p_ZooVariableModifier (p):
     p[0] = mytuple(["ZooVariableModifier"] + p[1 :])
 
 def p_FormalParameter (p):
-    '''FormalParameter : ZooVariableModifier UnannType VariableDeclaratorId
-                        | ZooVariableModifier IDENT VariableDeclaratorId
+    '''FormalParameter : VariableModifier UnannType VariableDeclaratorId
+                        | VariableModifier IDENT VariableDeclaratorId
+                        | VariableModifier UnannType IDENT
+                        | VariableModifier IDENT IDENT
+                        |  UnannType VariableDeclaratorId
+                        |  IDENT VariableDeclaratorId
+                        |  UnannType IDENT
+                        |  IDENT IDENT
     '''
     p[0] = mytuple(["FormalParameter"] + p[1 :])
 
 
 
 def p_VariableModifier (p):
-    '''VariableModifier : Annotation 
+    '''VariableModifier : Annotation
                         | FINAL
     '''
     p[0] = mytuple(["VariableModifier"] + p[1 :])
@@ -1114,6 +1227,10 @@ def p_LastFormalParameter (p):
                             | FormalParameter
                             | VariableModifierS UnannType ELLIPSIS VariableDeclaratorId
                             | VariableModifierS IDENT ELLIPSIS VariableDeclaratorId
+                            | VariableModifierS UnannType AnnotationS ELLIPSIS IDENT
+                            | VariableModifierS IDENT AnnotationS ELLIPSIS IDENT
+                            | VariableModifierS UnannType ELLIPSIS IDENT
+                            | VariableModifierS IDENT ELLIPSIS IDENT
 
     '''
     p[0] = mytuple(["LastFormalParameter"] + p[1 :])
@@ -1125,37 +1242,42 @@ def p_ZooIDENTPERIOD (p):
     p[0] = mytuple(["ZooIDENTPERIOD"] + p[1 :])
 
 def p_ReceiverParameter (p):
-    '''ReceiverParameter : AnnotationS UnannType ZooIDENTPERIOD THIS
-                        | AnnotationS IDENT ZooIDENTPERIOD THIS
-                            | UnannType ZooIDENTPERIOD THIS
-                            | IDENT ZooIDENTPERIOD THIS
-
+    '''ReceiverParameter : AnnotationS UnannType IDENT PERIOD THIS
+                            | AnnotationS IDENT IDENT PERIOD THIS
+                            | UnannType IDENT PERIOD THIS
+                            | IDENT IDENT PERIOD THIS
+                            | AnnotationS UnannType THIS
+                            | AnnotationS IDENT THIS
+                            | UnannType THIS
+                            | IDENT THIS
     '''
     p[0] = mytuple(["ReceiverParameter"] + p[1 :])
 
 
 def p_Throws (p):
-    '''Throws :  THROWS ExceptionTypeList 
+    '''Throws :  THROWS ExceptionTypeList
     '''
     p[0] = mytuple(["Throws"] + p[1 :])
 
 def p_COMMAExceptionTypeS (p):
     '''COMMAExceptionTypeS : COMMA ExceptionType COMMAExceptionTypeS
+                    | COMMA IDENT COMMAExceptionTypeS
                             | empty
     '''
     p[0] = mytuple(["COMMAExceptionTypeS"] + p[1 :])
 
 
 def p_ExceptionTypeList (p):
-    '''ExceptionTypeList : ExceptionType COMMAExceptionTypeS 
+    '''ExceptionTypeList : ExceptionType COMMAExceptionTypeS
+                    | IDENT COMMAExceptionTypeS
     '''
     p[0] = mytuple(["ExceptionTypeList"] + p[1 :])
 
 
 def p_ExceptionType (p):
     ''' ExceptionType :  ClassType
-                        | TypeVariable 
                         | IDENT
+                        | TypeVariable
     '''
     p[0] = mytuple(["ExceptionType"] + p[1 :])
 
@@ -1182,7 +1304,8 @@ def p_ConstructorModifierS (p):
     p[0] = mytuple(["ConstructorModifierS"] + p[1 :])
 
 def p_ConstructorDeclaration (p):
-    '''ConstructorDeclaration : ConstructorModifierS ConstructorDeclarator ZooThrows ConstructorBody
+    '''ConstructorDeclaration : ConstructorModifierS ConstructorDeclarator ConstructorBody
+                                | ConstructorModifierS ConstructorDeclarator Throws ConstructorBody
     '''
     p[0] = mytuple(["ConstructorDeclaration"] + p[1 :])
 
@@ -1197,7 +1320,10 @@ def p_ConstructorModifier (p):
     p[0] = mytuple(["ConstructorModifier"] + p[1 :])
 
 def p_ConstructorDeclarator (p):
-    '''ConstructorDeclarator : ZooTypeParameters IDENT LPAREN ZooFormalParameterList RPAREN
+    '''ConstructorDeclarator : TypeParameters IDENT LPAREN FormalParameterList RPAREN
+                            |  IDENT LPAREN FormalParameterList RPAREN
+                            | TypeParameters IDENT LPAREN  RPAREN
+                            |  IDENT LPAREN  RPAREN
     '''
     p[0] = mytuple(["ConstructorDeclarator"] + p[1 :])
 
@@ -1207,7 +1333,10 @@ def p_ConstructorDeclarator (p):
 #     p[0] = mytuple(["IDENT"] + p[1 :])
 
 def p_ConstructorBody (p):
-    '''ConstructorBody : LBRACE  ZooExplicitConstructorInvocation ZooBlockStatements  RBRACE
+    '''ConstructorBody : LBRACE  ExplicitConstructorInvocation BlockStatements  RBRACE
+                        | LBRACE  ExplicitConstructorInvocation  RBRACE
+                        | LBRACE  BlockStatements  RBRACE
+                        | LBRACE  RBRACE
     '''
     p[0] = mytuple(["ConstructorBody"] + p[1 :])
 
@@ -1230,23 +1359,46 @@ def p_ZooArgumentList (p):
     p[0] = mytuple(["ZooArgumentList"] + p[1 :])
 
 def p_ExplicitConstructorInvocation (p):
-    '''ExplicitConstructorInvocation : ZooTypeArguments THIS LPAREN ZooArgumentList RPAREN SEMICOLON
-                                    | ZooTypeArguments SUPER LPAREN ZooArgumentList RPAREN SEMICOLON
-                                    | ExpressionName PERIOD ZooTypeArguments SUPER LPAREN ZooArgumentList RPAREN SEMICOLON
-                                    | IDENT PERIOD ZooTypeArguments SUPER LPAREN ZooArgumentList RPAREN SEMICOLON
-                                    | Primary PERIOD ZooTypeArguments SUPER LPAREN ZooArgumentList RPAREN SEMICOLON
+    '''ExplicitConstructorInvocation : TypeArguments THIS LPAREN ArgumentList RPAREN SEMICOLON
+                                    | TypeArguments THIS LPAREN  RPAREN SEMICOLON
+                                    |  THIS LPAREN ArgumentList RPAREN SEMICOLON
+                                    |  THIS LPAREN  RPAREN SEMICOLON
+                                    | TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    | TypeArguments SUPER LPAREN  RPAREN SEMICOLON
+                                    |  SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    |  SUPER LPAREN  RPAREN SEMICOLON
+                                    | ExpressionName PERIOD TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    | ExpressionName PERIOD  SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    | ExpressionName PERIOD TypeArguments SUPER LPAREN  RPAREN SEMICOLON
+                                    | ExpressionName PERIOD  SUPER LPAREN  RPAREN SEMICOLON
+                                    | IDENT PERIOD TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    | IDENT PERIOD  SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    | IDENT PERIOD TypeArguments SUPER LPAREN  RPAREN SEMICOLON
+                                    | IDENT PERIOD  SUPER LPAREN  RPAREN SEMICOLON
+                                    | Primary PERIOD TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    | Primary PERIOD TypeArguments SUPER LPAREN RPAREN SEMICOLON
+                                    | Primary PERIOD  SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    | Primary PERIOD  SUPER LPAREN  RPAREN SEMICOLON
     '''
     p[0] = mytuple(["ExplicitConstructorInvocation"] + p[1:])
 
 def p_ClassModifierS (p):
-    '''ClassModifierS : ClassModifier ClassModifierS
+    '''ClassModifierS : Annotation ClassModifierS
+                        | PUBLIC ClassModifierS
+                        | PROTECTED ClassModifierS
+                        | PRIVATE ClassModifierS
+                        | FINAL ClassModifierS
+                        | ABSTRACT ClassModifierS
+                        | STATIC ClassModifierS
+                        | STRICTFP ClassModifierS
                         | empty
     '''
     p[0] = mytuple(["ClassModifierS"] + p[1 :])
 
 
 def p_EnumDeclaration (p):
-    '''EnumDeclaration : ClassModifierS ENUM IDENT ZooSuperinterfaces EnumBody
+    '''EnumDeclaration : ClassModifierS ENUM IDENT Superinterfaces EnumBody
+                    | ClassModifierS ENUM IDENT EnumBody
     '''
     p[0] = mytuple(["EnumDeclaration"] + p[1 :])
 
@@ -1270,7 +1422,14 @@ def p_ZooEnumBodyDeclarations (p):
 
 
 def p_EnumBody (p):
-    '''EnumBody : LBRACE ZooEnumConstantList ZooCOMMA ZooEnumBodyDeclarations  RBRACE
+    '''EnumBody : LBRACE EnumConstantList COMMA EnumBodyDeclarations  RBRACE
+                | LBRACE EnumConstantList COMMA   RBRACE
+                | LBRACE EnumConstantList  EnumBodyDeclarations  RBRACE
+                | LBRACE EnumConstantList    RBRACE
+                | LBRACE COMMA EnumBodyDeclarations  RBRACE
+                | LBRACE COMMA   RBRACE
+                | LBRACE  EnumBodyDeclarations  RBRACE
+                | LBRACE    RBRACE
     '''
     p[0] = mytuple(["EnumBody"] + p[1 :])
 
@@ -1282,13 +1441,18 @@ def p_COMMAEnumConstantS (p):
 
 
 def p_EnumConstantList (p):
-    '''EnumConstantList : EnumConstant COMMAEnumConstantS 
+    '''EnumConstantList : EnumConstant COMMAEnumConstantS
     '''
     p[0] = mytuple(["EnumConstantList"] + p[1 :])
 
 
 def p_EnumConstant (p):
-    '''EnumConstant : EnumConstantModifierS IDENT ZooLPARENZooArgumentListRPAREN ZooClassBody
+    '''EnumConstant : EnumConstantModifierS IDENT LPAREN RPAREN ClassBody
+    | EnumConstantModifierS IDENT LPAREN ArgumentList  RPAREN ClassBody
+    | EnumConstantModifierS IDENT  ClassBody
+    | EnumConstantModifierS IDENT LPAREN RPAREN
+    | EnumConstantModifierS IDENT LPAREN ArgumentList  RPAREN
+    | EnumConstantModifierS IDENT
     '''
     p[0] = mytuple(["EnumConstant"] + p[1 :])
 
@@ -1307,11 +1471,12 @@ def p_ZooClassBody (p):
     p[0] = mytuple(["ZooClassBody"] + p[1 :])
 
 
-def p_ZooLPARENZooArgumentListRPAREN (p):
-    '''ZooLPARENZooArgumentListRPAREN : LPAREN ZooArgumentList RPAREN
-                                        | empty
-    '''
-    p[0] = mytuple(["ZooLPARENZooArgumentListRPAREN"] + p[1 :])
+# def p_ZooLPARENZooArgumentListRPAREN (p):
+#     '''ZooLPARENZooArgumentListRPAREN : LPAREN ZooArgumentList RPAREN
+#                                         | LPAREN RPAREN
+#                                         | empty
+#     '''
+#     p[0] = mytuple(["ZooLPARENZooArgumentListRPAREN"] + p[1 :])
 
 def p_EnumConstantModifier (p):
     '''EnumConstantModifier : Annotation
@@ -1324,14 +1489,18 @@ def p_EnumBodyDeclarations (p):
     '''
     p[0] = mytuple(["EnumBodyDeclarations"] + p[1 :])
 
+#</editor-fold> Section 7 : Packages #########################
+
+#<editor-fold> Section 4 #########################
 ###################################
 # Section 4
 # #################################
- 
-def p_Type(p):
-    '''Type : PrimitiveType
-            | ReferenceType'''
-    p[0]=mytuple(["Type"]+p[1 :])
+
+# def p_Type(p):
+#     '''Type : PrimitiveType
+#             | ReferenceType
+#             | IDENT'''
+#     p[0]=mytuple(["Type"]+p[1 :])
 
 #
 
@@ -1350,7 +1519,7 @@ def p_PrimitiveType(p):
 #
 
 def p_NumericType(p):
-    '''NumericType : IntegralType 
+    '''NumericType : IntegralType
                    | FloatingPointType'''
     p[0]=mytuple(["NumericType"]+p[1 :])
 
@@ -1374,9 +1543,9 @@ def p_FloatingPointType(p):
 #
 
 def p_ReferenceType(p):
-    '''ReferenceType : ClassType 
-                     | TypeVariable 
-                     | IDENT
+    '''ReferenceType : ClassType
+                    | IDENT
+                     | TypeVariable
                      | ArrayType'''
     p[0]=mytuple(["ReferenceType"]+p[1 :])
 
@@ -1389,15 +1558,23 @@ def p_ReferenceType(p):
 #
 
 # def p_ClassType(p):
-#     '''ClassType : AnnotationS IDENT ZooTypeArguments 
+#     '''ClassType : AnnotationS IDENT ZooTypeArguments
 #                  | ClassType PERIOD AnnotationS IDENT ZooTypeArguments '''
 #     p[0]=mytuple(["ClassType"]+p[1 :])
 
 def p_ClassType(p):
-    '''ClassType : TypeVariable ZooTypeArguments 
-                 | IDENT ZooTypeArguments
-                 | ClassType PERIOD TypeVariable ZooTypeArguments
-                 | ClassType PERIOD IDENT ZooTypeArguments '''
+    '''ClassType : TypeVariable TypeArguments
+                | TypeVariable
+                 | IDENT TypeArguments
+                 | ClassType PERIOD TypeVariable TypeArguments
+                 | ClassType PERIOD IDENT TypeArguments
+                 | IDENT PERIOD TypeVariable TypeArguments
+                 | IDENT PERIOD IDENT TypeArguments
+                 | IDENT
+                 | ClassType PERIOD TypeVariable
+                 | ClassType PERIOD IDENT
+                 | IDENT PERIOD TypeVariable
+                 | IDENT PERIOD IDENT  '''
     p[0]=mytuple(["ClassType"]+p[1 :])
 
 
@@ -1420,9 +1597,9 @@ def p_TypeVariable(p):
 #
 
 def p_ArrayType(p):
-    '''ArrayType :  PrimitiveType Dims 
-                 |  ClassType Dims 
-                 |  TypeVariable Dims 
+    '''ArrayType :  PrimitiveType Dims
+                 |  ClassType Dims
+                 |  TypeVariable Dims
                  | IDENT Dims'''
     p[0]=mytuple(["ArrayType"]+p[1 :])
 
@@ -1442,7 +1619,8 @@ def p_AnnotationSLBRACERBRACES(p):
 #
 
 def p_TypeParameter(p):
-    '''TypeParameter :  TypeParameterModifierS IDENT ZooTypeBound '''
+    '''TypeParameter :  TypeParameterModifierS IDENT TypeBound
+                    | TypeParameterModifierS IDENT'''
     p[0]=mytuple(["TypeParameter"]+p[1 :])
 
 def p_TypeParameterModifierS(p):
@@ -1467,7 +1645,8 @@ def p_TypeParameterModifier(p):
 def p_TypeBound(p):
     '''TypeBound : EXTENDS TypeVariable
                  | EXTENDS IDENT
-                 | EXTENDS ClassType AdditionalBoundS'''
+                 | EXTENDS ClassType AdditionalBoundS
+                 | EXTENDS IDENT AdditionalBoundS'''
     p[0]=mytuple(["TypeBound"]+p[1 :])
 
 # def p_AdditionalBoundS(p):
@@ -1478,7 +1657,8 @@ def p_TypeBound(p):
 #
 
 def p_AdditionalBound(p):
-    '''AdditionalBound : AND ClassType '''
+    '''AdditionalBound : AND ClassType
+                        | AND IDENT'''
     p[0]=mytuple(["AdditionalBound"]+p[1 :])
 
 #
@@ -1490,11 +1670,13 @@ def p_TypeArguments(p):
 #
 
 def p_TypeArgumentList(p):
-    '''TypeArgumentList : TypeArgument COMMATypeArgumentS'''
+    '''TypeArgumentList : TypeArgument COMMATypeArgumentS
+                        |  IDENT COMMATypeArgumentS'''
     p[0]=mytuple(["TypeArgumentList"]+p[1 :])
 
 def p_COMMATypeArgumentS(p):
     '''COMMATypeArgumentS : COMMA TypeArgument COMMATypeArgumentS
+                        | COMMA IDENT COMMATypeArgumentS
                           | empty '''
     p[0]=mytuple(["COMMATypeArgumentS"]+p[1 :])
 
@@ -1508,8 +1690,10 @@ def p_TypeArgument(p):
 #
 
 def p_Wildcard(p):
-    '''Wildcard : AnnotationS QUES ZooWildcardBounds
-                | QUES ZooWildcardBounds'''
+    '''Wildcard : AnnotationS QUES WildcardBounds
+                | AnnotationS QUES
+                | QUES WildcardBounds
+                | QUES'''
     p[0]=mytuple(["Wildcard"]+p[1 :])
 
 def p_ZooWildcardBounds(p):
@@ -1521,23 +1705,27 @@ def p_ZooWildcardBounds(p):
 
 def p_WildcardBounds(p):
     '''WildcardBounds : EXTENDS ReferenceType
-                      | SUPER ReferenceType'''
+                      | EXTENDS IDENT
+                      | SUPER ReferenceType
+                      | SUPER IDENT'''
     p[0]=mytuple(["WildcardBounds"]+p[1 :])
-                      
-#
 
+#</editor-fold> Section 4 #########################
+
+#<editor-fold> Section 14 #########################
 ###################################
 # Section 14
 # #################################
- 
- 
+
+
 def p_Block(p):
-    '''Block : LBRACE ZooBlockStatements RBRACE
+    '''Block : LBRACE RBRACE
+    | LBRACE BlockStatements RBRACE
 '''
     p[0]=mytuple(["Block"]+p[1 :])
 
 def p_ZooBlockStatements(p):
-    '''ZooBlockStatements : BlockStatements 
+    '''ZooBlockStatements : BlockStatements
 | empty'''
     p[0]=mytuple(["ZooBlockStatements"]+p[1 :])
 
@@ -1731,27 +1919,42 @@ def p_ForStatementNoShortIf(p):
     p[0]=mytuple(["ForStatementNoShortIf"]+p[1 :])
 
 def p_BasicForStatement(p):
-    '''BasicForStatement : FOR LPAREN ZooForInit SEMICOLON ZooExpression SEMICOLON ZooForUpdate RPAREN Statement
+    '''BasicForStatement : FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN Statement
+    | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON RPAREN Statement
+    | FOR LPAREN ForInit SEMICOLON SEMICOLON ForUpdate RPAREN Statement
+    | FOR LPAREN ForInit SEMICOLON SEMICOLON  RPAREN Statement
+    | FOR LPAREN  SEMICOLON Expression SEMICOLON ForUpdate RPAREN Statement
+    | FOR LPAREN  SEMICOLON Expression SEMICOLON RPAREN Statement
+    | FOR LPAREN  SEMICOLON SEMICOLON ForUpdate RPAREN Statement
+    | FOR LPAREN  SEMICOLON SEMICOLON  RPAREN Statement
 '''
     p[0]=mytuple(["BasicForStatement"]+p[1 :])
 
 def p_ZooForUpdate(p):
-    '''ZooForUpdate : ForUpdate 
+    '''ZooForUpdate : ForUpdate
 | empty'''
     p[0]=mytuple(["ZooForUpdate"]+p[1 :])
 
 def p_ZooExpression(p):
-    '''ZooExpression : Expression 
+    '''ZooExpression : Expression
 | empty'''
     p[0]=mytuple(["ZooExpression"]+p[1 :])
 
 def p_ZooForInit(p):
-    '''ZooForInit : ForInit 
+    '''ZooForInit : ForInit
 | empty'''
     p[0]=mytuple(["ZooForInit"]+p[1 :])
 
 def p_BasicForStatementNoShortIf(p):
-    '''BasicForStatementNoShortIf : FOR LPAREN ZooForInit SEMICOLON ZooExpression SEMICOLON ZooForUpdate RPAREN StatementNoShortIf
+    '''BasicForStatementNoShortIf : FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN StatementNoShortIf
+                                | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON  RPAREN StatementNoShortIf
+                                | FOR LPAREN ForInit SEMICOLON  SEMICOLON ForUpdate RPAREN StatementNoShortIf
+                                | FOR LPAREN ForInit SEMICOLON  SEMICOLON  RPAREN StatementNoShortIf
+                                | FOR LPAREN  SEMICOLON Expression SEMICOLON ForUpdate RPAREN StatementNoShortIf
+                                | FOR LPAREN  SEMICOLON Expression SEMICOLON  RPAREN StatementNoShortIf
+                                | FOR LPAREN  SEMICOLON  SEMICOLON ForUpdate RPAREN StatementNoShortIf
+                                | FOR LPAREN  SEMICOLON  SEMICOLON  RPAREN StatementNoShortIf
+
 '''
     p[0]=mytuple(["BasicForStatementNoShortIf"]+p[1 :])
 
@@ -1782,35 +1985,42 @@ def p_COMMAStatementExpressionS(p):
 def p_EnhancedForStatement(p):
     '''EnhancedForStatement : FOR LPAREN VariableModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN Statement
                             | FOR LPAREN VariableModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN Statement
+                            | FOR LPAREN VariableModifierS UnannType IDENT  COLON  Expression RPAREN Statement
+                            | FOR LPAREN VariableModifierS IDENT IDENT  COLON  Expression RPAREN Statement
 '''
     p[0]=mytuple(["EnhancedForStatement"]+p[1 :])
 
 def p_EnhancedForStatementNoShortIf(p):
     '''EnhancedForStatementNoShortIf : FOR LPAREN VariableModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN VariableModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN VariableModifierS UnannType IDENT  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN VariableModifierS IDENT IDENT  COLON  Expression RPAREN StatementNoShortIf
 '''
     p[0]=mytuple(["EnhancedForStatementNoShortIf"]+p[1 :])
 
 def p_BreakStatement(p):
-    '''BreakStatement : BREAK ZooIDENT SEMICOLON
+    '''BreakStatement : BREAK SEMICOLON
+                    | BREAK IDENT SEMICOLON
 '''
     p[0]=mytuple(["BreakStatement"]+p[1 :])
 def p_ZooIDENT(p):
-    '''ZooIDENT : IDENT 
+    '''ZooIDENT : IDENT
 | empty'''
     p[0]=mytuple(["ZooIDENT"]+p[1 :])
 
 def p_ContinueStatement(p):
-    '''ContinueStatement : CONTINUE ZooIDENT SEMICOLON
+    '''ContinueStatement : CONTINUE IDENT SEMICOLON
+                        | CONTINUE SEMICOLON
 '''
     p[0]=mytuple(["ContinueStatement"]+p[1 :])
 
 def p_ReturnStatement(p):
-    '''ReturnStatement : RETURN ZooExpression SEMICOLON
+    '''ReturnStatement : RETURN Expression SEMICOLON
+                    |  RETURN  SEMICOLON
 '''
     p[0]=mytuple(["ReturnStatement"]+p[1 :])
 # def p_ZooExpression(p):
-#     '''ZooExpression : Expression 
+#     '''ZooExpression : Expression
 # | empty'''
 #     p[0]=mytuple(["ZooExpression"]+p[1 :])
 
@@ -1826,12 +2036,13 @@ def p_SynchronizedStatement(p):
 
 def p_TryStatement(p):
     '''TryStatement : TRY Block Catches
-| TRY Block ZooCatches Finally
+| TRY Block  Finally
+| TRY Block Catches Finally
 | TryWithResourcesStatement
 '''
     p[0]=mytuple(["TryStatement"]+p[1 :])
 def p_ZooCatches(p):
-    '''ZooCatches : Catches 
+    '''ZooCatches : Catches
 | empty'''
     p[0]=mytuple(["ZooCatches"]+p[1 :])
 
@@ -1851,16 +2062,19 @@ def p_CatchClause(p):
 
 def p_CatchFormalParameter(p):
     '''CatchFormalParameter : VariableModifierS CatchType VariableDeclaratorId
+                            | VariableModifierS CatchType IDENT
 '''
     p[0]=mytuple(["CatchFormalParameter"]+p[1 :])
 
 def p_CatchType(p):
     '''CatchType : UnannClassType ORClassTypeS
+                | IDENT ORClassTypeS
 '''
     p[0]=mytuple(["CatchType"]+p[1 :])
 
 def p_ORClassTypeS(p):
     '''ORClassTypeS : OR ClassType ORClassTypeS
+                    | OR IDENT ORClassTypeS
                     | empty'''
     p[0]=mytuple(["ORClassTypeS"]+p[1 :])
 
@@ -1871,11 +2085,14 @@ def p_Finally(p):
     p[0]=mytuple(["Finally"]+p[1 :])
 
 def p_TryWithResourcesStatement(p):
-    '''TryWithResourcesStatement : TRY ResourceSpecification Block ZooCatches ZooFinally
+    '''TryWithResourcesStatement : TRY ResourceSpecification Block Catches Finally
+                                | TRY ResourceSpecification Block  Finally
+                                | TRY ResourceSpecification Block Catches
+                                | TRY ResourceSpecification Block
 '''
     p[0]=mytuple(["TryWithResourcesStatement"]+p[1 :])
 def p_ZooFinally(p):
-    '''ZooFinally : Finally 
+    '''ZooFinally : Finally
 | empty'''
     p[0]=mytuple(["ZooFinally"]+p[1 :])
 
@@ -1886,7 +2103,8 @@ def p_ZooSEMICOLON(p):
     p[0]=mytuple(["ZooSEMICOLON"]+p[1 :])
 
 def p_ResourceSpecification(p):
-    '''ResourceSpecification : LPAREN ResourceList ZooSEMICOLON RPAREN
+    '''ResourceSpecification : LPAREN ResourceList SEMICOLON RPAREN
+                            | LPAREN ResourceList RPAREN
 '''
     p[0]=mytuple(["ResourceSpecification"]+p[1 :])
 
@@ -1905,7 +2123,9 @@ def p_SEMICOLONResourceS(p):
 
 def p_Resource(p):
     '''Resource : VariableModifierS UnannType VariableDeclaratorId ASSIGN Expression
-                | VariableModifierS IDENT VariableDeclaratorId ASSIGN Expression'''
+                | VariableModifierS IDENT VariableDeclaratorId ASSIGN Expression
+                | VariableModifierS UnannType IDENT ASSIGN Expression
+                | VariableModifierS IDENT IDENT ASSIGN Expression'''
     p[0]=mytuple(["Resource"]+p[1 :])
 
 def p_StartCompilationUnit( p):
@@ -1920,6 +2140,8 @@ def p_StartCompilationUnit( p):
 # def p_start_statement( p):
 #     '''start : MUL block_statement'''
 #     p[0] = p[2]
+
+#</editor-fold> Section 14 #########################
 
 
 def p_error( p):
@@ -1969,9 +2191,9 @@ def parse_string(code, debug=0, lineno=1, prefix='++'):
         #     HASH_MAP[tok.value] = "Keyword"
         # else : # Comments or unknown
         # continue
-# 
+#
         # print(tok)
-# 
+#
     print("END of TOKENS")
     lexer.lineno = lineno
     return parser.parse(prefix + code, lexer=lexer, debug=debug)
