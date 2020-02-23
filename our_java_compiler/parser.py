@@ -1125,6 +1125,10 @@ def p_type( p):
             | reference_type'''
     p[0] = p[1]
 
+def p_annotations(p):
+    '''annotations: annotations annotation
+                    | annotation'''
+
 def p_primitive_type( p):
     '''primitive_type : BOOLEAN
                         | VOID
@@ -1134,11 +1138,26 @@ def p_primitive_type( p):
                         | LONG
                         | CHAR
                         | FLOAT
-                        | DOUBLE'''
+                        | DOUBLE
+                        | annotations BOOLEAN
+                        | annotations VOID
+                        | annotations BYTE
+                        | annotations SHORT
+                        | annotations INT
+                        | annotations LONG
+                        | annotations CHAR
+                        | annotations FLOAT
+                        | annotations DOUBLE'''
     p[0] = p[1]
+
+
+def p_type_variable(p):
+    '''type_variable : IDENT
+                     | annotations IDENT'''
 
 def p_reference_type( p):
     '''reference_type : class_or_interface_type
+                        | type_variable
                         | array_type'''
     p[0] = p[1]
 
@@ -1146,6 +1165,7 @@ def p_class_or_interface_type( p):
     '''class_or_interface_type : class_or_interface
                                 | generic_type'''
     p[0] = p[1]
+    
 
 def p_class_type( p):
     '''class_type : class_or_interface_type'''
@@ -1179,9 +1199,9 @@ def p_generic_type2( p):
 #        '''array_type_with_type_arguments_name : generic_type PERIOD name'''
 #        p[0] = p[1] + PERIOD + p[3]
 
-def p_array_type( p):
+def p_array_type( p):            #change
     '''array_type : primitive_type dims
-                    | name dims'''
+                    | type_variable dims'''
     p[0] = Type(p[1], dimensions=p[2])
 
 def p_array_type2( p):
@@ -1327,7 +1347,7 @@ def p_wildcard3( p):
     else:
         p[0] = Wildcard(bounds=p[2])
 
-def p_wildcard_bounds3( p):
+def p_wildcard_bounds3(p):
     '''wildcard_bounds3 : EXTENDS reference_type3
                         | SUPER reference_type3'''
     if p[1] == 'extends':
