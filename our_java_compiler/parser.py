@@ -1612,6 +1612,7 @@ def p_abstract_method_declaration( p):
                                 return_type=p[1]['type'], modifiers=p[1]['modifiers'],
                                 throws=p[1]['throws'])
 
+
 def p_method_header101( p):
     '''method_header101 : method_header_name formal_parameter_list_opt RPAREN method_header_extended_dims method_header_throws_clause_opt dec_scope'''
     p[1]['parameters'] = p[2]
