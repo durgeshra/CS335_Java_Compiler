@@ -99,6 +99,7 @@ def p_InterfaceBody(p):
 
 def p_InterfaceMemberDeclarationS(p):
     ''' InterfaceMemberDeclarationS : InterfaceMemberDeclaration InterfaceMemberDeclarationS
+                                    | SEMICOLON InterfaceMemberDeclarationS
                                     | empty '''
     p[0] = mytuple(["InterfaceMemberDeclarationS"]+p[1 :])
 
@@ -107,8 +108,7 @@ def p_InterfaceMemberDeclaration(p):
     '''InterfaceMemberDeclaration : ConstantDeclaration
                                  | InterfaceMethodDeclaration
                                  | ClassDeclaration
-                                 | InterfaceDeclaration
-                                 | SEMICOLON'''
+                                 | InterfaceDeclaration'''
     p[0] = mytuple(["InterfaceMemberDeclaration"]+p[1 :])
 
 def p_ConstantDeclaration(p):
@@ -132,7 +132,9 @@ def p_ConstantDeclaration(p):
 
 def p_InterfaceMethodDeclaration(p):
     '''InterfaceMethodDeclaration : CommonModifierS MethodHeader MethodBody
-                                |  MethodHeader MethodBody'''
+                                |  MethodHeader MethodBody
+                                | CommonModifierS MethodHeader SEMICOLON
+                                |  MethodHeader SEMICOLON'''
     p[0] = mytuple(["InterfaceMethodDeclaration"]+p[1 :])
 
 # def p_InterfaceMethodModifierS(p):
@@ -165,6 +167,7 @@ def p_AnnotationTypeBody(p):
 
 def p_AnnotationTypeMemberDeclarationS(p):
     '''AnnotationTypeMemberDeclarationS : AnnotationTypeMemberDeclaration AnnotationTypeMemberDeclarationS
+                        | SEMICOLON AnnotationTypeMemberDeclarationS
                          | empty'''
     p[0] = mytuple(["AnnotationTypeMemberDeclarationS"]+p[1 :])
 
@@ -172,8 +175,7 @@ def p_AnnotationTypeMemberDeclaration(p):
     '''AnnotationTypeMemberDeclaration : AnnotationTypeElementDeclaration
                                         | ConstantDeclaration
                                         | ClassDeclaration
-                                        | InterfaceDeclaration
-                                        | SEMICOLON'''
+                                        | InterfaceDeclaration'''
     p[0] = mytuple(["AnnotationTypeMemberDeclaration"]+p[1 :])
 
 def p_AnnotationTypeElementDeclaration(p):
@@ -376,20 +378,20 @@ def p_UnqualifiedClassInstanceCreationExpression(p):
     | NEW ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN'''
     p[0] = mytuple(["UnqualifiedClassInstanceCreationExpression"]+p[1 :])
 
-def p_ZooTypeArguments(p):
-    '''ZooTypeArguments : TypeArguments
-                       | empty'''
-    p[0] = mytuple(["ZooTypeArguments"]+p[1 :])
-
-def p_ZooArgumentList(p):
-    '''ZooArgumentList : ArgumentList
-                       | empty'''
-    p[0] = mytuple(["ZooArgumentList"]+p[1 :])
-
-def p_ZooClassBody(p):
-    '''ZooClassBody : ClassBody
-                       | empty'''
-    p[0] = mytuple(["ZooClassBody"]+p[1 :])
+# def p_ZooTypeArguments(p):
+#     '''ZooTypeArguments : TypeArguments
+#                        | empty'''
+#     p[0] = mytuple(["ZooTypeArguments"]+p[1 :])
+#
+# def p_ZooArgumentList(p):
+#     '''ZooArgumentList : ArgumentList
+#                        | empty'''
+#     p[0] = mytuple(["ZooArgumentList"]+p[1 :])
+#
+# def p_ZooClassBody(p):
+#     '''ZooClassBody : ClassBody
+#                        | empty'''
+#     p[0] = mytuple(["ZooClassBody"]+p[1 :])
 
 def p_ClassOrInterfaceTypeToInstantiate(p):
     '''ClassOrInterfaceTypeToInstantiate : AnnotationS IDENT PERIODAnnotationSIDENTS TypeArgumentsOrDiamond
@@ -403,10 +405,10 @@ def p_AnnotationS(p):
                   | Annotation'''
     p[0] = mytuple(["AnnotationS"]+p[1 :])
 
-def p_ZooTypeArgumentsOrDiamond(p):
-    '''ZooTypeArgumentsOrDiamond : TypeArgumentsOrDiamond
-                                | empty'''
-    p[0] = mytuple(["ZooTypeArgumentsOrDiamond"]+p[1 :])
+# def p_ZooTypeArgumentsOrDiamond(p):
+#     '''ZooTypeArgumentsOrDiamond : TypeArgumentsOrDiamond
+#                                 | empty'''
+#     p[0] = mytuple(["ZooTypeArgumentsOrDiamond"]+p[1 :])
 
 def p_PERIODAnnotationSIDENTS(p):
     '''PERIODAnnotationSIDENTS : PERIOD AnnotationS IDENT PERIODAnnotationSIDENTS
@@ -496,12 +498,15 @@ def p_MethodReference(p):
 
 def p_ArrayCreationExpression(p):
     '''ArrayCreationExpression : NEW PrimitiveType DimExprs Dims
+                              | NEW BOOLEAN DimExprs Dims
                               | NEW ClassType DimExprs Dims
                               | NEW IDENT DimExprs Dims
                               | NEW PrimitiveType DimExprs
+                              | NEW BOOLEAN DimExprs
                               | NEW ClassType DimExprs
                               | NEW IDENT DimExprs
                               | NEW PrimitiveType Dims ArrayInitializer
+                              | NEW BOOLEAN Dims ArrayInitializer
                               | NEW ClassType Dims ArrayInitializer
                               | NEW IDENT Dims ArrayInitializer'''
     p[0] = mytuple(["ArrayCreationExpression : "]+p[1 :])
@@ -716,17 +721,25 @@ def p_PostDecrementExpression(p):
 def p_CastExpression(p):
     '''CastExpression : LPAREN PrimitiveType RPAREN UnaryExpression
                      | LPAREN PrimitiveType RPAREN IDENT
+                     | LPAREN BOOLEAN RPAREN UnaryExpression
+                  | LPAREN BOOLEAN RPAREN IDENT
                      | LPAREN ReferenceType AdditionalBoundS RPAREN UnaryExpressionNotPlusMinus
                      | LPAREN ReferenceType AdditionalBoundS RPAREN IDENT
                      | LPAREN ReferenceType AdditionalBoundS RPAREN LambdaExpression
                   | LPAREN IDENT AdditionalBoundS RPAREN UnaryExpressionNotPlusMinus
                   | LPAREN IDENT AdditionalBoundS RPAREN IDENT
-                  | LPAREN IDENT AdditionalBoundS RPAREN LambdaExpression'''
+                  | LPAREN IDENT AdditionalBoundS RPAREN LambdaExpression
+                  | LPAREN ReferenceType RPAREN UnaryExpressionNotPlusMinus
+                  | LPAREN ReferenceType RPAREN IDENT
+                  | LPAREN ReferenceType RPAREN LambdaExpression
+               | LPAREN IDENT RPAREN UnaryExpressionNotPlusMinus
+               | LPAREN IDENT RPAREN IDENT
+               | LPAREN IDENT RPAREN LambdaExpression'''
     p[0] = mytuple(["CastExpression"]+p[1 :])
 
 def p_AdditionalBoundS(p):
     '''AdditionalBoundS : AdditionalBound AdditionalBoundS
-                       | empty'''
+                       | AdditionalBound'''
     p[0] = mytuple(["AdditionalBoundS"]+p[1 :])
 
 def p_ConstantExpression(p):
@@ -756,6 +769,7 @@ def p_ImportDeclarationS(p):
 
 def p_TypeDeclarationS(p):
     '''TypeDeclarationS : TypeDeclaration TypeDeclarationS
+                        | SEMICOLON TypeDeclarationS
                           | empty'''
     p[0] = mytuple(["TypeDeclarationS"]+p[1 :])
 
@@ -803,8 +817,7 @@ def p_StaticImportOnDemandDeclaration(p):
 
 def p_TypeDeclaration(p):
     '''TypeDeclaration : ClassDeclaration
-                      | InterfaceDeclaration
-                      | SEMICOLON'''
+                      | InterfaceDeclaration'''
     p[0] = mytuple(["TypeDeclaration"]+p[1 :])
 
 #</editor-fold>############################################
@@ -964,6 +977,7 @@ def p_InterfaceTypeList(p):
 
 def p_ClassBodyDeclarationS(p):
     '''ClassBodyDeclarationS : ClassBodyDeclaration ClassBodyDeclarationS
+                            | SEMICOLON ClassBodyDeclarationS
                              | empty
     '''
     p[0] = mytuple(["ClassBodyDeclarationS"]+p[1 :])
@@ -986,7 +1000,6 @@ def p_ClassMemberDeclaration(p):
                             | MethodDeclaration
                             | ClassDeclaration
                             | InterfaceDeclaration
-                            | SEMICOLON
     '''
     p[0] = mytuple(["ClassMemberDeclaration"]+p[1 :])
 
@@ -1123,6 +1136,8 @@ def p_UnannArrayType (p):
 def p_MethodDeclaration (p):
     '''MethodDeclaration : CommonModifierS MethodHeader MethodBody
                          | MethodHeader MethodBody
+                        | CommonModifierS MethodHeader SEMICOLON
+                        | MethodHeader SEMICOLON
     '''
     p[0] = mytuple(["MethodDeclaration"]+p[1 :])
 
@@ -1311,7 +1326,6 @@ def p_ExceptionType (p):
 
 def p_MethodBody (p):
     '''MethodBody : Block
-                | SEMICOLON
     '''
     p[0] = mytuple(["MethodBody"] + p[1 :])
 
@@ -1364,29 +1378,31 @@ def p_ConstructorDeclarator (p):
 
 def p_ConstructorBody (p):
     '''ConstructorBody : LBRACE  ExplicitConstructorInvocation BlockStatements  RBRACE
+                        | LBRACE  ExplicitConstructorInvocation SEMICOLON  RBRACE
                         | LBRACE  ExplicitConstructorInvocation  RBRACE
                         | LBRACE  BlockStatements  RBRACE
+                        | LBRACE  SEMICOLON  RBRACE
                         | LBRACE  RBRACE
     '''
     p[0] = mytuple(["ConstructorBody"] + p[1 :])
 
-def p_ZooExplicitConstructorInvocation (p):
-    '''ZooExplicitConstructorInvocation : ExplicitConstructorInvocation
-                                        | empty
-    '''
-    p[0] = mytuple(["ZooExplicitConstructorInvocation"] + p[1 :])
+# def p_ZooExplicitConstructorInvocation (p):
+#     '''ZooExplicitConstructorInvocation : ExplicitConstructorInvocation
+#                                         | empty
+#     '''
+#     p[0] = mytuple(["ZooExplicitConstructorInvocation"] + p[1 :])
 
-def p_ZooBlockStatements (p):
-    '''ZooBlockStatements : BlockStatements
-                            | empty
-    '''
-    p[0] = mytuple(["ZooBlockStatements"] + p[1 :])
+# def p_ZooBlockStatements (p):
+#     '''ZooBlockStatements : BlockStatements
+#                             | empty
+#     '''
+#     p[0] = mytuple(["ZooBlockStatements"] + p[1 :])
 
-def p_ZooArgumentList (p):
-    '''ZooArgumentList : ArgumentList
-                        | empty
-    '''
-    p[0] = mytuple(["ZooArgumentList"] + p[1 :])
+# def p_ZooArgumentList (p):
+#     '''ZooArgumentList : ArgumentList
+#                         | empty
+#     '''
+#     p[0] = mytuple(["ZooArgumentList"] + p[1 :])
 
 def p_ExplicitConstructorInvocation (p):
     '''ExplicitConstructorInvocation : TypeArguments THIS LPAREN ArgumentList RPAREN SEMICOLON
@@ -1539,8 +1555,7 @@ def p_EnumBodyDeclarations (p):
 def p_PrimitiveType(p):
     '''PrimitiveType : AnnotationS NumericType
                      | NumericType
-                     | AnnotationS BOOLEAN
-                     | BOOLEAN'''
+                     | AnnotationS BOOLEAN'''
     p[0]=mytuple(["PrimitiveType"]+p[1 :])
 
 # def p_AnnotationS(p):
@@ -1628,6 +1643,7 @@ def p_TypeVariable(p):
 
 def p_ArrayType(p):
     '''ArrayType :  PrimitiveType Dims
+                | BOOLEAN Dims
                  |  ClassType Dims
                  |  TypeVariable Dims
                  | IDENT Dims'''
@@ -1676,6 +1692,7 @@ def p_TypeBound(p):
     '''TypeBound : EXTENDS TypeVariable
                  | EXTENDS IDENT
                  | EXTENDS ClassType AdditionalBoundS
+                 | EXTENDS ClassType
                  | EXTENDS IDENT AdditionalBoundS'''
     p[0]=mytuple(["TypeBound"]+p[1 :])
 
@@ -1751,28 +1768,35 @@ def p_WildcardBounds(p):
 def p_Block(p):
     '''Block : LBRACE RBRACE
     | LBRACE BlockStatements RBRACE
+    | LBRACE SEMICOLON RBRACE
 '''
     p[0]=mytuple(["Block"]+p[1 :])
 
-def p_ZooBlockStatements(p):
-    '''ZooBlockStatements : BlockStatements
-| empty'''
-    p[0]=mytuple(["ZooBlockStatements"]+p[1 :])
+# def p_ZooBlockStatements(p):
+#     '''ZooBlockStatements : BlockStatements
+# | empty'''
+#     p[0]=mytuple(["ZooBlockStatements"]+p[1 :])
 
 def p_BlockStatements(p):
-    '''BlockStatements : BlockStatement BlockStatementS
+    '''BlockStatements : BlockStatement BlockStatements
+                        | SEMICOLON BlockStatements
+                        | BlockStatement SEMICOLON
+                        | BlockStatement
 '''
+                        # TODO: This was removed: | SEMICOLON SEMICOLON
     p[0]=mytuple(["BlockStatements"]+p[1 :])
-def p_BlockStatementS(p):
-    '''BlockStatementS : BlockStatement BlockStatementS
-| empty'''
-    p[0]=mytuple(["BlockStatementS"]+p[1 :])
+
+# def p_BlockStatementsS(p):
+#     '''BlockStatementsS : BlockStatement BlockStatementsS
+# | empty'''
+#     p[0]=mytuple(["BlockStatementsS"]+p[1 :])
+
 
 def p_BlockStatement(p):
     '''BlockStatement : LocalVariableDeclarationStatement
-| ClassDeclaration
-| Statement
-'''
+                    | ClassDeclaration
+                    | Statement
+                    '''
     p[0]=mytuple(["BlockStatement"]+p[1 :])
 
 def p_LocalVariableDeclarationStatement(p):
@@ -1794,12 +1818,12 @@ def p_LocalVariableDeclaration(p):
 
 def p_Statement(p):
     '''Statement : StatementWithoutTrailingSubstatement
-| LabeledStatement
-| IfThenStatement
-| IfThenElseStatement
-| WhileStatement
-| ForStatement
-'''
+        | LabeledStatement
+        | IfThenStatement
+        | IfThenElseStatement
+        | WhileStatement
+        | ForStatement
+        '''
     p[0]=mytuple(["Statement"]+p[1 :])
 
 def p_StatementNoShortIf(p):
@@ -1813,32 +1837,33 @@ def p_StatementNoShortIf(p):
 
 def p_StatementWithoutTrailingSubstatement(p):
     '''StatementWithoutTrailingSubstatement : Block
-| EmptyStatement
-| ExpressionStatement
-| AssertStatement
-| SwitchStatement
-| DoStatement
-| BreakStatement
-| ContinueStatement
-| ReturnStatement
-| SynchronizedStatement
-| ThrowStatement
-| TryStatement
-'''
+            | ExpressionStatement
+            | AssertStatement
+            | SwitchStatement
+            | DoStatement
+            | BreakStatement
+            | ContinueStatement
+            | ReturnStatement
+            | SynchronizedStatement
+            | ThrowStatement
+            | TryStatement
+            '''
     p[0]=mytuple(["StatementWithoutTrailingSubstatement"]+p[1 :])
 
-def p_EmptyStatement(p):
-    '''EmptyStatement : SEMICOLON
-'''
-    p[0]=mytuple(["EmptyStatement"]+p[1 :])
+# def p_EmptyStatement(p):
+#     '''EmptyStatement : SEMICOLON
+# '''
+#     p[0]=mytuple(["EmptyStatement"]+p[1 :])
 
 def p_LabeledStatement(p):
     '''LabeledStatement : IDENT  COLON  Statement
+                    | IDENT COLON SEMICOLON
 '''
     p[0]=mytuple(["LabeledStatement"]+p[1 :])
 
 def p_LabeledStatementNoShortIf(p):
     '''LabeledStatementNoShortIf : IDENT  COLON  StatementNoShortIf
+                        | IDENT COLON SEMICOLON
 '''
     p[0]=mytuple(["LabeledStatementNoShortIf"]+p[1 :])
 
@@ -1860,16 +1885,23 @@ def p_StatementExpression(p):
 
 def p_IfThenStatement(p):
     '''IfThenStatement : IF LPAREN Expression RPAREN Statement
+        | IF LPAREN Expression RPAREN SEMICOLON
 '''
     p[0]=mytuple(["IfThenStatement"]+p[1 :])
 
 def p_IfThenElseStatement(p):
     '''IfThenElseStatement : IF LPAREN Expression RPAREN StatementNoShortIf ELSE Statement
+            | IF LPAREN Expression RPAREN SEMICOLON ELSE Statement
+            | IF LPAREN Expression RPAREN StatementNoShortIf ELSE SEMICOLON
+            | IF LPAREN Expression RPAREN SEMICOLON ELSE SEMICOLON
 '''
     p[0]=mytuple(["IfThenElseStatement"]+p[1 :])
 
 def p_IfThenElseStatementNoShortIf(p):
     '''IfThenElseStatementNoShortIf : IF LPAREN Expression RPAREN StatementNoShortIf ELSE StatementNoShortIf
+        | IF LPAREN Expression RPAREN SEMICOLON ELSE StatementNoShortIf
+        | IF LPAREN Expression RPAREN StatementNoShortIf ELSE SEMICOLON
+        | IF LPAREN Expression RPAREN SEMICOLON ELSE SEMICOLON
 '''
     p[0]=mytuple(["IfThenElseStatementNoShortIf"]+p[1 :])
 
@@ -1900,6 +1932,7 @@ def p_SwitchBlockStatementGroupS(p):
 
 def p_SwitchBlockStatementGroup(p):
     '''SwitchBlockStatementGroup : SwitchLabels BlockStatements
+                                    | SwitchLabels SEMICOLON
 '''
     p[0]=mytuple(["SwitchBlockStatementGroup"]+p[1 :])
 
@@ -1925,16 +1958,19 @@ def p_SwitchLabel(p):
 
 def p_WhileStatement(p):
     '''WhileStatement : WHILE LPAREN Expression RPAREN Statement
+        | WHILE LPAREN Expression RPAREN SEMICOLON
 '''
     p[0]=mytuple(["WhileStatement"]+p[1 :])
 
 def p_WhileStatementNoShortIf(p):
     '''WhileStatementNoShortIf : WHILE LPAREN Expression RPAREN StatementNoShortIf
+        | WHILE LPAREN Expression RPAREN SEMICOLON
 '''
     p[0]=mytuple(["WhileStatementNoShortIf"]+p[1 :])
 
 def p_DoStatement(p):
     '''DoStatement : DO Statement WHILE LPAREN Expression RPAREN SEMICOLON
+        | DO SEMICOLON WHILE LPAREN Expression RPAREN SEMICOLON
 '''
     p[0]=mytuple(["DoStatement"]+p[1 :])
 
@@ -1959,6 +1995,14 @@ def p_BasicForStatement(p):
     | FOR LPAREN  SEMICOLON Expression SEMICOLON RPAREN Statement
     | FOR LPAREN  SEMICOLON SEMICOLON ForUpdate RPAREN Statement
     | FOR LPAREN  SEMICOLON SEMICOLON  RPAREN Statement
+    | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
+    | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON RPAREN SEMICOLON
+    | FOR LPAREN ForInit SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON
+    | FOR LPAREN ForInit SEMICOLON SEMICOLON  RPAREN SEMICOLON
+    | FOR LPAREN  SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
+    | FOR LPAREN  SEMICOLON Expression SEMICOLON RPAREN SEMICOLON
+    | FOR LPAREN  SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON
+    | FOR LPAREN  SEMICOLON SEMICOLON  RPAREN SEMICOLON
 '''
     p[0]=mytuple(["BasicForStatement"]+p[1 :])
 
@@ -1986,6 +2030,14 @@ def p_BasicForStatementNoShortIf(p):
                                 | FOR LPAREN  SEMICOLON Expression SEMICOLON  RPAREN StatementNoShortIf
                                 | FOR LPAREN  SEMICOLON  SEMICOLON ForUpdate RPAREN StatementNoShortIf
                                 | FOR LPAREN  SEMICOLON  SEMICOLON  RPAREN StatementNoShortIf
+                                | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
+                                | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON  RPAREN SEMICOLON
+                                | FOR LPAREN ForInit SEMICOLON  SEMICOLON ForUpdate RPAREN SEMICOLON
+                                | FOR LPAREN ForInit SEMICOLON  SEMICOLON  RPAREN SEMICOLON
+                                | FOR LPAREN  SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
+                                | FOR LPAREN  SEMICOLON Expression SEMICOLON  RPAREN SEMICOLON
+                                | FOR LPAREN  SEMICOLON  SEMICOLON ForUpdate RPAREN SEMICOLON
+                                | FOR LPAREN  SEMICOLON  SEMICOLON  RPAREN SEMICOLON
 
 '''
     p[0]=mytuple(["BasicForStatementNoShortIf"]+p[1 :])
@@ -2023,6 +2075,14 @@ def p_EnhancedForStatement(p):
                             | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN Statement
                             | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN Statement
                             | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN Statement
+                            | FOR LPAREN CommonModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN CommonModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN CommonModifierS UnannType IDENT  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN CommonModifierS IDENT IDENT  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN  UnannType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN SEMICOLON
 '''
     p[0]=mytuple(["EnhancedForStatement"]+p[1 :])
 
@@ -2035,6 +2095,14 @@ def p_EnhancedForStatementNoShortIf(p):
                                     | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN CommonModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                                    | FOR LPAREN CommonModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                                    | FOR LPAREN CommonModifierS UnannType IDENT  COLON  Expression RPAREN SEMICOLON
+                                    | FOR LPAREN CommonModifierS IDENT IDENT  COLON  Expression RPAREN SEMICOLON
+                                    | FOR LPAREN  UnannType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                                    | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                                    | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN SEMICOLON
+                                    | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN SEMICOLON
 '''
     p[0]=mytuple(["EnhancedForStatementNoShortIf"]+p[1 :])
 
@@ -2152,13 +2220,14 @@ def p_ResourceSpecification(p):
 
 def p_ResourceList(p):
     '''ResourceList : Resource SEMICOLONResourceS
+                | Resource
 '''
     p[0]=mytuple(["ResourceList"]+p[1 :])
 
 
 def p_SEMICOLONResourceS(p):
     '''SEMICOLONResourceS : SEMICOLON Resource SEMICOLONResourceS
-                    | empty'''
+                    | SEMICOLON Resource'''
     p[0]=mytuple(["SEMICOLONResourceS"]+p[1 :])
 
 
