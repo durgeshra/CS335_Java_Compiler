@@ -1356,38 +1356,69 @@ def p_MethodDeclaration(p):
 #     '''
 #     p[0] = mytuple(["ZooThrows"]+p[1 :])
 
+# TODO: Major hacks here!!! We removed Throws non-terminal
 def p_MethodHeader(p):
     '''MethodHeader :
                     | TypeParameters AnnotationS UnannType MethodDeclarator THROWS IDENT
                     | TypeParameters AnnotationS UnannType MethodDeclarator THROWS IDENT PERIOD IDENT
                     | TypeParameters AnnotationS UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | TypeParameters UnannType MethodDeclarator THROWS IDENT
                     | TypeParameters UnannType MethodDeclarator THROWS IDENT PERIOD IDENT
                     | TypeParameters UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | TypeParameters AnnotationS NumericType MethodDeclarator THROWS IDENT
                     | TypeParameters AnnotationS NumericType MethodDeclarator THROWS IDENT PERIOD IDENT
                     | TypeParameters AnnotationS NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | TypeParameters NumericType MethodDeclarator THROWS IDENT
                     | TypeParameters NumericType MethodDeclarator THROWS IDENT PERIOD IDENT
                     | TypeParameters NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | TypeParameters AnnotationS BOOLEAN MethodDeclarator THROWS IDENT
                     | TypeParameters AnnotationS BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT
                     | TypeParameters AnnotationS BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | TypeParameters BOOLEAN MethodDeclarator THROWS IDENT
                     | TypeParameters BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT
                     | TypeParameters BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | TypeParameters AnnotationS VOID MethodDeclarator THROWS IDENT
                     | TypeParameters AnnotationS VOID MethodDeclarator THROWS IDENT PERIOD IDENT
                     | TypeParameters AnnotationS VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | TypeParameters VOID MethodDeclarator THROWS IDENT
                     | TypeParameters VOID MethodDeclarator THROWS IDENT PERIOD IDENT
                     | TypeParameters VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | TypeParameters AnnotationS IDENT MethodDeclarator THROWS IDENT
                     | TypeParameters AnnotationS IDENT MethodDeclarator THROWS IDENT PERIOD IDENT
                     | TypeParameters AnnotationS IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | TypeParameters IDENT MethodDeclarator THROWS IDENT
                     | TypeParameters IDENT MethodDeclarator THROWS IDENT PERIOD IDENT
                     | TypeParameters IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | TypeParameters AnnotationS UnannType MethodDeclarator
                     | TypeParameters UnannType MethodDeclarator
                     | TypeParameters AnnotationS NumericType MethodDeclarator
@@ -1401,22 +1432,37 @@ def p_MethodHeader(p):
                     | BOOLEAN MethodDeclarator THROWS IDENT
                     | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT
                     | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | BOOLEAN MethodDeclarator
                     | IDENT MethodDeclarator THROWS IDENT
                     | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT
                     | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | IDENT MethodDeclarator
                     | VOID MethodDeclarator THROWS IDENT
                     | VOID MethodDeclarator THROWS IDENT PERIOD IDENT
                     | VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | VOID MethodDeclarator
                     | UnannType MethodDeclarator
                     | UnannType MethodDeclarator THROWS IDENT
                     | UnannType MethodDeclarator THROWS IDENT PERIOD IDENT
                     | UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | NumericType MethodDeclarator THROWS IDENT
                     | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT
                     | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | NumericType MethodDeclarator
     '''
     p[0] = mytuple(["MethodHeader"]+p[1 :])
