@@ -885,20 +885,24 @@ def p_ImportDeclaration(p):
     p[0] = mytuple(["ImportDeclaration"]+p[1 :])
 
 def p_SingleTypeImportDeclaration(p):
-    '''SingleTypeImportDeclaration : IMPORT ExpressionName SEMICOLON'''
+    '''SingleTypeImportDeclaration : IMPORT ExpressionName SEMICOLON
+                        | IMPORT IDENT ExpressionName SEMICOLON'''
     p[0] = mytuple(["SingleTypeImportDeclaration"]+p[1 :])
 
 def p_TypeImportOnDemandDeclaration(p):
     '''TypeImportOnDemandDeclaration : IMPORT ExpressionName PERIOD MUL SEMICOLON
+                                    | IMPORT IDENT ExpressionName PERIOD MUL SEMICOLON
                                      | IMPORT IDENT PERIOD MUL SEMICOLON'''
     p[0] = mytuple(["TypeImportOnDemandDeclaration"]+p[1 :])
 
 def p_SingleStaticImportDeclaration(p):
-    '''SingleStaticImportDeclaration : IMPORT STATIC ExpressionName PERIOD IDENT SEMICOLON'''
+    '''SingleStaticImportDeclaration : IMPORT STATIC ExpressionName PERIOD IDENT SEMICOLON
+                        | IMPORT STATIC IDENT ExpressionName PERIOD IDENT SEMICOLON'''
     p[0] = mytuple(["SingleStaticImportDeclaration"]+p[1 :])
 
 def p_StaticImportOnDemandDeclaration(p):
-    '''StaticImportOnDemandDeclaration : IMPORT STATIC ExpressionName PERIOD MUL SEMICOLON'''
+    '''StaticImportOnDemandDeclaration : IMPORT STATIC ExpressionName PERIOD MUL SEMICOLON
+                                    | IMPORT STATIC IDENT ExpressionName PERIOD MUL SEMICOLON'''
     p[0] = mytuple(["StaticImportOnDemandDeclaration"]+p[1 :])
 
 def p_TypeDeclaration(p):
@@ -2567,5 +2571,5 @@ def parse_file(_file, debug=0):
 # print(parse_out)
 # t = tac.code
 # print(t)
-parse_out = parse_file("./ackermann.java")
+parse_out = parse_file("./test10.java")
 print(parse_out)
