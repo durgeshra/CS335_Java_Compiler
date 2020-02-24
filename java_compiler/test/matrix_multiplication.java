@@ -13,14 +13,14 @@ class matrix_multiplication{
         secondarray[0][1] = 6;
         secondarray[1][0] = 7;
         secondarray[1][1] = 8;
-        /* Create another 2d array to store the result using the original arrays' lengths on row and column respectively. */
+        
         int result[][] = new int[2][2];
         for (i = 0; i < 2; i++) {
             for (k = 0; k < 2; k++) {
                 result[i][k] = 0;
             }
         }
-        /* Loop through each and get product, then sum up and store the value */
+        
         for (i = 0; i < 2; i++) {
             for (j = 0; j < 2; j++) {
                 for (k = 0; k < 2; k++) {
@@ -29,7 +29,7 @@ class matrix_multiplication{
             }
         }
 
-        /* Show the result */
+        
         for (i = 0; i < 2; i++) {
             for (k = 0; k < 2; k++) {
                 printInt(result[i][k]);
@@ -37,3 +37,6 @@ class matrix_multiplication{
         }
     }
 }
+
+
+

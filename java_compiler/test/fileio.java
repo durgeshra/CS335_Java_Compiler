@@ -21,3 +21,6 @@ class fileio{
 
       fread(fd_in, 5);
 }}
+
+
+

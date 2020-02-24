@@ -28,10 +28,13 @@ class bubblesort {
                             break;
                         }
                 }
-                sort(arr, 7);//sorting array elements using bubble sort
+                sort(arr, 7);
                 for(int i=0; i < 7; i++){
                         printInt(arr[i]);
                 }
 
         }
 }
+
+
+

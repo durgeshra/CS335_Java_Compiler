@@ -1,4 +1,4 @@
-//sample code to write 100 random ints to a file, 1 per line
+
 
 import java.io.PrintStream;
 import java.io.IOException;
@@ -23,3 +23,6 @@ public class WriteToFile
                 }
         }
 }
+
+
+

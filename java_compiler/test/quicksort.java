@@ -50,9 +50,9 @@ class Qsort
                 x[4] = 6;
                 x[2] = 0;
 
-                // for(i=0;i<size;i++){
-                        // System.out.println(l);
-                // }
+                
+                        
+                
                 quicksort(x,first,l);
 
                 for(i=0;i<size;i++){
@@ -61,3 +61,6 @@ class Qsort
         }
 
 }
+
+
+

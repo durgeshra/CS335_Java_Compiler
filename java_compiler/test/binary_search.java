@@ -18,7 +18,7 @@ public class MyBinarySearch {
         return -1;
     }
     public static void main() {
-        //MyBinarySearch mbs = new MyBinarySearch();
+        
         int arr[] = new int[8];
         arr[0] = 2;
         arr[1] = 4;
@@ -40,3 +40,6 @@ public class MyBinarySearch {
         printInt(binarySearch(arr1, 6, 431));
     }
 }
+
+
+

@@ -10,3 +10,6 @@ class operators_type_check{
           i = i + c;
     }
 }
+
+
+

@@ -25,10 +25,13 @@ class bubblesort {
                 arr[5] = 2;
                 arr[6] = 1;
                 sort(arr, 7);
-                //sort(arr, 'a');//sorting array elements using bubble sort
+                
                 for(int i=0; i < 7; i++){
                         printInt(arr[i]);
                 }
 
         }
 }
+
+
+
