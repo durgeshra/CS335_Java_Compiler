@@ -284,6 +284,7 @@ def p_ElementValuePair(p):
 
 def p_ElementValue(p):
     '''ElementValue : ConditionalExpression
+                    | IDENT
                     | ElementValueArrayInitializer
                     | Annotation '''
     p[0] = mytuple(["ElementValue"]+p[1 :])
@@ -607,6 +608,7 @@ def p_LambdaBody(p):
 
 def p_AssignmentExpression(p):
     '''AssignmentExpression : ConditionalExpression
+                            | IDENT
                            | Assignment'''
     p[0] = mytuple(["AssignmentExpression"]+p[1 :])
 
@@ -639,38 +641,63 @@ def p_AssignmentOperator(p):
 def p_ConditionalExpression(p):
     '''ConditionalExpression : ConditionalOrExpression
                             | ConditionalOrExpression QUES Expression COLON ConditionalExpression
-                            | ConditionalOrExpression QUES Expression COLON LambdaExpression '''
+                            | ConditionalOrExpression QUES Expression COLON IDENT
+                            | ConditionalOrExpression QUES Expression COLON LambdaExpression
+                            | IDENT QUES Expression COLON ConditionalExpression
+                            | IDENT QUES Expression COLON IDENT
+                            | IDENT QUES Expression COLON LambdaExpression '''
     p[0] = mytuple(["ConditionalExpression"]+p[1 :])
 
 def p_ConditionalOrExpression(p):
     '''ConditionalOrExpression : ConditionalAndExpression
-                              | ConditionalOrExpression LOR ConditionalAndExpression'''
+                              | ConditionalOrExpression LOR ConditionalAndExpression
+                              | ConditionalOrExpression LOR IDENT
+                              | IDENT LOR ConditionalAndExpression
+                              | IDENT LOR IDENT'''
     p[0] = mytuple(["ConditionalOrExpression"]+p[1 :])
 
 def p_ConditionalAndExpression(p):
     '''ConditionalAndExpression : InclusiveOrExpression
-                               | ConditionalAndExpression LAND InclusiveOrExpression'''
+                               | ConditionalAndExpression LAND InclusiveOrExpression
+                               | ConditionalAndExpression LAND IDENT
+                               | IDENT LAND InclusiveOrExpression
+                               | IDENT LAND IDENT'''
     p[0] = mytuple(["ConditionalAndExpression"]+p[1 :])
 
 def p_InclusiveOrExpression(p):
     '''InclusiveOrExpression : ExclusiveOrExpression
-                            | InclusiveOrExpression OR ExclusiveOrExpression'''
+                            | InclusiveOrExpression OR ExclusiveOrExpression
+                            | InclusiveOrExpression OR IDENT
+                            | IDENT OR ExclusiveOrExpression
+                            | IDENT OR IDENT'''
     p[0] = mytuple(["InclusiveOrExpression"]+p[1 :])
 
 def p_ExclusiveOrExpression(p):
     '''ExclusiveOrExpression : AndExpression
-                            | ExclusiveOrExpression XOR AndExpression'''
+                            | ExclusiveOrExpression XOR AndExpression
+                            | ExclusiveOrExpression XOR IDENT
+                            | IDENT XOR AndExpression
+                            | IDENT XOR IDENT'''
     p[0] = mytuple(["ExclusiveOrExpression"]+p[1 :])
 
 def p_AndExpression(p):
     '''AndExpression : EqualityExpression
-                    | AndExpression AND EqualityExpression'''
+                    | AndExpression AND EqualityExpression
+                    | AndExpression AND IDENT
+                    | IDENT AND EqualityExpression
+                    | IDENT AND IDENT'''
     p[0] = mytuple(["AndExpression"]+p[1 :])
 
 def p_EqualityExpression(p):
     '''EqualityExpression : RelationalExpression
                          | EqualityExpression EQL RelationalExpression
-                         | EqualityExpression NEQ RelationalExpression'''
+                         | EqualityExpression NEQ RelationalExpression
+                         | EqualityExpression EQL IDENT
+                         | EqualityExpression NEQ IDENT
+                         | IDENT EQL RelationalExpression
+                         | IDENT NEQ RelationalExpression
+                         | IDENT EQL IDENT
+                         | IDENT NEQ IDENT'''
     p[0] = mytuple(["EqualityExpression"]+p[1 :])
 
 
@@ -680,6 +707,10 @@ def p_RelationalExpression(p):
                            | RelationalExpression GTR ShiftExpression
                            | RelationalExpression LEQ ShiftExpression
                            | RelationalExpression GEQ ShiftExpression
+                           | RelationalExpression LSS IDENT
+                           | RelationalExpression GTR IDENT
+                           | RelationalExpression LEQ IDENT
+                           | RelationalExpression GEQ IDENT
                            | RelationalExpression INSTANCEOF ReferenceType
                            | RelationalExpression INSTANCEOF IDENT'''
     p[0] = mytuple(["RelationalExpression"]+p[1 :])
@@ -688,7 +719,16 @@ def p_ShiftExpression(p):
     '''ShiftExpression : AdditiveExpression
                       | ShiftExpression SHL AdditiveExpression
                       | ShiftExpression SHR AdditiveExpression
-                      | ShiftExpression SHR_UN AdditiveExpression'''
+                      | ShiftExpression SHR_UN AdditiveExpression
+                      | ShiftExpression SHL IDENT
+                      | ShiftExpression SHR IDENT
+                      | ShiftExpression SHR_UN IDENT
+                      | IDENT SHL AdditiveExpression
+                      | IDENT SHR AdditiveExpression
+                      | IDENT SHR_UN AdditiveExpression
+                      | IDENT SHL IDENT
+                      | IDENT SHR IDENT
+                      | IDENT SHR_UN IDENT'''
     p[0] = mytuple(["ShiftExpression"]+p[1 :])
 
 def p_AdditiveExpression(p):
@@ -696,7 +736,11 @@ def p_AdditiveExpression(p):
                          | AdditiveExpression ADD MultiplicativeExpression
                          | AdditiveExpression SUB MultiplicativeExpression
                           | AdditiveExpression ADD IDENT
-                          | AdditiveExpression SUB IDENT'''
+                          | AdditiveExpression SUB IDENT
+                          | IDENT ADD MultiplicativeExpression
+                          | IDENT SUB MultiplicativeExpression
+                           | IDENT ADD IDENT
+                           | IDENT SUB IDENT'''
     p[0] = mytuple(["AdditiveExpression"]+p[1 :])
 
 def p_MultiplicativeExpression(p):
@@ -745,7 +789,6 @@ def p_UnaryExpressionNotPlusMinus(p):
 
 def p_PostfixExpression(p):
     '''PostfixExpression : Primary
-                        | IDENT
                         | ExpressionName
                         | PostIncrementExpression
                         | PostDecrementExpression'''
