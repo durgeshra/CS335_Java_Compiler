@@ -1851,8 +1851,8 @@ def p_Dims(p):
     p[0]=mytuple(["Dims"]+p[1 :])
 
 def p_AnnotationSLBRACKRBRACKS(p):
-    '''AnnotationSLBRACKRBRACKS : AnnotationSLBRACKRBRACKS AnnotationS LBRACK RBRACE
-                                | AnnotationSLBRACKRBRACKS LBRACK RBRACE
+    '''AnnotationSLBRACKRBRACKS : AnnotationSLBRACKRBRACKS AnnotationS LBRACK RBRACK
+                                | AnnotationSLBRACKRBRACKS LBRACK RBRACK
                                 | empty '''
     p[0]=mytuple(["AnnotationSLBRACKRBRACKS"]+p[1 :])
 
@@ -2587,9 +2587,10 @@ def parse_string(code, debug=0, lineno=1, prefix='++'):
         #     HASH_MAP[tok.value] = "Keyword"
         # else : # Comments or unknown
         # continue
-#
+        #
         # print(tok)
-#
+        #
+
     print("END of TOKENS")
     lexer.lineno = lineno
     return parser.parse(prefix + code, lexer=lexer, debug=0)
@@ -2606,5 +2607,5 @@ def parse_file(_file, debug=0):
 # print(parse_out)
 # t = tac.code
 # print(t)
-parse_out = parse_file("./ackermann.java")
+parse_out = parse_file("./problems/test1.java")
 print(parse_out)

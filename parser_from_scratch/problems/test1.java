@@ -9,7 +9,7 @@ class CNTIT {
 	InputStream is;
 	PrintWriter out;
 	String INPUT = "";
-	
+
 	void solve()
 	{
 		for(int T = ni();T > 0;T--){
@@ -26,7 +26,7 @@ class CNTIT {
 			int[][] pars = parents(g, 0);
 			int[] par = pars[0], ord = pars[1], dep = pars[2];
 			int[] cpar = buildCentroidTree(g);
-			
+
 			gans = 0;
 			for(int i = 0;i < K;i++){
 				dfsTopCT(cpar, g, i);
@@ -34,7 +34,7 @@ class CNTIT {
 			out.println((long)n*(n-1)/2 - gans);
 		}
 	}
-	
+
 	static class Context
 	{
 		boolean[] seps; // is separator?
@@ -55,7 +55,7 @@ class CNTIT {
 		int n = g.length;
 		int ctroot = -1;
 		for(int i = 0;i < n;i++)if(cpar[i] == -1)ctroot = i;
-		
+
 		Context cx = new Context();
 //		cx.cpar = cpar;
 		cx.seps = new boolean[n];
@@ -71,7 +71,7 @@ class CNTIT {
 //		cx.neckind = new int[n];
 		dfs(ctroot, cx);
 	}
-	
+
 	public static int[][] parentToChildren(int[] par)
 	{
 		int n = par.length;
@@ -90,18 +90,18 @@ class CNTIT {
 				g[par[i]][--ct[par[i]]] = i;
 			}
 		}
-		
+
 		return g;
 	}
 
-	
+
 	private void dfs(int sep, Context cx)
 	{
 		cx.seps[sep] = true;
 		int neckp = 0;
 		for(int[] neck : cx.g[sep]){
 			if(cx.seps[neck[0]])continue;
-			
+
 			int sp = 0;
 			cx.inds[sp] = 0;
 //			cx.wt[neck] = w[neck];
@@ -115,8 +115,8 @@ class CNTIT {
 //					if(cpar[cur] == sep)cx.neckind[cur] = neckp;
 				}
 				if(cx.inds[sp-1] == cx.g[cur].length){
-					sp--; 
-					continue; 
+					sp--;
+					continue;
 				}
 				int[] e = cx.g[cur][cx.inds[sp-1]++];
 				if(!cx.seps[e[0]] && !(sp-2 >= 0 && e[0] == cx.stack[sp-2])){
@@ -130,12 +130,12 @@ class CNTIT {
 			cx.vss[neckp] = Arrays.copyOf(cx.vs, vsp);
 			neckp++;
 		}
-		
+
 		process(sep, cx, Arrays.copyOf(cx.vss, neckp));
-		
+
 		for(int e : cx.ctch[sep])dfs(e, cx);
 	}
-	
+
 	private void process(int sep, Context cx, int[][] vss)
 	{
 		int m = 0;
@@ -152,11 +152,11 @@ class CNTIT {
 			fs[i] = new F(ds);
 		}
 		F all = new F(alls);
-		
+
 		long ans = (long)m*(m+1);
 		for(int i = 0;i < vss.length;i++){
 			ans -= (long)vss[i].length*(vss[i].length-1);
-			
+
 			if(fs[i].f == null)continue;
 			for(int j = 0;j < fs[i].f.length;j++){
 				long fix = fs[i].f[j] - (j-1 >= 0 ? fs[i].f[j-1] : 0);
@@ -169,14 +169,14 @@ class CNTIT {
 //		assert ans % 2 == 0;
 		gans += ans/2;
 	}
-	
+
 	long gans = 0;
-	
+
 	static class F
 	{
 		int base;
 		int[] f;
-		
+
 		F(int[] a)
 		{
 			int min = Integer.MAX_VALUE;
@@ -196,7 +196,7 @@ class CNTIT {
 				}
 			}
 		}
-		
+
 		int numle(int x)
 		{
 			if(f == null)return 0;
@@ -205,7 +205,7 @@ class CNTIT {
 		}
 	}
 
-	
+
 	public static int[][] parents(int[][][] g, int root) {
 		int n = g.length;
 		int[] par = new int[n];
@@ -231,7 +231,7 @@ class CNTIT {
 		return new int[][] { par, q, dep, dw, pw };
 	}
 
-	
+
 	public static int[] buildCentroidTree(int[][][] g) {
 		int n = g.length;
 		int[] ctpar = new int[n];
@@ -239,7 +239,7 @@ class CNTIT {
 		buildCentroidTree(g, 0, new boolean[n], new int[n], new int[n], new int[n], ctpar);
 		return ctpar;
 	}
-	
+
 	private static int buildCentroidTree(int[][][] g, int root, boolean[] sed, int[] par, int[] ord, int[] des, int[] ctpar)
 	{
 		// parent and level-order
@@ -256,7 +256,7 @@ class CNTIT {
 			}
 		}
 		// if(r == 1)return;
-		
+
 		// DP and find a separator
 		int sep = -1; // always exists
 		outer:
@@ -274,7 +274,7 @@ class CNTIT {
 				break;
 			}
 		}
-		
+
 		sed[sep] = true;
 		for(int[] e : g[sep]){
 			if(!sed[e[0]])ctpar[buildCentroidTree(g, e[0], sed, par, ord, des, ctpar)] = sep;
@@ -282,7 +282,7 @@ class CNTIT {
 		return sep;
 	}
 
-	
+
 	public static int[][][] packWU(int n, int[] from, int[] to, int[] w) {
 		int[][][] g = new int[n][][];
 		int[] p = new int[n];
@@ -320,23 +320,23 @@ class CNTIT {
 		return g;
 	}
 
-	
+
 	void run() throws Exception
 	{
 		is = INPUT.isEmpty() ? System.in : new ByteArrayInputStream(INPUT.getBytes());
 		out = new PrintWriter(System.out);
-		
+
 		long s = System.currentTimeMillis();
 		solve();
 		out.flush();
 		if(!INPUT.isEmpty())tr(System.currentTimeMillis()-s+"ms");
 	}
-	
+
 	public static void main(String[] args) throws Exception { new CNTIT().run(); }
-	
+
 	private byte[] inbuf = new byte[1024];
 	public int lenbuf = 0, ptrbuf = 0;
-	
+
 	private int readByte()
 	{
 		if(lenbuf == -1)throw new InputMismatchException();
@@ -347,13 +347,13 @@ class CNTIT {
 		}
 		return inbuf[ptrbuf++];
 	}
-	
+
 	private boolean isSpaceChar(int c) { return !(c >= 33 && c <= 126); }
 	private int skip() { int b; while((b = readByte()) != -1 && isSpaceChar(b)); return b; }
-	
+
 	private double nd() { return Double.parseDouble(ns()); }
 	private char nc() { return (char)skip(); }
-	
+
 	private String ns()
 	{
 		int b = skip();
@@ -364,7 +364,7 @@ class CNTIT {
 		}
 		return sb.toString();
 	}
-	
+
 	private char[] ns(int n)
 	{
 		char[] buf = new char[n];
@@ -375,21 +375,21 @@ class CNTIT {
 		}
 		return n == p ? buf : Arrays.copyOf(buf, p);
 	}
-	
+
 	private char[][] nm(int n, int m)
 	{
 		char[][] map = new char[n][];
 		for(int i = 0;i < n;i++)map[i] = ns(m);
 		return map;
 	}
-	
+
 	private int[] na(int n)
 	{
 		int[] a = new int[n];
 		for(int i = 0;i < n;i++)a[i] = ni();
 		return a;
 	}
-	
+
 	private int ni()
 	{
 		int num = 0, b;
@@ -399,7 +399,7 @@ class CNTIT {
 			minus = true;
 			b = readByte();
 		}
-		
+
 		while(true){
 			if(b >= '0' && b <= '9'){
 				num = num * 10 + (b - '0');
@@ -409,7 +409,7 @@ class CNTIT {
 			b = readByte();
 		}
 	}
-	
+
 	private long nl()
 	{
 		long num = 0;
@@ -420,7 +420,7 @@ class CNTIT {
 			minus = true;
 			b = readByte();
 		}
-		
+
 		while(true){
 			if(b >= '0' && b <= '9'){
 				num = num * 10 + (b - '0');
@@ -430,6 +430,6 @@ class CNTIT {
 			b = readByte();
 		}
 	}
-	
+
 	private void tr(Object... o) { if(INPUT.length() > 0)System.out.println(Arrays.deepToString(o)); }
 }
