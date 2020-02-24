@@ -733,8 +733,18 @@ def p_RelationalExpression(p):
                            | RelationalExpression GTR IDENT
                            | RelationalExpression LEQ IDENT
                            | RelationalExpression GEQ IDENT
+                           | IDENT LSS ShiftExpression
+                           | IDENT GTR ShiftExpression
+                           | IDENT LEQ ShiftExpression
+                           | IDENT GEQ ShiftExpression
+                           | IDENT LSS IDENT
+                           | IDENT GTR IDENT
+                           | IDENT LEQ IDENT
+                           | IDENT GEQ IDENT
                            | RelationalExpression INSTANCEOF ReferenceType
-                           | RelationalExpression INSTANCEOF IDENT'''
+                           | RelationalExpression INSTANCEOF IDENT
+                           | IDENT INSTANCEOF ReferenceType
+                           | IDENT INSTANCEOF IDENT'''
     p[0] = mytuple(["RelationalExpression"]+p[1 :])
 
 def p_ShiftExpression(p):
@@ -2596,5 +2606,5 @@ def parse_file(_file, debug=0):
 # print(parse_out)
 # t = tac.code
 # print(t)
-parse_out = parse_file("./problems/test10.java")
+parse_out = parse_file("./ackermann.java")
 print(parse_out)
