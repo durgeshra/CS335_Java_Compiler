@@ -1,16 +1,16 @@
-// Java program to illustrate the application of Integer literals 
+
 public class Test { 
     public static void main(String[] args) 
     { 
-        int a = 101; // decimal-form literal 
-        int b = 0100; // octal-form literal 
-        int c = 0xFace; // Hexa-decimal form literal 
-        int d = 0b1111; // Binary literal 
-        float a = 101.230; // decimal-form literal 
-        float b = 0123.222; // It also acts as decimal literal 
-        float c = 0x123.222; // Hexa-decimal form
-        char ch = 'a'; // signle character literl within signle quote 
-        char b = 0789; // It is an Integer literal with octal form 
+        int a = 101; 
+        int b = 0100; 
+        int c = 0xFace; 
+        int d = 0b1111; 
+        float a = 101.230; 
+        float b = 0123.222; 
+        float c = 0x123.222; 
+        char ch = 'a'; 
+        char b = 0789; 
         String s = "Hello";
         boolean b = true; 
         boolean c = false; 
@@ -26,3 +26,6 @@ public class Test {
         int hey = 123abc;
     } 
 } 
+
+
+

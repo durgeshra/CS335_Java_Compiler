@@ -1,7 +1,7 @@
-/**
- * Run the test with a non-existent file on the upgrade module path.
- * It should be silently ignored.
- */
+
+
+
+
 public void testRunWithNonExistentEntry() throws Exception {
 
     String upgrademodulepath
@@ -20,3 +20,5 @@ public void testRunWithNonExistentEntry() throws Exception {
     assertTrue(exitValue == 0);
 
 }
+
+

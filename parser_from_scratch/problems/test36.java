@@ -6,11 +6,11 @@ public static void putPath(File path, String pathName, boolean prepend, Map<Stri
     }
 
     if (prepend) {
-        currentPath = path.getAbsolutePath().replace(" ", "\\ ") //NOI18N
+        currentPath = path.getAbsolutePath().replace(" ", "\\ ") 
                 + File.pathSeparator + currentPath;
     } else {
         currentPath = currentPath + File.pathSeparator
-                + path.getAbsolutePath().replace(" ", "\\ "); //NOI18N
+                + path.getAbsolutePath().replace(" ", "\\ "); 
     }
 
     if (!"".equals(currentPath.trim())) {
@@ -18,3 +18,5 @@ public static void putPath(File path, String pathName, boolean prepend, Map<Stri
     }
 }
  
+
+

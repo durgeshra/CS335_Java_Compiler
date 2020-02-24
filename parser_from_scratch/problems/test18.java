@@ -1,5 +1,5 @@
-// @uthor -: puneet
-// TimeStamp -: 11:55 PM - 11/01/20 
+
+
 
 import java.io.*;
 import java.util.*;
@@ -87,7 +87,7 @@ class Doofish implements Runnable {
         return true;
     }
 
-    /* -------------------- Templates and Input Classes -------------------------------*/
+    
 
     @Override
     public void run() {
@@ -163,7 +163,7 @@ class Doofish implements Runnable {
                 } catch (IOException e) { throw new InputMismatchException(); } }
             if (lenbuffer <= 0) return -1;return inbuffer[ptrbuffer++]; }
         String ns() { int b = skip();StringBuilder sb = new StringBuilder();
-            while (!(isSpaceChar(b))) // when nextLine, (isSpaceChar(b) && b!=' ')
+            while (!(isSpaceChar(b))) 
             { sb.appendCodePoint(b);b = readByte(); }return sb.toString();}
         int ni() {
             int num = 0, b;boolean minus = false;
@@ -186,3 +186,5 @@ class Doofish implements Runnable {
     }
 
 }
+
+

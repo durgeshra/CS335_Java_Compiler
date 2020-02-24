@@ -15,3 +15,5 @@ static void testSearchPaths() {
     options = Options.parseArgs("--class-path", dir1_PS_dir2);
     assertEquals(options.getClassSearchPath(), Arrays.asList(dir1, dir2));
 }
+
+

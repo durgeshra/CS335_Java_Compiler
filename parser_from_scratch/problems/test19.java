@@ -68,10 +68,10 @@ class A{
 			int a = in.nextInt();
 			int r = in.nextInt();
 			ArrayList<Integer>[] adj = new ArrayList[n+1];
-//			HashMap[] edges = new HashMap[n+1];
+
 			for(int i=1;i<=n;i++) {
 				adj[i] = new ArrayList<Integer>();
-//				edges[i] = new HashMap<Integer, Integer>();
+
 			}
 			sb.append(m).append("\n");
 			for(int i=0;i<m;i++) {
@@ -79,28 +79,28 @@ class A{
 				int y = in.nextInt();
 				sb.append("1 1 ");
 				sb.append(x).append(" ").append(y).append("\n");
-//				adj[x].add(y);
-//				adj[y].add(x);
-//				edges[x].put(y, 1);
-//				edges[y].put(x, 1);
+
+
+
+
 			}
 			System.out.print(sb);
-//			ArrayList<Integer> ans = new ArrayList<>();
-//			ArrayList<ArrayList<Integer>>list = connectedComponents(adj);
-//			for(int i=0;i<list.size();i++) {
-//				if(list.get(i).size()==1) continue;
-//				HashMap[] map = new HashMap[n+1];
-//				for(int j=0;j<list.get(i).size();j++) {
-//					map[list.get(i).get(j)] = new HashMap<Integer, Integer>();
-//				}
-////				for(int j=1;j<list.get(i).size();j++) {
-////					if(edges[list.get(i).get(j)].containsKey(list.get(i).get(j-1))&&!map[list.get(i).get(j-1)].containsKey(map[list.get(i).get(j)])) {
-////						sb.append(list.get(i).get(j)+" "+list.get(i).get(j-1)).append(" ");
-////						map[list.get(i).get(j)].put(list.get(i).get(j-1), 1);
-////					}
-////				}
-//				DFS(list.get(i).get(0), adj, map);
-//			}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		}catch(Exception e) {}
 
 	}
@@ -258,3 +258,6 @@ static class BufferInput {
 		}
 	}
 }
+
+
+

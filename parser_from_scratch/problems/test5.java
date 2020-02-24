@@ -1,11 +1,11 @@
 
-/* package codechef; // don't place package name! */
+
 
 import java.util.*;
 import java.lang.*;
 import java.io.*;
 
-/* Name of the class has to be "Main" only if the class is public. */
+
 class Codechef {
     private static class InputReader {
         private InputStream stream;
@@ -235,7 +235,7 @@ class Codechef {
 
         int si = adj[v].size();
         int fex = 0;
-        
+
         for (int j = 0; j < si; j++) {
 
             fex = fex + calculate(k, ans, i + 1, adj[v].get(j), adj);

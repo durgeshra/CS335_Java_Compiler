@@ -422,7 +422,15 @@ def p_UnqualifiedClassInstanceCreationExpression(p):
     | NEW ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN ClassBody
     | NEW ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN ClassBody
     | NEW ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN
-    | NEW ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN'''
+    | NEW ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN
+    | NEW TypeArguments IDENT LPAREN ArgumentList RPAREN ClassBody
+    | NEW TypeArguments IDENT LPAREN  RPAREN ClassBody
+    | NEW TypeArguments IDENT LPAREN ArgumentList RPAREN
+    | NEW TypeArguments IDENT LPAREN  RPAREN
+    | NEW IDENT LPAREN ArgumentList RPAREN ClassBody
+    | NEW IDENT LPAREN  RPAREN ClassBody
+    | NEW IDENT LPAREN ArgumentList RPAREN
+    | NEW IDENT LPAREN  RPAREN'''
     p[0] = mytuple(["UnqualifiedClassInstanceCreationExpression"]+p[1 :])
 
 # def p_ZooTypeArguments(p):
@@ -444,7 +452,10 @@ def p_ClassOrInterfaceTypeToInstantiate(p):
     '''ClassOrInterfaceTypeToInstantiate : AnnotationS IDENT PERIODAnnotationSIDENTS TypeArgumentsOrDiamond
                                         | AnnotationS IDENT PERIODAnnotationSIDENTS
                                          |  IDENT PERIODAnnotationSIDENTS
-                                         |  IDENT PERIODAnnotationSIDENTS TypeArgumentsOrDiamond'''
+                                         |  IDENT PERIODAnnotationSIDENTS TypeArgumentsOrDiamond
+                                         | AnnotationS IDENT TypeArgumentsOrDiamond
+                                         | AnnotationS IDENT
+                                         |  IDENT TypeArgumentsOrDiamond'''
     p[0] = mytuple(["ClassOrInterfaceTypeToInstantiate"]+p[1 :])
 
 def p_AnnotationS(p):
@@ -460,7 +471,8 @@ def p_AnnotationS(p):
 def p_PERIODAnnotationSIDENTS(p):
     '''PERIODAnnotationSIDENTS : PERIODAnnotationSIDENTS PERIOD AnnotationS IDENT
                                 | PERIODAnnotationSIDENTS PERIOD IDENT
-                              | empty'''
+                                | PERIOD AnnotationS IDENT
+                                | PERIOD IDENT'''
     p[0] = mytuple(["PERIODAnnotationSIDENTS"]+p[1 :])
 
 # TODO fix function name of Zoo and ...S(p); also in general
@@ -469,6 +481,8 @@ def p_PERIODAnnotationSIDENTS(p):
 def p_TypeArgumentsOrDiamond(p):
     '''TypeArgumentsOrDiamond : TypeArguments
                              | LSS GTR'''
+    print("I am TypeArgumentsOrDiamond!!!!")
+    print("\n"*20)
     p[0] = mytuple(["TypeArgumentsOrDiamond"]+p[1 :])
 
 def p_FieldAccess(p):
@@ -1073,6 +1087,8 @@ def p_NormalClassDeclaration(p):
 def p_TypeParameters(p):
     '''TypeParameters : LSS TypeParameterList GTR
     '''
+    print("I am TypeParameters!!!!")
+    print("\n"*20)
     p[0] = mytuple(["TypeParameters"]+p[1 :])
 
 def p_COMMMATypeParameterS(p):
@@ -1501,13 +1517,15 @@ def p_ReceiverParameter(p):
 
 def p_Throws(p):
     '''Throws :  THROWS ExceptionTypeList
+                | THROWS IDENT
     '''
     p[0] = mytuple(["Throws"] + p[1 :])
 
 def p_COMMAExceptionTypeS(p):
     '''COMMAExceptionTypeS : COMMAExceptionTypeS COMMA ExceptionType
                     | COMMAExceptionTypeS COMMA IDENT
-                            | empty
+                    | COMMA ExceptionType
+                    | COMMA IDENT
     '''
     p[0] = mytuple(["COMMAExceptionTypeS"] + p[1 :])
 
@@ -1515,6 +1533,7 @@ def p_COMMAExceptionTypeS(p):
 def p_ExceptionTypeList(p):
     '''ExceptionTypeList : ExceptionType COMMAExceptionTypeS
                     | IDENT COMMAExceptionTypeS
+                    | ExceptionType
     '''
     p[0] = mytuple(["ExceptionTypeList"] + p[1 :])
 
@@ -1916,7 +1935,9 @@ def p_AdditionalBound(p):
 #
 
 def p_TypeArguments(p):
-    '''TypeArguments : LSS TypeArgumentList GTR '''
+    '''TypeArguments : LSS TypeArgumentList GTR'''
+    print("I am TypeArguments!!!!")
+    print("\n"*20)
     p[0]=mytuple(["TypeArguments"]+p[1 :])
 
 #

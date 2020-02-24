@@ -1,8 +1,8 @@
     
-    /**
-     * Parse a parameter of the form "10,20,30" as an
-     * RGB tuple for a color value.
-     */
+    
+
+
+
  1    Color getColor(String name) {
  2        String data;
  3        StringTokenizer st;
@@ -18,7 +18,9 @@
 13            green = Integer.parseInt(st.nextToken());
 14            blue = Integer.parseInt(st.nextToken());
 15        } catch (Exception e) {
-16            return null; // (ERROR STATE) could not parse it
+16            return null; 
 17        }
-18        return new Color(red, green, blue); // (END STATE) done.
+18        return new Color(red, green, blue); 
 19    }
+
+

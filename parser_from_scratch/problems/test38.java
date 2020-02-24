@@ -24,8 +24,10 @@ private void startCluster(Configuration  conf) throws Exception {
   FileSystem.setDefaultUri(conf, fileSystem.getUri());
   mrCluster = MiniMRClientClusterFactory.create(this.getClass(), 1, conf);
 
-  // so the minicluster conf is avail to the containers.
+  
   Writer writer = new FileWriter(classpathDir + "/core-site.xml");
   mrCluster.getConfig().writeXml(writer);
   writer.close();
 }
+
+

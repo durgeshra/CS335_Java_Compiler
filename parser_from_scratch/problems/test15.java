@@ -1,10 +1,10 @@
 import java.util.*;
 import java.io.*;
  
-/**
- *
- * @author umang
- */
+
+
+
+
  
 class ANDMIN{
     
@@ -140,7 +140,7 @@ class ANDMIN{
                     return Integer.compare(this.x,o.x);
 		else
                     return Integer.compare(this.y,o.y);
-		//return 0;
+		
 	}
 
         public boolean equals(Object o) {
@@ -401,3 +401,6 @@ class ANDMIN{
 		}
 	}
 }    
+
+
+

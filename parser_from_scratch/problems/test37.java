@@ -9,7 +9,7 @@ void run() throws Exception {
     compile("-d", "classes2", "-classpath", "classes1", "src2/q/B.java");
 
     writeFile("src/Test.java",
-            "/** &0; */ class Test extends q.B { }");
+            " class Test extends q.B { }");
 
     test("src/Test.java", "-sourcepath", "src1" + PS + "src2");
     test("src/Test.java", "-classpath", "classes1" + PS + "classes2");
@@ -21,3 +21,5 @@ void run() throws Exception {
     if (errors > 0)
         throw new Exception(errors + " errors found");
 }
+
+

@@ -8,3 +8,5 @@ private void createImage(Path outputDir, String... modules) throws Throwable {
                     .errorTo(System.out)
                     .getExitValue() == 0);
 }
+
+

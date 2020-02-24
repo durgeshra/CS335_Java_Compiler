@@ -1,9 +1,9 @@
 import java.util.*;
 import java.io.*;
 import java.text.*;
-//Solution Credits: Taranpreet Singh
+
 public class Main{
-    //SOLUTION BEGIN
+    
     void pre() throws Exception{}
     int[][][] D = new int[][][]{
         {{2,-2,0}, {1,0,-2}, {2,1,0}, {1,0,1}},
@@ -61,7 +61,7 @@ public class Main{
             return "state = "+st+" pos "+x+" "+y +" dis "+di;
         }
     }
-    //SOLUTION END
+    
     void hold(boolean b)throws Exception{if(!b)throw new Exception("Hold right there, Sparky!");}
     long mod = (long)1e9+7, IINF = (long)1e18;
     final int INF = (int)1e9, MX = (int)3e5+1;
@@ -73,7 +73,7 @@ public class Main{
         in = new FastReader();
         out = new PrintWriter(System.out);
         int T = (multipleTC)?ni():1;
-        //Solution Credits: Taranpreet Singh
+        
         pre();for(int t = 1; t<= T; t++)solve(t);
         out.flush();
         out.close();
@@ -127,3 +127,5 @@ public class Main{
         }
     }
 }
+
+

@@ -24,7 +24,7 @@ class CFINASUM {
 
 	String INPUT = "";
 
-	
+
 
 	void solve()
 
@@ -40,7 +40,7 @@ class CFINASUM {
 
 			for(int i = 0;i < n;i++)cum[i+1] = cum[i] + a[i];
 
-			
+
 
 			Map<Long, Integer> suf = new HashMap<>();
 
@@ -76,7 +76,7 @@ class CFINASUM {
 
 				}
 
-				
+
 
 				if(i < n-1){
 
@@ -102,7 +102,7 @@ class CFINASUM {
 
 	}
 
-	
+
 
 	void run() throws Exception
 
@@ -112,7 +112,7 @@ class CFINASUM {
 
 		out = new PrintWriter(System.out);
 
-		
+
 
 		long s = System.currentTimeMillis();
 
@@ -124,17 +124,17 @@ class CFINASUM {
 
 	}
 
-	
+
 
 	public static void main(String[] args) throws Exception { new CFINASUM().run(); }
 
-	
+
 
 	private byte[] inbuf = new byte[1024];
 
 	public int lenbuf = 0, ptrbuf = 0;
 
-	
+
 
 	private int readByte()
 
@@ -156,19 +156,19 @@ class CFINASUM {
 
 	}
 
-	
+
 
 	private boolean isSpaceChar(int c) { return !(c >= 33 && c <= 126); }
 
 	private int skip() { int b; while((b = readByte()) != -1 && isSpaceChar(b)); return b; }
 
-	
+
 
 	private double nd() { return Double.parseDouble(ns()); }
 
 	private char nc() { return (char)skip(); }
 
-	
+
 
 	private String ns()
 
@@ -178,7 +178,7 @@ class CFINASUM {
 
 		StringBuilder sb = new StringBuilder();
 
-		while(!(isSpaceChar(b))){ // when nextLine, (isSpaceChar(b) && b != ' ')
+		while(!(isSpaceChar(b))){
 
 			sb.appendCodePoint(b);
 
@@ -190,7 +190,7 @@ class CFINASUM {
 
 	}
 
-	
+
 
 	private char[] ns(int n)
 
@@ -212,7 +212,7 @@ class CFINASUM {
 
 	}
 
-	
+
 
 	private char[][] nm(int n, int m)
 
@@ -226,7 +226,7 @@ class CFINASUM {
 
 	}
 
-	
+
 
 	private int[] na(int n)
 
@@ -240,7 +240,7 @@ class CFINASUM {
 
 	}
 
-	
+
 
 	private int ni()
 
@@ -260,7 +260,7 @@ class CFINASUM {
 
 		}
 
-		
+
 
 		while(true){
 
@@ -280,7 +280,7 @@ class CFINASUM {
 
 	}
 
-	
+
 
 	private long nl()
 
@@ -302,7 +302,7 @@ class CFINASUM {
 
 		}
 
-		
+
 
 		while(true){
 
@@ -322,7 +322,7 @@ class CFINASUM {
 
 	}
 
-	
+
 
 	private void tr(Object... o) { if(INPUT.length() > 0)System.out.println(Arrays.deepToString(o)); }
 

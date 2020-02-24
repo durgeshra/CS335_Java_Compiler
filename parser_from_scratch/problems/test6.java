@@ -12,7 +12,7 @@ class PERMLIST {
 	PrintWriter out;
 	String INPUT = "";
 	
-	// 4 1 5 2 3
+	
 	void solve()
 	{
 		for(int T = ni();T > 0;T--){
@@ -110,7 +110,7 @@ class PERMLIST {
 	{
 		int b = skip();
 		StringBuilder sb = new StringBuilder();
-		while(!(isSpaceChar(b))){ // when nextLine, (isSpaceChar(b) && b != ' ')
+		while(!(isSpaceChar(b))){ 
 			sb.appendCodePoint(b);
 			b = readByte();
 		}
@@ -185,3 +185,6 @@ class PERMLIST {
 	
 	private void tr(Object... o) { if(INPUT.length() > 0)System.out.println(Arrays.deepToString(o)); }
 }
+
+
+

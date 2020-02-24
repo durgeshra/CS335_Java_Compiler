@@ -1,8 +1,8 @@
-/**
- * <p>
- * @return the java.ext.dirs property as a list of directory
- * </p>
- */
+
+
+
+
+
 private static File[] getExtDirs() {
     String s = java.security.AccessController.doPrivileged(
             new sun.security.action.GetPropertyAction("java.ext.dirs"));
@@ -26,3 +26,5 @@ private static File[] getExtDirs() {
     return dirs;
 }
  
+
+

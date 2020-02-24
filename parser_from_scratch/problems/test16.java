@@ -8,9 +8,9 @@ public class Main {
 	public static void main(String[] args) {
 		int n=in.nextInt(), q=in.nextInt();
 		int[] p = in.readIntArray(n, -1);
-//		int[] p = new int[n];
-//		for(int i=0; i<n; ++i)
-//			p[i]=i;
+
+
+
 		Node node = new Node();
 		int[] rt = new int[n+1];
 		rt[0]=node.init(n);
@@ -137,7 +137,7 @@ public class Main {
 				return Math.max(ans[u], plzans-mnp[u]);
 			} else {
 				int lcR=(rangeL+rangeR)/2, rcL=lcR+1;
-//				pushdown(u);
+
 				plzans=Math.max(plzans, lzans[u]);
 				int ans=0;
 				if(askL<=lcR) {
@@ -278,3 +278,5 @@ public class Main {
 		}
 	}
 }
+
+

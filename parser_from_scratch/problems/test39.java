@@ -1,6 +1,6 @@
 private ClassPath createClassPath(String classpath) {
     StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
-    List/*<PathResourceImplementation>*/ list = new ArrayList();
+    List list = new ArrayList();
     while (tokenizer.hasMoreTokens()) {
         String item = tokenizer.nextToken();
         File f = FileUtil.normalizeFile(new File(item));
@@ -12,3 +12,5 @@ private ClassPath createClassPath(String classpath) {
     return ClassPathSupport.createClassPath(list);
 }
  
+
+

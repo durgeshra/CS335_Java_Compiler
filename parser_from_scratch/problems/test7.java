@@ -63,7 +63,7 @@ class GRAPHTRE {
 			}
 			
 			for(int i = 1;i < ans.length;i++){
-//				if(i > 1)out.print(" ");
+
 				out.print(ans[i] + " ");
 			}
 			out.println();
@@ -123,7 +123,7 @@ class GRAPHTRE {
 	{
 		int b = skip();
 		StringBuilder sb = new StringBuilder();
-		while(!(isSpaceChar(b))){ // when nextLine, (isSpaceChar(b) && b != ' ')
+		while(!(isSpaceChar(b))){ 
 			sb.appendCodePoint(b);
 			b = readByte();
 		}
@@ -198,3 +198,6 @@ class GRAPHTRE {
 	
 	private void tr(Object... o) { if(INPUT.length() > 0)System.out.println(Arrays.deepToString(o)); }
 }
+
+
+

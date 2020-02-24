@@ -7,3 +7,5 @@ public static File[] decode(String text) {
     }
     return files.toArray(new File[files.size()]);
 }
+
+

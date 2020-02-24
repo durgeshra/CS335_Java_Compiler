@@ -164,23 +164,23 @@ class PLIND {
 
 	{
 
-//		int n = 1000000, m = 99999;
 
-//		Random gen = new Random();
 
-//		StringBuilder sb = new StringBuilder();
 
-//		sb.append(1 + " ");
 
-//		sb.append(1 + " ");
 
-//		for (int i = 0; i < n; i++) {
 
-//			sb.append(gen.nextInt(10));
 
-//		}
 
-//		INPUT = sb.toString();
+
+
+
+
+
+
+
+
+
 
 
 
@@ -256,7 +256,7 @@ class PLIND {
 
 		StringBuilder sb = new StringBuilder();
 
-		while(!(isSpaceChar(b))){ // when nextLine, (isSpaceChar(b) && b != ' ')
+		while(!(isSpaceChar(b))){ 
 
 			sb.appendCodePoint(b);
 
@@ -405,5 +405,8 @@ class PLIND {
 	private void tr(Object... o) { if(INPUT.length() > 0)System.out.println(Arrays.deepToString(o)); }
 
 }
+
+
+
 
 
