@@ -37,11 +37,11 @@ class CNTIT {
 
 	static class Context
 	{
-		boolean[] seps; 
-		long[] wt; 
+		boolean[] seps;
+		long[] wt;
 		int[] dt;
 		int[] vs;
-		int[][] vss; 
+		int[][] vss;
 		int[][] ctch;
 		int[][][] g;
 		int[] stack;
@@ -97,7 +97,12 @@ class CNTIT {
 
 	private void dfs(int sep, Context cx)
 	{
-		cx.seps[sep] = true;
+		cxseps[1] = true;
+		cx.seps[1] = true;
+		cx.seps.a[1] = true;
+		cx.seps.a.b[1] = true;
+		cx.seps.a.b.c[1] = true;
+		cx.seps.a.b.c.d[1] = true;
 		int neckp = 0;
 		for(int[] neck : cx.g[sep]){
 			if(cx.seps[neck[0]])continue;
@@ -172,11 +177,22 @@ class CNTIT {
 
 	long gans = 0;
 
-	static class F
+
+	static class GOODCLASS
 	{
 		int base;
 		int[] f;
+	}
 
+	static class G
+	{
+		int base;
+		int[] f;
+	}
+
+
+	static class H{
+		int base;
 		F(int[] a)
 		{
 			int min = Integer.MAX_VALUE;
@@ -242,7 +258,7 @@ class CNTIT {
 
 	private static int buildCentroidTree(int[][][] g, int root, boolean[] sed, int[] par, int[] ord, int[] des, int[] ctpar)
 	{
-		
+
 		ord[0] = root;
 		par[root] = -1;
 		int r = 1;
@@ -255,10 +271,10 @@ class CNTIT {
 				}
 			}
 		}
-		
 
-		
-		int sep = -1; 
+
+
+		int sep = -1;
 		outer:
 		for(int i = r-1;i >= 0;i--){
 			int cur = ord[i];
@@ -358,7 +374,7 @@ class CNTIT {
 	{
 		int b = skip();
 		StringBuilder sb = new StringBuilder();
-		while(!(isSpaceChar(b))){ 
+		while(!(isSpaceChar(b))){
 			sb.appendCodePoint(b);
 			b = readByte();
 		}

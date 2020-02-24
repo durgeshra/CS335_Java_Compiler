@@ -21,7 +21,7 @@ public class Main {
 		T=fr.scanInt();
 		while(T>0) {
 			T--;
-			
+
 			int N = fr.scanInt();
 			long[] A = new long[N];
 			long[] ps,ss;
@@ -38,7 +38,7 @@ public class Main {
 			for(i=N-2;i>=0;i--) {
 				ss[i]=ss[i+1]+A[i];
 			}
-			
+
 			long ans=0;
 			Map<Long,Integer> m1,m2;
 			for(i=0;i<N-1;i++) {
@@ -49,37 +49,37 @@ public class Main {
 					k=m2.getOrDefault(A[i], 0);
 					ans+=k;
 				}
-				
+
 				long d = ps[i]-ss[i+1];
 				ans+=m1.getOrDefault(d, 0);
-				
+
 				d-=d;
 				k=m2.getOrDefault(d, 0);
 				m2.put(d, k+1);
-				
+
 			}
 			k=m2.getOrDefault(A[N-1], 0);
 			ans+=k;
-			
+
 			System.out.println(ans);
 		}
 	}
-	
-	
+
+
 	static class OutputWriter {
 		private final PrintWriter writer;
- 
-		public OutputWriter() {
-			writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));			
+
+		public static void OutputWriter1() {
+			writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 		}
-		public OutputWriter(OutputStream outputStream) {
+		public OutputWriter2(OutputStream outputStream) {
 			writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream)));
 		}
- 
-		public OutputWriter(Writer writer) {
+
+		public OutputWriter3s(Writer writer) {
 			this.writer = new PrintWriter(writer);
 		}
- 
+
 		public void print(Object...objects) {
 			for (int i = 0; i < objects.length; i++) {
 				if (i != 0)
@@ -87,23 +87,23 @@ public class Main {
 				writer.print(objects[i]);
 			}
 		}
- 
+
 		public void printLine(Object...objects) {
 			print(objects);
 			writer.println();
 		}
- 
+
 		public void close() {
 			writer.close();
 		}
- 
+
 		public void flush() {
 			writer.flush();
 		}
- 
+
 	}
 
-	
+
 	static class Scan
 	{
 	    private byte[] buf=new byte[1024];
@@ -235,4 +235,3 @@ public class Main {
 	    }
 	}
 }
-

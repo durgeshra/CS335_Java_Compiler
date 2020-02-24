@@ -481,6 +481,7 @@ def p_FieldAccess(p):
 
 def p_ArrayAccess(p):
     '''ArrayAccess : IDENT ExpressionName LBRACK Expression RBRACK
+                    | IDENT PERIOD IDENT LBRACK Expression RBRACK
                     | IDENT LBRACK Expression RBRACK
                   | PrimaryNoNewArray LBRACK Expression RBRACK'''
     p[0] = mytuple(["ArrayAccess"]+p[1 :])
@@ -794,6 +795,8 @@ def p_UnaryExpression(p):
                       | PreDecrementExpression
                       | ADD UnaryExpression
                       | SUB UnaryExpression
+                      | ADD IDENT
+                      | SUB IDENT
                       | UnaryExpressionNotPlusMinus'''
     p[0] = mytuple(["UnaryExpression"]+p[1 :])
 
@@ -1022,15 +1025,24 @@ def p_SuperClass(p):
 #     '''
 #     p[0] = mytuple(["ZooSuperinterfaces"]+p[1 :])
 
+
 def p_NormalClassDeclaration(p):
-    '''NormalClassDeclaration : CommonModifierS CLASS IDENT TypeParameters
-                            | CommonModifierS CLASS IDENT
-                            | CLASS IDENT TypeParameters
-                            | CLASS IDENT
-                              | SuperClass Superinterfaces ClassBody
-                              | SuperClass  ClassBody
-                              | Superinterfaces ClassBody
-                              | ClassBody'''
+    '''NormalClassDeclaration : CommonModifierS CLASS IDENT TypeParameters SuperClass Superinterfaces ClassBody
+                            | CommonModifierS CLASS IDENT TypeParameters Superinterfaces ClassBody
+                            | CommonModifierS CLASS IDENT TypeParameters SuperClass  ClassBody
+                            | CommonModifierS CLASS IDENT TypeParameters ClassBody
+                            | CommonModifierS CLASS IDENT SuperClass Superinterfaces ClassBody
+                            | CommonModifierS CLASS IDENT Superinterfaces ClassBody
+                            | CommonModifierS CLASS IDENT SuperClass  ClassBody
+                            | CommonModifierS CLASS IDENT ClassBody
+                            | CLASS IDENT TypeParameters SuperClass Superinterfaces ClassBody
+                            | CLASS IDENT TypeParameters Superinterfaces ClassBody
+                            | CLASS IDENT TypeParameters SuperClass  ClassBody
+                            | CLASS IDENT TypeParameters ClassBody
+                            | CLASS IDENT SuperClass Superinterfaces ClassBody
+                            | CLASS IDENT Superinterfaces ClassBody
+                            | CLASS IDENT SuperClass  ClassBody
+                            | CLASS IDENT ClassBody'''
     p[0] = mytuple(["NormalClassDeclaration"]+p[1 :])
 
 # def p_ClassModifier(p):
@@ -1266,6 +1278,7 @@ def p_UnannArrayType(p):
                         | IDENT PERIOD IDENT Dims
                         | IDENT Dims
     '''
+    print("I am here!")
     p[0] = mytuple(["UnannArrayType"]+p[1 :])
 
 
@@ -1360,8 +1373,8 @@ def p_MethodDeclarator(p):
 
 def p_FormalParameterList(p):
     '''FormalParameterList :  ReceiverParameter
-                            | FormalParameters COMMA FormalParameter
-                            | FormalParameter
+                            | FormalParameters COMMA LastFormalParameter
+                            | LastFormalParameter
                             | FormalParameters
     '''
     p[0] = mytuple(["FormalParameterList"]+p[1 :])
@@ -1423,41 +1436,41 @@ def p_FormalParameter(p):
 
 
 # TODO: Dropped this rule..., p_LastFormalParameter was used only in p_FormalParameterList.
-# def p_LastFormalParameter(p):
-#     '''LastFormalParameter : CommonModifierS UnannType AnnotationS ELLIPSIS VariableDeclaratorId
-#                             | CommonModifierS NumericType AnnotationS ELLIPSIS VariableDeclaratorId
-#                             | CommonModifierS BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
-#                             | CommonModifierS IDENT AnnotationS ELLIPSIS VariableDeclaratorId
-#                             | FormalParameter
-#                             | CommonModifierS UnannType ELLIPSIS VariableDeclaratorId
-#                             | CommonModifierS NumericType ELLIPSIS VariableDeclaratorId
-#                             | CommonModifierS BOOLEAN ELLIPSIS VariableDeclaratorId
-#                             | CommonModifierS IDENT ELLIPSIS VariableDeclaratorId
-#                             | CommonModifierS UnannType AnnotationS ELLIPSIS IDENT
-#                             | CommonModifierS NumericType AnnotationS ELLIPSIS IDENT
-#                             | CommonModifierS BOOLEAN AnnotationS ELLIPSIS IDENT
-#                             | CommonModifierS IDENT AnnotationS ELLIPSIS IDENT
-#                             | CommonModifierS UnannType ELLIPSIS IDENT
-#                             | CommonModifierS NumericType ELLIPSIS IDENT
-#                             | CommonModifierS BOOLEAN ELLIPSIS IDENT
-#                             | CommonModifierS IDENT ELLIPSIS IDENT
-#                             |  UnannType AnnotationS ELLIPSIS VariableDeclaratorId
-#                             |  NumericType AnnotationS ELLIPSIS VariableDeclaratorId
-#                             |  BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
-#                             |  IDENT AnnotationS ELLIPSIS VariableDeclaratorId
-#                             |  UnannType ELLIPSIS VariableDeclaratorId
-#                             |  NumericType ELLIPSIS VariableDeclaratorId
-#                             |  BOOLEAN ELLIPSIS VariableDeclaratorId
-#                             |  IDENT ELLIPSIS VariableDeclaratorId
-#                             |  UnannType AnnotationS ELLIPSIS IDENT
-#                             |  BOOLEAN AnnotationS ELLIPSIS IDENT
-#                             |  IDENT AnnotationS ELLIPSIS IDENT
-#                             |  UnannType ELLIPSIS IDENT
-#                             |  BOOLEAN ELLIPSIS IDENT
-#                             |  IDENT ELLIPSIS IDENT
-#
-#     '''
-#     p[0] = mytuple(["LastFormalParameter"] + p[1 :])
+def p_LastFormalParameter(p):
+    '''LastFormalParameter : CommonModifierS UnannType AnnotationS ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS NumericType AnnotationS ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS IDENT AnnotationS ELLIPSIS VariableDeclaratorId
+                            | FormalParameter
+                            | CommonModifierS UnannType ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS NumericType ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS BOOLEAN ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS IDENT ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS UnannType AnnotationS ELLIPSIS IDENT
+                            | CommonModifierS NumericType AnnotationS ELLIPSIS IDENT
+                            | CommonModifierS BOOLEAN AnnotationS ELLIPSIS IDENT
+                            | CommonModifierS IDENT AnnotationS ELLIPSIS IDENT
+                            | CommonModifierS UnannType ELLIPSIS IDENT
+                            | CommonModifierS NumericType ELLIPSIS IDENT
+                            | CommonModifierS BOOLEAN ELLIPSIS IDENT
+                            | CommonModifierS IDENT ELLIPSIS IDENT
+                            |  UnannType AnnotationS ELLIPSIS VariableDeclaratorId
+                            |  NumericType AnnotationS ELLIPSIS VariableDeclaratorId
+                            |  BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
+                            |  IDENT AnnotationS ELLIPSIS VariableDeclaratorId
+                            |  UnannType ELLIPSIS VariableDeclaratorId
+                            |  NumericType ELLIPSIS VariableDeclaratorId
+                            |  BOOLEAN ELLIPSIS VariableDeclaratorId
+                            |  IDENT ELLIPSIS VariableDeclaratorId
+                            |  UnannType AnnotationS ELLIPSIS IDENT
+                            |  BOOLEAN AnnotationS ELLIPSIS IDENT
+                            |  IDENT AnnotationS ELLIPSIS IDENT
+                            |  UnannType ELLIPSIS IDENT
+                            |  BOOLEAN ELLIPSIS IDENT
+                            |  IDENT ELLIPSIS IDENT
+
+    '''
+    p[0] = mytuple(["LastFormalParameter"] + p[1 :])
 
 # def p_ZooIDENTPERIOD(p):
 #     '''ZooIDENTPERIOD : IDENT PERIOD
