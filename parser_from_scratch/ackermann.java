@@ -8,7 +8,7 @@ class ackermann{
     int Ack(){
         int i = -1;
         int x = -1, y = -1;
-        if (m=0) {
+        if (m==0) {
             if (m == 0) {
                 i = n + 1;
             } else if (n == 0) {

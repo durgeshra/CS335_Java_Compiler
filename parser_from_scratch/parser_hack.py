@@ -745,6 +745,7 @@ def p_UnaryExpressionNotPlusMinus(p):
 
 def p_PostfixExpression(p):
     '''PostfixExpression : Primary
+                        | IDENT
                         | ExpressionName
                         | PostIncrementExpression
                         | PostDecrementExpression'''
@@ -1945,7 +1946,9 @@ def p_LocalVariableDeclaration(p):
 #     p[0]=mytuple(["CommonModifierS"]+p[1 :])
 
 def p_Statement(p):
-    '''Statement : IfThenStatement
+    '''Statement : StatementWithoutTrailingSubstatement
+        | LabeledStatement
+        | IfThenStatement
         | IfThenElseStatement
         | WhileStatement
         | ForStatement
