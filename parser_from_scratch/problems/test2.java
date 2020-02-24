@@ -41,8 +41,6 @@ public class Main {
 			
 			long ans=0;
 			Map<Long,Integer> m1,m2;
-			m1=new HashMap<>();
-			m2=new HashMap<>();
 			for(i=0;i<N-1;i++) {
 				k=m1.getOrDefault(A[i], 0);
 				m1.put(A[i], k+1);
@@ -55,7 +53,7 @@ public class Main {
 				long d = ps[i]-ss[i+1];
 				ans+=m1.getOrDefault(d, 0);
 				
-				d=-d;
+				d-=d;
 				k=m2.getOrDefault(d, 0);
 				m2.put(d, k+1);
 				

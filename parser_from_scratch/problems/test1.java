@@ -37,17 +37,17 @@ class CNTIT {
 
 	static class Context
 	{
-		boolean[] seps; // is separator?
-		long[] wt; // [ind] = w between sep and ind
+		boolean[] seps; 
+		long[] wt; 
 		int[] dt;
 		int[] vs;
-		int[][] vss; // [neckind][vertices]
+		int[][] vss; 
 		int[][] ctch;
 		int[][][] g;
 		int[] stack;
 		int[] inds;
-//		int[] neckind;
-//		int[] cpar;
+
+
 		int color = -1;
 	}
 
@@ -57,7 +57,7 @@ class CNTIT {
 		for(int i = 0;i < n;i++)if(cpar[i] == -1)ctroot = i;
 
 		Context cx = new Context();
-//		cx.cpar = cpar;
+
 		cx.seps = new boolean[n];
 		cx.wt = new long[n];
 		cx.dt = new int[n];
@@ -68,7 +68,7 @@ class CNTIT {
 		cx.g = g;
 		cx.stack = new int[n];
 		cx.inds = new int[n];
-//		cx.neckind = new int[n];
+
 		dfs(ctroot, cx);
 	}
 
@@ -104,7 +104,7 @@ class CNTIT {
 
 			int sp = 0;
 			cx.inds[sp] = 0;
-//			cx.wt[neck] = w[neck];
+
 			cx.dt[neck[0]] = neck[1] == cx.color ? 1 : -1;
 			int vsp = 0;
 			cx.stack[sp++] = neck[0];
@@ -112,7 +112,7 @@ class CNTIT {
 				int cur = cx.stack[sp-1];
 				if(cx.inds[sp-1] == 0){
 					cx.vs[vsp++] = cur;
-//					if(cpar[cur] == sep)cx.neckind[cur] = neckp;
+
 				}
 				if(cx.inds[sp-1] == cx.g[cur].length){
 					sp--;
@@ -120,7 +120,7 @@ class CNTIT {
 				}
 				int[] e = cx.g[cur][cx.inds[sp-1]++];
 				if(!cx.seps[e[0]] && !(sp-2 >= 0 && e[0] == cx.stack[sp-2])){
-//					cx.wt[e[0]] = cx.wt[cur] + w[e[0]];
+
 					cx.dt[e[0]] = cx.dt[cur] + (e[1] == cx.color ? 1 : -1);
 					cx.stack[sp] = e[0];
 					cx.inds[sp] = 0;
@@ -162,11 +162,11 @@ class CNTIT {
 				long fix = fs[i].f[j] - (j-1 >= 0 ? fs[i].f[j-1] : 0);
 				int tar = -(j+fs[i].base);
 				ans -= (all.numle(tar) - fs[i].numle(tar)) * fix;
-//				tr(i, j+fs[i].base, fix, (all.numle(tar) - fs[i].numle(tar)) * fix);
+
 			}
 		}
 		ans -= all.numle(0)*2;
-//		assert ans % 2 == 0;
+
 		gans += ans/2;
 	}
 
@@ -242,7 +242,7 @@ class CNTIT {
 
 	private static int buildCentroidTree(int[][][] g, int root, boolean[] sed, int[] par, int[] ord, int[] des, int[] ctpar)
 	{
-		// parent and level-order
+		
 		ord[0] = root;
 		par[root] = -1;
 		int r = 1;
@@ -255,10 +255,10 @@ class CNTIT {
 				}
 			}
 		}
-		// if(r == 1)return;
+		
 
-		// DP and find a separator
-		int sep = -1; // always exists
+		
+		int sep = -1; 
 		outer:
 		for(int i = r-1;i >= 0;i--){
 			int cur = ord[i];
@@ -358,7 +358,7 @@ class CNTIT {
 	{
 		int b = skip();
 		StringBuilder sb = new StringBuilder();
-		while(!(isSpaceChar(b))){ // when nextLine, (isSpaceChar(b) && b != ' ')
+		while(!(isSpaceChar(b))){ 
 			sb.appendCodePoint(b);
 			b = readByte();
 		}

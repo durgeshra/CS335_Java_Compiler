@@ -471,13 +471,12 @@ def p_FieldAccess(p):
     '''FieldAccess : Primary PERIOD IDENT
                   | SUPER PERIOD IDENT
                   | ExpressionName PERIOD SUPER PERIOD IDENT
-                  | IDENT ExpressionName PERIOD SUPER PERIOD IDENT'''
+                  | IDENT PERIOD SUPER PERIOD IDENT'''
     p[0] = mytuple(["FieldAccess"]+p[1 :])
 
 
 def p_ArrayAccess(p):
     '''ArrayAccess : ExpressionName LBRACK Expression RBRACK
-                    | IDENT ExpressionName LBRACK Expression RBRACK
                     | IDENT LBRACK Expression RBRACK
                   | PrimaryNoNewArray LBRACK Expression RBRACK'''
     p[0] = mytuple(["ArrayAccess"]+p[1 :])
@@ -577,13 +576,14 @@ def p_ArrayCreationExpression(p):
 
 
 def p_DimExprs(p):
-    '''DimExprs : DimExpr DimExprS'''
+    '''DimExprs : DimExprs DimExpr
+                | DimExpr'''
     p[0] = mytuple(["DimExprs"]+p[1 :])
 
-def p_DimExprS(p):
-    '''DimExprS : DimExprS DimExpr
-               | empty'''
-    p[0] = mytuple(["DimExprS"]+p[1 :])
+# def p_DimExprS(p):
+#     '''DimExprS : DimExprS DimExpr
+#                | DimExpr'''
+#     p[0] = mytuple(["DimExprS"]+p[1 :])
 
 def p_DimExpr(p):
     '''DimExpr : AnnotationS LBRACK Expression RBRACK
@@ -2607,5 +2607,6 @@ def parse_file(_file, debug=0):
 # print(parse_out)
 # t = tac.code
 # print(t)
-parse_out = parse_file("./problems/test1.java")
+import sys
+parse_out = parse_file(sys.argv[1])
 print(parse_out)
