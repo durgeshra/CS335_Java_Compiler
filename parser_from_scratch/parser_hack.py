@@ -735,6 +735,11 @@ def p_EqualityExpression(p):
                          | IDENT NEQ IDENT'''
     p[0] = mytuple(["EqualityExpression"]+p[1 :])
 
+# TODO:    Hack added these lines which were not needed to pass LexicalScope.java in sir's examples
+                           # | IDENT PERIOD IDENT LSS IDENT
+                           # | IDENT PERIOD IDENT GTR IDENT
+                           # | IDENT PERIOD IDENT LEQ IDENT
+                           # | IDENT PERIOD IDENT GEQ IDENT
 
 def p_RelationalExpression(p):
     '''RelationalExpression : ShiftExpression
@@ -750,10 +755,18 @@ def p_RelationalExpression(p):
                            | IDENT GTR ShiftExpression
                            | IDENT LEQ ShiftExpression
                            | IDENT GEQ ShiftExpression
+                           | IDENT PERIOD IDENT LSS ShiftExpression
+                           | IDENT PERIOD IDENT GTR ShiftExpression
+                           | IDENT PERIOD IDENT LEQ ShiftExpression
+                           | IDENT PERIOD IDENT GEQ ShiftExpression
                            | IDENT LSS IDENT
                            | IDENT GTR IDENT
                            | IDENT LEQ IDENT
                            | IDENT GEQ IDENT
+                          | IDENT PERIOD IDENT LSS IDENT
+                          | IDENT PERIOD IDENT GTR IDENT
+                          | IDENT PERIOD IDENT LEQ IDENT
+                          | IDENT PERIOD IDENT GEQ IDENT
                            | RelationalExpression INSTANCEOF ReferenceType
                            | RelationalExpression INSTANCEOF IDENT
                            | IDENT INSTANCEOF ReferenceType
@@ -811,7 +824,8 @@ def p_UnaryExpression(p):
                       | SUB UnaryExpression
                       | ADD IDENT
                       | SUB IDENT
-                      | UnaryExpressionNotPlusMinus'''
+                      | UnaryExpressionNotPlusMinus
+                      | IDENT ExpressionName'''
     p[0] = mytuple(["UnaryExpression"]+p[1 :])
 
 def p_PreIncrementExpression(p):
@@ -836,18 +850,19 @@ def p_UnaryExpressionNotPlusMinus(p):
 
 def p_PostfixExpression(p):
     '''PostfixExpression : Primary
-                        | IDENT ExpressionName
                         | PostIncrementExpression
                         | PostDecrementExpression'''
     p[0] = mytuple(["PostfixExpression"]+p[1 :])
 
 def p_PostIncrementExpression(p):
     '''PostIncrementExpression : PostfixExpression INC
+                                | IDENT ExpressionName INC
                                 | IDENT INC'''
     p[0] = mytuple(["PostIncrementExpression"]+p[1 :])
 
 def p_PostDecrementExpression(p):
     '''PostDecrementExpression : PostfixExpression DEC
+                                | IDENT ExpressionName DEC
                                 | IDENT DEC'''
     p[0] = mytuple(["PostDecrementExpression"]+p[1 :])
 
@@ -857,15 +872,19 @@ def p_CastExpression(p):
                      | LPAREN BOOLEAN RPAREN UnaryExpression
                   | LPAREN BOOLEAN RPAREN IDENT
                      | LPAREN ReferenceType AdditionalBoundS RPAREN UnaryExpressionNotPlusMinus
+                     | LPAREN ReferenceType AdditionalBoundS RPAREN IDENT ExpressionName
                      | LPAREN ReferenceType AdditionalBoundS RPAREN IDENT
                      | LPAREN ReferenceType AdditionalBoundS RPAREN LambdaExpression
                   | LPAREN IDENT AdditionalBoundS RPAREN UnaryExpressionNotPlusMinus
+                  | LPAREN IDENT AdditionalBoundS RPAREN IDENT ExpressionName
                   | LPAREN IDENT AdditionalBoundS RPAREN IDENT
                   | LPAREN IDENT AdditionalBoundS RPAREN LambdaExpression
                   | LPAREN ReferenceType RPAREN UnaryExpressionNotPlusMinus
+                  | LPAREN ReferenceType RPAREN IDENT ExpressionName
                   | LPAREN ReferenceType RPAREN IDENT
                   | LPAREN ReferenceType RPAREN LambdaExpression
                | LPAREN IDENT RPAREN UnaryExpressionNotPlusMinus
+               | LPAREN IDENT RPAREN IDENT ExpressionName
                | LPAREN IDENT RPAREN IDENT
                | LPAREN IDENT RPAREN LambdaExpression'''
     p[0] = mytuple(["CastExpression"]+p[1 :])
