@@ -259,7 +259,9 @@ def p_Annotation(p):
 
 def p_NormalAnnotation(p):
     '''NormalAnnotation : ATRATE ExpressionName LPAREN ElementValuePairList RPAREN
-                        | ATRATE ExpressionName LPAREN  RPAREN '''
+                        | ATRATE ExpressionName LPAREN  RPAREN
+                        | ATRATE IDENT ExpressionName LPAREN ElementValuePairList RPAREN
+                        | ATRATE IDENT ExpressionName LPAREN  RPAREN '''
     p[0] = mytuple(["NormalAnnotation"]+p[1 :])
 
 
@@ -317,11 +319,13 @@ def p_COMMAElementValueS(p):
     p[0] = mytuple(["COMMAElementValueS"]+p[1 :])
 
 def p_MarkerAnnotation(p):
-    '''MarkerAnnotation : ATRATE ExpressionName'''
+    '''MarkerAnnotation : ATRATE ExpressionName
+                | ATRATE IDENT ExpressionName'''
     p[0] = mytuple(["MarkerAnnotation"]+p[1 :])
 
 def p_SingleElementAnnotation(p):
-    '''SingleElementAnnotation : ATRATE ExpressionName LPAREN ElementValue RPAREN'''
+    '''SingleElementAnnotation : ATRATE ExpressionName LPAREN ElementValue RPAREN
+                        | ATRATE IDENT ExpressionName LPAREN ElementValue RPAREN'''
     p[0] = mytuple(["SingleElementAnnotation"]+p[1 :])
 
 #</editor-fold>############################################
@@ -376,6 +380,7 @@ def p_PrimaryNoNewArray(p):
                         | ClassLiteral
                         | THIS
                         | ExpressionName PERIOD THIS
+                        | IDENT ExpressionName PERIOD THIS
                         | LPAREN Expression RPAREN
                         | ClassInstanceCreationExpression
                         | FieldAccess
@@ -386,6 +391,7 @@ def p_PrimaryNoNewArray(p):
 
 def p_ClassLiteral(p):
     '''ClassLiteral : ExpressionName LBRACKRBRACKS PERIOD CLASS
+                    | IDENT ExpressionName LBRACKRBRACKS PERIOD CLASS
                    | NumericType LBRACKRBRACKS PERIOD CLASS
                    | BOOLEAN LBRACKRBRACKS PERIOD CLASS
                    | VOID PERIOD CLASS '''
@@ -399,6 +405,7 @@ def p_LBRACKRBRACKS(p):
 def p_ClassInstanceCreationExpression(p):
     '''ClassInstanceCreationExpression : UnqualifiedClassInstanceCreationExpression
                                       | ExpressionName PERIOD UnqualifiedClassInstanceCreationExpression
+                                      | IDENT ExpressionName PERIOD UnqualifiedClassInstanceCreationExpression
                                       | IDENT PERIOD UnqualifiedClassInstanceCreationExpression
                                       | Primary PERIOD UnqualifiedClassInstanceCreationExpression'''
     p[0] = mytuple(["ClassInstanceCreationExpression"]+p[1 :])
@@ -463,12 +470,14 @@ def p_TypeArgumentsOrDiamond(p):
 def p_FieldAccess(p):
     '''FieldAccess : Primary PERIOD IDENT
                   | SUPER PERIOD IDENT
-                  | ExpressionName PERIOD SUPER PERIOD IDENT'''
+                  | ExpressionName PERIOD SUPER PERIOD IDENT
+                  | IDENT ExpressionName PERIOD SUPER PERIOD IDENT'''
     p[0] = mytuple(["FieldAccess"]+p[1 :])
 
 
 def p_ArrayAccess(p):
     '''ArrayAccess : ExpressionName LBRACK Expression RBRACK
+                    | IDENT ExpressionName LBRACK Expression RBRACK
                     | IDENT LBRACK Expression RBRACK
                   | PrimaryNoNewArray LBRACK Expression RBRACK'''
     p[0] = mytuple(["ArrayAccess"]+p[1 :])
@@ -480,6 +489,10 @@ def p_MethodInvocation(p):
                        | ExpressionName PERIOD TypeArguments IDENT LPAREN  RPAREN
                        | ExpressionName PERIOD  IDENT LPAREN ArgumentList RPAREN
                        | ExpressionName PERIOD  IDENT LPAREN  RPAREN
+                       | IDENT ExpressionName PERIOD TypeArguments IDENT LPAREN ArgumentList RPAREN
+                       | IDENT ExpressionName PERIOD TypeArguments IDENT LPAREN  RPAREN
+                       | IDENT ExpressionName PERIOD  IDENT LPAREN ArgumentList RPAREN
+                       | IDENT ExpressionName PERIOD  IDENT LPAREN  RPAREN
                        | IDENT PERIOD TypeArguments IDENT LPAREN ArgumentList RPAREN
                        | IDENT PERIOD TypeArguments IDENT LPAREN  RPAREN
                        | IDENT PERIOD  IDENT LPAREN ArgumentList RPAREN
@@ -495,7 +508,11 @@ def p_MethodInvocation(p):
                        | ExpressionName PERIOD SUPER PERIOD TypeArguments IDENT LPAREN ArgumentList RPAREN
                        | ExpressionName PERIOD SUPER PERIOD TypeArguments IDENT LPAREN  RPAREN
                        | ExpressionName PERIOD SUPER PERIOD  IDENT LPAREN ArgumentList RPAREN
-                       | ExpressionName PERIOD SUPER PERIOD  IDENT LPAREN  RPAREN '''
+                       | ExpressionName PERIOD SUPER PERIOD  IDENT LPAREN  RPAREN
+                       | IDENT ExpressionName PERIOD SUPER PERIOD TypeArguments IDENT LPAREN ArgumentList RPAREN
+                       | IDENT ExpressionName PERIOD SUPER PERIOD TypeArguments IDENT LPAREN  RPAREN
+                       | IDENT ExpressionName PERIOD SUPER PERIOD  IDENT LPAREN ArgumentList RPAREN
+                       | IDENT ExpressionName PERIOD SUPER PERIOD  IDENT LPAREN  RPAREN '''
     p[0] = mytuple(["MethodInvocation"]+p[1 :])
 
 
@@ -510,21 +527,25 @@ def p_COMMAExpressionS(p):
 
 def p_MethodReference(p):
     '''MethodReference : ExpressionName COLON_SEP TypeArguments IDENT
+                    | IDENT ExpressionName  COLON_SEP TypeArguments IDENT
                       | ReferenceType COLON_SEP TypeArguments IDENT
                       | IDENT COLON_SEP TypeArguments IDENT
                       | Primary COLON_SEP TypeArguments IDENT
                       | SUPER COLON_SEP TypeArguments IDENT
                       | ExpressionName PERIOD SUPER COLON_SEP TypeArguments IDENT
+                      | IDENT ExpressionName PERIOD SUPER COLON_SEP TypeArguments IDENT
                       | ClassType COLON_SEP TypeArguments NEW
                       | TypeVariable COLON_SEP TypeArguments NEW
                       | IDENT PERIOD IDENT COLON_SEP TypeArguments NEW
                       | IDENT COLON_SEP TypeArguments NEW
                       | ExpressionName COLON_SEP IDENT
+                      | IDENT ExpressionName COLON_SEP IDENT
                     | ReferenceType COLON_SEP IDENT
                     | IDENT COLON_SEP IDENT
                     | Primary COLON_SEP IDENT
                     | SUPER COLON_SEP IDENT
                     | ExpressionName PERIOD SUPER COLON_SEP IDENT
+                    | IDENT ExpressionName PERIOD SUPER COLON_SEP IDENT
                     | ClassType COLON_SEP NEW
                     | TypeVariable COLON_SEP NEW
                     | IDENT PERIOD IDENT COLON_SEP NEW
@@ -619,6 +640,7 @@ def p_Assignment(p):
 
 def p_LeftHandSide(p):
     '''LeftHandSide : ExpressionName
+                    | IDENT ExpressionName
                    | FieldAccess
                    | ArrayAccess'''
     p[0] = mytuple(["LeftHandSide"]+p[1 :])
@@ -790,6 +812,7 @@ def p_UnaryExpressionNotPlusMinus(p):
 def p_PostfixExpression(p):
     '''PostfixExpression : Primary
                         | ExpressionName
+                        | IDENT ExpressionName
                         | PostIncrementExpression
                         | PostDecrementExpression'''
     p[0] = mytuple(["PostfixExpression"]+p[1 :])
@@ -1579,6 +1602,10 @@ def p_ExplicitConstructorInvocation(p):
                                     | ExpressionName PERIOD  SUPER LPAREN ArgumentList RPAREN SEMICOLON
                                     | ExpressionName PERIOD TypeArguments SUPER LPAREN  RPAREN SEMICOLON
                                     | ExpressionName PERIOD  SUPER LPAREN  RPAREN SEMICOLON
+                                    | IDENT ExpressionName PERIOD TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    | IDENT ExpressionName PERIOD  SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    | IDENT ExpressionName PERIOD TypeArguments SUPER LPAREN  RPAREN SEMICOLON
+                                    | IDENT ExpressionName PERIOD  SUPER LPAREN  RPAREN SEMICOLON
                                     | IDENT PERIOD TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
                                     | IDENT PERIOD  SUPER LPAREN ArgumentList RPAREN SEMICOLON
                                     | IDENT PERIOD TypeArguments SUPER LPAREN  RPAREN SEMICOLON

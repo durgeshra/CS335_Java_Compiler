@@ -2,7 +2,7 @@ import java.io;
 import java.util.*;
 class C
 {
-    public static void main(String[] args) throws IOException
+    public static void main(String args) throws IOException
     {
         BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 
@@ -13,12 +13,12 @@ class C
 
         while(T-->0)
         {
-            String s[]=br.readLine().trim().split(" ");
+            String s=br.readLine().trim().split(" ");
             N=Integer.parseInt(s[0]);
             int K=Integer.parseInt(s[1]);
             int V=Integer.parseInt(s[2]);
 
-            int a[]=new int[N];
+            int a=new int[N];
             s=br.readLine().trim().split(" ");
 
             int sum=0;
