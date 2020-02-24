@@ -1342,13 +1342,10 @@ def p_MethodHeader(p):
 #     p[0] = mytuple(["ZooFormalParameterList"]+p[1 :])
 
 
-# TODO: We removed this from MethodDeclarator: they caused some errors
-# IDENT LPAREN FormalParameterList RPAREN Dims
-# IDENT LPAREN RPAREN Dims
-
-
 def p_MethodDeclarator(p):
     '''MethodDeclarator : IDENT LPAREN FormalParameterList RPAREN
+                        | LPAREN FormalParameterList RPAREN Dims
+                        | IDENT LPAREN RPAREN Dims
                         | IDENT LPAREN RPAREN
     '''
     p[0] = mytuple(["MethodDeclarator"]+p[1 :])
@@ -1829,7 +1826,7 @@ def p_TypeVariable(p):
 
 def p_ArrayType(p):
     '''ArrayType :  PrimitiveType Dims
-                | BOOLEAN Dims
+                 | BOOLEAN Dims
                  |  ClassType Dims
                  |  IDENT PERIOD IDENT Dims
                  |  TypeVariable Dims
@@ -1839,14 +1836,15 @@ def p_ArrayType(p):
 #
 
 def p_Dims(p):
-    '''Dims : lbrace rbrace '''
+    '''Dims : AnnotationS LBRACK RBRACK AnnotationSLBRACKRBRACKS
+            | LBRACK RBRACK AnnotationSLBRACKRBRACKS'''
     p[0]=mytuple(["Dims"]+p[1 :])
 
-def p_AnnotationSLBRACERBRACES(p):
-    '''AnnotationSLBRACERBRACES : AnnotationSLBRACERBRACES AnnotationS lbrace rbrace
-                                | AnnotationSLBRACERBRACES lbrace rbrace
+def p_AnnotationSLBRACKRBRACKS(p):
+    '''AnnotationSLBRACKRBRACKS : AnnotationSLBRACKRBRACKS AnnotationS LBRACK RBRACE
+                                | AnnotationSLBRACKRBRACKS LBRACK RBRACE
                                 | empty '''
-    p[0]=mytuple(["AnnotationSLBRACERBRACES"]+p[1 :])
+    p[0]=mytuple(["AnnotationSLBRACKRBRACKS"]+p[1 :])
 
 #
 
