@@ -93,13 +93,13 @@ def p_ExtendsInterfaces(p):
 
 
 def p_InterfaceBody(p):
-    '''InterfaceBody : LBRACE InterfaceMemberDeclarationS RBRACE '''
+    '''InterfaceBody : lbrace InterfaceMemberDeclarationS rbrace '''
     p[0] = mytuple(["InterfaceBody"]+p[1 :])
 
 
 def p_InterfaceMemberDeclarationS(p):
-    ''' InterfaceMemberDeclarationS : InterfaceMemberDeclaration InterfaceMemberDeclarationS
-                                    | SEMICOLON InterfaceMemberDeclarationS
+    ''' InterfaceMemberDeclarationS : InterfaceMemberDeclarationS InterfaceMemberDeclaration
+                                    | InterfaceMemberDeclarationS SEMICOLON
                                     | empty '''
     p[0] = mytuple(["InterfaceMemberDeclarationS"]+p[1 :])
 
@@ -113,15 +113,19 @@ def p_InterfaceMemberDeclaration(p):
 
 def p_ConstantDeclaration(p):
     '''ConstantDeclaration : CommonModifierS UnannType VariableDeclaratorList SEMICOLON
+                            | CommonModifierS NumericType VariableDeclaratorList SEMICOLON
                             | CommonModifierS BOOLEAN VariableDeclaratorList SEMICOLON
                             | CommonModifierS IDENT VariableDeclaratorList SEMICOLON
                             | UnannType VariableDeclaratorList SEMICOLON
+                            | NumericType VariableDeclaratorList SEMICOLON
                             | BOOLEAN VariableDeclaratorList SEMICOLON
                             | IDENT VariableDeclaratorList SEMICOLON
                             | CommonModifierS UnannType IDENT SEMICOLON
+                            | CommonModifierS NumericType IDENT SEMICOLON
                             | CommonModifierS BOOLEAN IDENT SEMICOLON
                             | CommonModifierS IDENT IDENT SEMICOLON
                             | UnannType IDENT SEMICOLON
+                            | NumericType IDENT SEMICOLON
                             | BOOLEAN IDENT SEMICOLON
                             | IDENT IDENT SEMICOLON'''
     p[0] = mytuple(["ConstantDeclaration"]+p[1 :])
@@ -170,12 +174,12 @@ def p_AnnotationTypeDeclaration(p):
 #     p[0] = mytuple(["InterfaceModifierS"]+p[1 :])
 
 def p_AnnotationTypeBody(p):
-    '''AnnotationTypeBody :  LBRACE AnnotationTypeMemberDeclarationS RBRACE'''
+    '''AnnotationTypeBody :  lbrace AnnotationTypeMemberDeclarationS rbrace'''
     p[0] = mytuple(["AnnotationTypeBody"]+p[1 :])
 
 def p_AnnotationTypeMemberDeclarationS(p):
-    '''AnnotationTypeMemberDeclarationS : AnnotationTypeMemberDeclaration AnnotationTypeMemberDeclarationS
-                        | SEMICOLON AnnotationTypeMemberDeclarationS
+    '''AnnotationTypeMemberDeclarationS : AnnotationTypeMemberDeclarationS AnnotationTypeMemberDeclaration
+                        | AnnotationTypeMemberDeclarationS SEMICOLON
                          | empty'''
     p[0] = mytuple(["AnnotationTypeMemberDeclarationS"]+p[1 :])
 
@@ -188,27 +192,35 @@ def p_AnnotationTypeMemberDeclaration(p):
 
 def p_AnnotationTypeElementDeclaration(p):
     '''AnnotationTypeElementDeclaration :  CommonModifierS UnannType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                    | CommonModifierS NumericType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     | CommonModifierS BOOLEAN IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
-                                        |  CommonModifierS IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                    |  CommonModifierS IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     |    CommonModifierS UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |    CommonModifierS NumericType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
                                     |    CommonModifierS BOOLEAN IDENT LPAREN RPAREN  DefaultValue SEMICOLON
                                     |  CommonModifierS IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
                                     |    CommonModifierS UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |    CommonModifierS NumericType IDENT LPAREN RPAREN Dims  SEMICOLON
                                     |    CommonModifierS BOOLEAN IDENT LPAREN RPAREN Dims  SEMICOLON
                                     |  CommonModifierS IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
                                     |    CommonModifierS UnannType IDENT LPAREN RPAREN SEMICOLON
+                                    |    CommonModifierS NumericType IDENT LPAREN RPAREN SEMICOLON
                                     |    CommonModifierS BOOLEAN IDENT LPAREN RPAREN SEMICOLON
                                     |  CommonModifierS IDENT IDENT LPAREN RPAREN SEMICOLON
                                     | UnannType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                    | NumericType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     | BOOLEAN IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                         |  IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     |    UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |    NumericType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
                                     |    BOOLEAN IDENT LPAREN RPAREN  DefaultValue SEMICOLON
                                     |  IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
                                     |    UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |    NumericType IDENT LPAREN RPAREN Dims  SEMICOLON
                                     |    BOOLEAN IDENT LPAREN RPAREN Dims  SEMICOLON
                                     |  IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
                                     |    UnannType IDENT LPAREN RPAREN SEMICOLON
+                                    |    NumericType IDENT LPAREN RPAREN SEMICOLON
                                     |    BOOLEAN IDENT LPAREN RPAREN SEMICOLON
                                     |  IDENT IDENT LPAREN RPAREN SEMICOLON'''
     p[0] = mytuple(["AnnotationTypeElementDeclaration"]+p[1 :])
@@ -262,7 +274,7 @@ def p_ElementValuePairList(p):
     p[0] = mytuple(["ElementValuePairList"]+p[1 :])
 
 def p_COMMAElementValuePairS(p):
-    '''COMMAElementValuePairS : COMMA ElementValuePair COMMAElementValuePairS
+    '''COMMAElementValuePairS : COMMAElementValuePairS COMMA ElementValuePair
                               | empty'''
     p[0] = mytuple(["COMMAElementValuePairS"]+p[1 :])
 
@@ -277,10 +289,10 @@ def p_ElementValue(p):
     p[0] = mytuple(["ElementValue"]+p[1 :])
 
 def p_ElementValueArrayInitializer(p):
-    '''ElementValueArrayInitializer : LBRACE ElementValueList COMMA RBRACE
-    | LBRACE ElementValueList  RBRACE
-    | LBRACE  COMMA RBRACE
-    | LBRACE   RBRACE'''
+    '''ElementValueArrayInitializer : lbrace ElementValueList COMMA rbrace
+    | lbrace ElementValueList  rbrace
+    | lbrace  COMMA rbrace
+    | lbrace   rbrace'''
     p[0] = mytuple(["ElementValueArrayInitializer"]+p[1 :])
 
 
@@ -299,7 +311,7 @@ def p_ElementValueList(p):
     p[0] = mytuple(["ElementValueList"]+p[1 :])
 
 def p_COMMAElementValueS(p):
-    '''COMMAElementValueS : COMMA ElementValue COMMAElementValueS
+    '''COMMAElementValueS : COMMAElementValueS COMMA ElementValue
                          | empty '''
     p[0] = mytuple(["COMMAElementValueS"]+p[1 :])
 
@@ -318,12 +330,19 @@ def p_SingleElementAnnotation(p):
 ### Section 10 : Arrays
 ################################################
 def p_ArrayInitializer(p):
-    '''ArrayInitializer : LBRACE VariableInitializerList COMMA RBRACE
-    | LBRACE VariableInitializerList RBRACE
-    | LBRACE COMMA RBRACE
-    | LBRACE RBRACE '''
+    '''ArrayInitializer : lbrace VariableInitializerList COMMA rbrace
+    | lbrace VariableInitializerList rbrace
+    | lbrace COMMA rbrace
+    | lbrace rbrace '''
     p[0] = mytuple(["ArrayInitializer"]+p[1 :])
 
+def p_lbrace(p):
+    '''lbrace : LBRACE'''
+    p[0] = mytuple(["lbrace"]+p[1 :])
+
+def p_rbrace(p):
+    '''rbrace : RBRACE'''
+    p[0] = mytuple(["rbrace"]+p[1 :])
 
 # def p_ZooVariableInitializerList(p):
 #     '''ZooVariableInitializerList : VariableInitializerList
@@ -335,7 +354,7 @@ def p_VariableInitializerList(p):
     p[0] = mytuple(["VariableInitializerList"]+p[1 :])
 
 def p_COMMAVariableInitializerS(p):
-    '''COMMAVariableInitializerS : COMMA VariableInitializer COMMAVariableInitializerS
+    '''COMMAVariableInitializerS : COMMAVariableInitializerS COMMA VariableInitializer
                                  | empty'''
     p[0] = mytuple(["COMMAVariableInitializerS"]+p[1 :])
 
@@ -372,7 +391,7 @@ def p_ClassLiteral(p):
     p[0] = mytuple(["ClassLiteral"]+p[1 :])
 
 def p_LBRACKRBRACKS(p):
-    '''LBRACKRBRACKS : LBRACK RBRACK LBRACKRBRACKS
+    '''LBRACKRBRACKS : LBRACKRBRACKS LBRACK RBRACK
                     | empty'''
     p[0] = mytuple(["LBRACKRBRACKS"]+p[1 :])
 
@@ -417,7 +436,7 @@ def p_ClassOrInterfaceTypeToInstantiate(p):
     p[0] = mytuple(["ClassOrInterfaceTypeToInstantiate"]+p[1 :])
 
 def p_AnnotationS(p):
-    '''AnnotationS : Annotation AnnotationS
+    '''AnnotationS : AnnotationS Annotation
                   | Annotation'''
     p[0] = mytuple(["AnnotationS"]+p[1 :])
 
@@ -427,8 +446,8 @@ def p_AnnotationS(p):
 #     p[0] = mytuple(["ZooTypeArgumentsOrDiamond"]+p[1 :])
 
 def p_PERIODAnnotationSIDENTS(p):
-    '''PERIODAnnotationSIDENTS : PERIOD AnnotationS IDENT PERIODAnnotationSIDENTS
-                                | PERIOD IDENT PERIODAnnotationSIDENTS
+    '''PERIODAnnotationSIDENTS : PERIODAnnotationSIDENTS PERIOD AnnotationS IDENT
+                                | PERIODAnnotationSIDENTS PERIOD IDENT
                               | empty'''
     p[0] = mytuple(["PERIODAnnotationSIDENTS"]+p[1 :])
 
@@ -484,7 +503,7 @@ def p_ArgumentList(p):
     p[0] = mytuple(["ArgumentList"]+p[1 :])
 
 def p_COMMAExpressionS(p):
-    '''COMMAExpressionS : COMMA Expression COMMAExpressionS
+    '''COMMAExpressionS : COMMAExpressionS COMMA Expression
                        | empty'''
     p[0] = mytuple(["COMMAExpressionS"]+p[1 :])
 
@@ -540,7 +559,7 @@ def p_DimExprs(p):
     p[0] = mytuple(["DimExprs"]+p[1 :])
 
 def p_DimExprS(p):
-    '''DimExprS : DimExpr DimExprS
+    '''DimExprS : DimExprS DimExpr
                | empty'''
     p[0] = mytuple(["DimExprS"]+p[1 :])
 
@@ -577,7 +596,7 @@ def p_InferredFormalParameterList(p):
     p[0] = mytuple(["InferredFormalParameterList"]+p[1 :])
 
 def p_COMMAIDENTS(p):
-    '''COMMAIDENTS : COMMA IDENT COMMAIDENTS
+    '''COMMAIDENTS : COMMAIDENTS COMMA IDENT
                   | empty'''
     p[0] = mytuple(["COMMAIDENTS"]+p[1 :])
 
@@ -653,6 +672,7 @@ def p_EqualityExpression(p):
                          | EqualityExpression EQL RelationalExpression
                          | EqualityExpression NEQ RelationalExpression'''
     p[0] = mytuple(["EqualityExpression"]+p[1 :])
+
 
 def p_RelationalExpression(p):
     '''RelationalExpression : ShiftExpression
@@ -760,7 +780,7 @@ def p_CastExpression(p):
     p[0] = mytuple(["CastExpression"]+p[1 :])
 
 def p_AdditionalBoundS(p):
-    '''AdditionalBoundS : AdditionalBound AdditionalBoundS
+    '''AdditionalBoundS : AdditionalBoundS AdditionalBound
                        | AdditionalBound'''
     p[0] = mytuple(["AdditionalBoundS"]+p[1 :])
 
@@ -785,13 +805,13 @@ def p_CompilationUnit(p):
 #     p[0] = mytuple(["ZooPackageDeclaration"]+p[1 :])
 
 def p_ImportDeclarationS(p):
-    '''ImportDeclarationS : ImportDeclaration ImportDeclarationS
+    '''ImportDeclarationS : ImportDeclarationS ImportDeclaration
                           | empty'''
     p[0] = mytuple(["ImportDeclarationS"]+p[1 :])
 
 def p_TypeDeclarationS(p):
-    '''TypeDeclarationS : TypeDeclaration TypeDeclarationS
-                        | SEMICOLON TypeDeclarationS
+    '''TypeDeclarationS : TypeDeclarationS TypeDeclaration
+                        | TypeDeclarationS SEMICOLON
                           | empty'''
     p[0] = mytuple(["TypeDeclarationS"]+p[1 :])
 
@@ -800,12 +820,12 @@ def p_PackageDeclaration(p):
     p[0] = mytuple(["PackageDeclaration"]+p[1 :])
 
 def p_PackageModifierS(p):
-    '''PackageModifierS : PackageModifier PackageModifierS
+    '''PackageModifierS : PackageModifierS PackageModifier
                           | empty'''
     p[0] = mytuple(["PackageModifierS"]+p[1 :])
 
 def p_PERIODIDENTS(p):
-    '''PERIODIDENTS : PERIOD IDENT PERIODIDENTS
+    '''PERIODIDENTS : PERIODIDENTS PERIOD IDENT
                    | empty'''
     p[0] = mytuple(["PERIODIDENTS"]+p[1 :])
 
@@ -966,7 +986,7 @@ def p_TypeParameters(p):
     p[0] = mytuple(["TypeParameters"]+p[1 :])
 
 def p_COMMMATypeParameterS(p):
-    '''COMMMATypeParameterS : COMMA TypeParameter COMMMATypeParameterS
+    '''COMMMATypeParameterS : COMMMATypeParameterS COMMA TypeParameter
                             | empty
     '''
     p[0] = mytuple(["COMMMATypeParameterS"]+p[1 :])
@@ -1001,14 +1021,14 @@ def p_InterfaceTypeList(p):
     p[0] = mytuple(["InterfaceTypeList"]+p[1 :])
 
 def p_ClassBodyDeclarationS(p):
-    '''ClassBodyDeclarationS : ClassBodyDeclaration ClassBodyDeclarationS
-                            | SEMICOLON ClassBodyDeclarationS
+    '''ClassBodyDeclarationS : ClassBodyDeclarationS ClassBodyDeclaration
+                            | ClassBodyDeclarationS SEMICOLON
                              | empty
     '''
     p[0] = mytuple(["ClassBodyDeclarationS"]+p[1 :])
 
 def p_ClassBody(p):
-    '''ClassBody : LBRACE ClassBodyDeclarationS RBRACE
+    '''ClassBody : lbrace ClassBodyDeclarationS rbrace
     '''
     p[0] = mytuple(["ClassBody"]+p[1 :])
 
@@ -1036,15 +1056,19 @@ def p_ClassMemberDeclaration(p):
 
 def p_FieldDeclaration(p):
     '''FieldDeclaration : CommonModifierS UnannType VariableDeclaratorList SEMICOLON
+                        | CommonModifierS NumericType VariableDeclaratorList SEMICOLON
                         | CommonModifierS BOOLEAN VariableDeclaratorList SEMICOLON
                         | CommonModifierS IDENT VariableDeclaratorList SEMICOLON
                         | UnannType VariableDeclaratorList SEMICOLON
+                        | NumericType VariableDeclaratorList SEMICOLON
                         | BOOLEAN VariableDeclaratorList SEMICOLON
                         | IDENT VariableDeclaratorList SEMICOLON
                         | CommonModifierS UnannType IDENT SEMICOLON
+                        | CommonModifierS NumericType IDENT SEMICOLON
                         | CommonModifierS BOOLEAN IDENT SEMICOLON
                         | CommonModifierS IDENT IDENT SEMICOLON
                         | UnannType IDENT SEMICOLON
+                        | NumericType IDENT SEMICOLON
                         | BOOLEAN IDENT SEMICOLON
                         | IDENT IDENT SEMICOLON
                         '''
@@ -1062,8 +1086,8 @@ def p_FieldDeclaration(p):
 #     '''
 #     p[0] = mytuple(["CommonModifier"]+p[1 :])
 def p_COMMAVariableDeclaratorS(p):
-    '''COMMAVariableDeclaratorS : COMMA VariableDeclarator COMMAVariableDeclaratorS
-                            | COMMA IDENT COMMAVariableDeclaratorS
+    '''COMMAVariableDeclaratorS : COMMAVariableDeclaratorS COMMA VariableDeclarator
+                            | COMMAVariableDeclaratorS COMMA IDENT
                                 | COMMA IDENT
                                 | COMMA VariableDeclarator
     '''
@@ -1099,15 +1123,14 @@ def p_VariableDeclaratorId(p):
     '''VariableDeclaratorId : IDENT Dims'''
     p[0] = mytuple(["VariableDeclaratorId"]+p[1 :])
 
-def p_VariableInitializer (p):
+def p_VariableInitializer(p):
     '''VariableInitializer : Expression
                             | ArrayInitializer
     '''
     p[0] = mytuple(["VariableInitializer"]+p[1 :])
 
 def p_UnannType(p):
-    '''UnannType :  NumericType
-                | UnannReferenceType
+    '''UnannType : UnannReferenceType
                 | IDENT PERIOD IDENT
     '''
     p[0] = mytuple(["UnannType"]+p[1 :])
@@ -1123,7 +1146,7 @@ def p_UnannReferenceType(p):
     '''
     p[0] = mytuple(["UnannReferenceType"]+p[1 :])
 
-# def p_UnannClassOrInterfaceType (p):
+# def p_UnannClassOrInterfaceType(p):
 #     '''UnannClassType :  UnannClassType'''
 #     p[0] = mytuple(["UnannClassType"]+p[1 :])
 
@@ -1148,17 +1171,17 @@ def p_UnannClassType(p):
     '''
     p[0] = mytuple(["UnannClassType"]+p[1 :])
 
-# def p_UnannInterfaceType (p):
+# def p_UnannInterfaceType(p):
 #     '''UnannClassType : UnannClassType
 #     '''
 #     p[0] = mytuple(["UnannClassType"]+p[1 :])
 
-# def p_UnannTypeVariable (p):
+# def p_UnannTypeVariable(p):
 #     '''IDENT : IDENT
 #     '''
 #     p[0] = mytuple(["IDENT"]+p[1 :])
 
-def p_UnannArrayType (p):
+def p_UnannArrayType(p):
     '''UnannArrayType :  NumericType Dims
                         | BOOLEAN Dims
                         | UnannClassType Dims
@@ -1173,7 +1196,7 @@ def p_UnannArrayType (p):
 #                         | CommonModifier
 #     '''
 #     p[0] = mytuple(["CommonModifierS"]+p[1 :])
-def p_MethodDeclaration (p):
+def p_MethodDeclaration(p):
     '''MethodDeclaration : CommonModifierS MethodHeader MethodBody
                          | MethodHeader MethodBody
                         | CommonModifierS MethodHeader SEMICOLON
@@ -1181,7 +1204,7 @@ def p_MethodDeclaration (p):
     '''
     p[0] = mytuple(["MethodDeclaration"]+p[1 :])
 
-# def p_MethodModifier (p):
+# def p_MethodModifier(p):
 #     '''CommonModifier : Annotation
 #                     | PUBLIC
 #                     | PROTECTED
@@ -1202,213 +1225,241 @@ def p_MethodDeclaration (p):
 #     '''
 #     p[0] = mytuple(["ZooThrows"]+p[1 :])
 
-def p_MethodHeader (p):
-    '''MethodHeader : UnannType MethodDeclarator Throws
-                    | TypeParameters AnnotationS UnannType MethodDeclarator Throws
+def p_MethodHeader(p):
+    '''MethodHeader : TypeParameters AnnotationS UnannType MethodDeclarator Throws
                     | TypeParameters UnannType MethodDeclarator Throws
-                    | BOOLEAN MethodDeclarator Throws
+                    | TypeParameters AnnotationS NumericType MethodDeclarator Throws
+                    | TypeParameters NumericType MethodDeclarator Throws
                     | TypeParameters AnnotationS BOOLEAN MethodDeclarator Throws
                     | TypeParameters BOOLEAN MethodDeclarator Throws
-                    | VOID MethodDeclarator Throws
                     | TypeParameters AnnotationS VOID MethodDeclarator Throws
                     | TypeParameters VOID MethodDeclarator Throws
-                    | IDENT MethodDeclarator Throws
                     | TypeParameters AnnotationS IDENT MethodDeclarator Throws
                     | TypeParameters IDENT MethodDeclarator Throws
-                    | UnannType MethodDeclarator
                     | TypeParameters AnnotationS UnannType MethodDeclarator
                     | TypeParameters UnannType MethodDeclarator
-                    | BOOLEAN MethodDeclarator
+                    | TypeParameters AnnotationS NumericType MethodDeclarator
+                    | TypeParameters NumericType MethodDeclarator
                     | TypeParameters AnnotationS BOOLEAN MethodDeclarator
                     | TypeParameters BOOLEAN MethodDeclarator
-                    | VOID MethodDeclarator
                     | TypeParameters AnnotationS VOID MethodDeclarator
                     | TypeParameters VOID MethodDeclarator
-                    | IDENT MethodDeclarator
                     | TypeParameters AnnotationS IDENT MethodDeclarator
                     | TypeParameters IDENT MethodDeclarator
+                    | BOOLEAN MethodDeclarator Throws
+                    | BOOLEAN MethodDeclarator
+                    | IDENT MethodDeclarator Throws
+                    | IDENT MethodDeclarator
+                    | VOID MethodDeclarator Throws
+                    | VOID MethodDeclarator
+                    | UnannType MethodDeclarator
+                    | UnannType MethodDeclarator Throws
+                    | NumericType MethodDeclarator Throws
+                    | NumericType MethodDeclarator
     '''
     p[0] = mytuple(["MethodHeader"]+p[1 :])
 
-# def p_Result (p):
+# def p_Result(p):
 #     '''Result :  UnannType
 #     '''
 #     p[0] = mytuple(["Result"]+p[1 :])
 
-# def p_ZooFormalParameterList (p):
+# def p_ZooFormalParameterList(p):
 #     '''ZooFormalParameterList : FormalParameterList
 #                                 | empty
 #     '''
 #     p[0] = mytuple(["ZooFormalParameterList"]+p[1 :])
 
-def p_MethodDeclarator (p):
-    '''MethodDeclarator : IDENT LPAREN FormalParameterList RPAREN Dims
-                        | IDENT LPAREN FormalParameterList RPAREN
-                        | IDENT LPAREN RPAREN Dims
+
+# TODO: We removed this from MethodDeclarator: they caused some errors
+# IDENT LPAREN FormalParameterList RPAREN Dims
+# IDENT LPAREN RPAREN Dims
+
+
+def p_MethodDeclarator(p):
+    '''MethodDeclarator : IDENT LPAREN FormalParameterList RPAREN
                         | IDENT LPAREN RPAREN
     '''
     p[0] = mytuple(["MethodDeclarator"]+p[1 :])
 
 
-
-def p_FormalParameterList (p):
+def p_FormalParameterList(p):
     '''FormalParameterList :  ReceiverParameter
-                            | FormalParameters COMMA LastFormalParameter
-                            | LastFormalParameter
+                            | FormalParameters COMMA FormalParameter
+                            | FormalParameter
+                            | FormalParameters
     '''
     p[0] = mytuple(["FormalParameterList"]+p[1 :])
 
-def p_COMMAFormalParameterS (p):
-    '''COMMAFormalParameterS : COMMA FormalParameter COMMAFormalParameterS
-                            | empty
+def p_COMMAFormalParameterS(p):
+    '''COMMAFormalParameterS : COMMAFormalParameterS COMMA FormalParameter
+                            | COMMA FormalParameter
     '''
     p[0] = mytuple(["COMMAFormalParameterS"]+p[1 :])
 
-def p_FormalParameters (p):
-    '''FormalParameters : FormalParameter COMMAFormalParameterS
-                        | ReceiverParameter COMMAFormalParameterS
-    '''
-    p[0] = mytuple(["FormalParameters"]+p[1 :])
 
-# def p_ZooVariableModifier (p):
+# def p_ZooVariableModifier(p):
 #     '''ZooVariableModifier : CommonModifier
 #                             | empty
 #     '''
 #     p[0] = mytuple(["ZooVariableModifier"] + p[1 :])
 
-def p_FormalParameter (p):
-    '''FormalParameter : CommonModifier UnannType VariableDeclaratorId
-                        | CommonModifier BOOLEAN VariableDeclaratorId
-                        | CommonModifier IDENT VariableDeclaratorId
-                        | CommonModifier UnannType IDENT
-                        | CommonModifier BOOLEAN IDENT
-                        | CommonModifier IDENT IDENT
-                        |  UnannType VariableDeclaratorId
-                        |  BOOLEAN VariableDeclaratorId
-                        |  IDENT VariableDeclaratorId
-                        |  UnannType IDENT
-                        |  BOOLEAN IDENT
-                        |  IDENT IDENT
-    '''
-    p[0] = mytuple(["FormalParameter"] + p[1 :])
-
-
-
-# def p_VariableModifier (p):
+# def p_VariableModifier(p):
 #     '''CommonModifier : Annotation
 #                         | FINAL
 #     '''
 #     p[0] = mytuple(["CommonModifier"] + p[1 :])
 
 
-# def p_VariableModifierS (p):
+# def p_VariableModifierS(p):
 #     '''CommonModifierS : CommonModifier CommonModifierS
 #                         | empty
 #     '''
 #     p[0] = mytuple(["CommonModifierS"] + p[1 :])
 
-def p_LastFormalParameter (p):
-    '''LastFormalParameter : CommonModifierS UnannType AnnotationS ELLIPSIS VariableDeclaratorId
-                            | CommonModifierS BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
-                            | CommonModifierS IDENT AnnotationS ELLIPSIS VariableDeclaratorId
-                            | FormalParameter
-                            | CommonModifierS UnannType ELLIPSIS VariableDeclaratorId
-                            | CommonModifierS BOOLEAN ELLIPSIS VariableDeclaratorId
-                            | CommonModifierS IDENT ELLIPSIS VariableDeclaratorId
-                            | CommonModifierS UnannType AnnotationS ELLIPSIS IDENT
-                            | CommonModifierS BOOLEAN AnnotationS ELLIPSIS IDENT
-                            | CommonModifierS IDENT AnnotationS ELLIPSIS IDENT
-                            | CommonModifierS UnannType ELLIPSIS IDENT
-                            | CommonModifierS BOOLEAN ELLIPSIS IDENT
-                            | CommonModifierS IDENT ELLIPSIS IDENT
-                            |  UnannType AnnotationS ELLIPSIS VariableDeclaratorId
-                            |  BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
-                            |  IDENT AnnotationS ELLIPSIS VariableDeclaratorId
-                            |  UnannType ELLIPSIS VariableDeclaratorId
-                            |  BOOLEAN ELLIPSIS VariableDeclaratorId
-                            |  IDENT ELLIPSIS VariableDeclaratorId
-                            |  UnannType AnnotationS ELLIPSIS IDENT
-                            |  BOOLEAN AnnotationS ELLIPSIS IDENT
-                            |  IDENT AnnotationS ELLIPSIS IDENT
-                            |  UnannType ELLIPSIS IDENT
-                            |  BOOLEAN ELLIPSIS IDENT
-                            |  IDENT ELLIPSIS IDENT
-
+def p_FormalParameters(p):
+    '''FormalParameters : FormalParameter COMMAFormalParameterS
+                        | ReceiverParameter COMMAFormalParameterS
+                        | FormalParameter COMMA FormalParameter
+                        | ReceiverParameter COMMA FormalParameter
     '''
-    p[0] = mytuple(["LastFormalParameter"] + p[1 :])
+    p[0] = mytuple(["FormalParameters"]+p[1 :])
 
-# def p_ZooIDENTPERIOD (p):
+
+def p_FormalParameter(p):
+    '''FormalParameter : CommonModifier UnannType VariableDeclaratorId
+                        | CommonModifier NumericType VariableDeclaratorId
+                        | CommonModifier BOOLEAN VariableDeclaratorId
+                        | CommonModifier IDENT VariableDeclaratorId
+                        | CommonModifier UnannType IDENT
+                        | CommonModifier NumericType IDENT
+                        | CommonModifier BOOLEAN IDENT
+                        | CommonModifier IDENT IDENT
+                        |  UnannType VariableDeclaratorId
+                        |  NumericType VariableDeclaratorId
+                        |  BOOLEAN VariableDeclaratorId
+                        |  IDENT VariableDeclaratorId
+                        |  UnannType IDENT
+                        |  NumericType IDENT
+                        |  BOOLEAN IDENT
+                        |  IDENT IDENT
+    '''
+    p[0] = mytuple(["FormalParameter"] + p[1 :])
+
+
+# TODO: Dropped this rule..., p_LastFormalParameter was used only in p_FormalParameterList.
+# def p_LastFormalParameter(p):
+#     '''LastFormalParameter : CommonModifierS UnannType AnnotationS ELLIPSIS VariableDeclaratorId
+#                             | CommonModifierS NumericType AnnotationS ELLIPSIS VariableDeclaratorId
+#                             | CommonModifierS BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
+#                             | CommonModifierS IDENT AnnotationS ELLIPSIS VariableDeclaratorId
+#                             | FormalParameter
+#                             | CommonModifierS UnannType ELLIPSIS VariableDeclaratorId
+#                             | CommonModifierS NumericType ELLIPSIS VariableDeclaratorId
+#                             | CommonModifierS BOOLEAN ELLIPSIS VariableDeclaratorId
+#                             | CommonModifierS IDENT ELLIPSIS VariableDeclaratorId
+#                             | CommonModifierS UnannType AnnotationS ELLIPSIS IDENT
+#                             | CommonModifierS NumericType AnnotationS ELLIPSIS IDENT
+#                             | CommonModifierS BOOLEAN AnnotationS ELLIPSIS IDENT
+#                             | CommonModifierS IDENT AnnotationS ELLIPSIS IDENT
+#                             | CommonModifierS UnannType ELLIPSIS IDENT
+#                             | CommonModifierS NumericType ELLIPSIS IDENT
+#                             | CommonModifierS BOOLEAN ELLIPSIS IDENT
+#                             | CommonModifierS IDENT ELLIPSIS IDENT
+#                             |  UnannType AnnotationS ELLIPSIS VariableDeclaratorId
+#                             |  NumericType AnnotationS ELLIPSIS VariableDeclaratorId
+#                             |  BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
+#                             |  IDENT AnnotationS ELLIPSIS VariableDeclaratorId
+#                             |  UnannType ELLIPSIS VariableDeclaratorId
+#                             |  NumericType ELLIPSIS VariableDeclaratorId
+#                             |  BOOLEAN ELLIPSIS VariableDeclaratorId
+#                             |  IDENT ELLIPSIS VariableDeclaratorId
+#                             |  UnannType AnnotationS ELLIPSIS IDENT
+#                             |  BOOLEAN AnnotationS ELLIPSIS IDENT
+#                             |  IDENT AnnotationS ELLIPSIS IDENT
+#                             |  UnannType ELLIPSIS IDENT
+#                             |  BOOLEAN ELLIPSIS IDENT
+#                             |  IDENT ELLIPSIS IDENT
+#
+#     '''
+#     p[0] = mytuple(["LastFormalParameter"] + p[1 :])
+
+# def p_ZooIDENTPERIOD(p):
 #     '''ZooIDENTPERIOD : IDENT PERIOD
 #                         | empty
 #     '''
 #     p[0] = mytuple(["ZooIDENTPERIOD"] + p[1 :])
 
-def p_ReceiverParameter (p):
+def p_ReceiverParameter(p):
     '''ReceiverParameter : AnnotationS UnannType IDENT PERIOD THIS
+                            | AnnotationS NumericType IDENT PERIOD THIS
                             | AnnotationS BOOLEAN IDENT PERIOD THIS
                             | AnnotationS IDENT IDENT PERIOD THIS
                             | UnannType IDENT PERIOD THIS
+                            | NumericType IDENT PERIOD THIS
                             | BOOLEAN IDENT PERIOD THIS
                             | IDENT IDENT PERIOD THIS
                             | AnnotationS UnannType THIS
+                            | AnnotationS NumericType THIS
                             | AnnotationS BOOLEAN THIS
                             | AnnotationS IDENT THIS
                             | UnannType THIS
+                            | NumericType THIS
                             | BOOLEAN THIS
                             | IDENT THIS
     '''
     p[0] = mytuple(["ReceiverParameter"] + p[1 :])
 
 
-def p_Throws (p):
+def p_Throws(p):
     '''Throws :  THROWS ExceptionTypeList
     '''
     p[0] = mytuple(["Throws"] + p[1 :])
 
-def p_COMMAExceptionTypeS (p):
-    '''COMMAExceptionTypeS : COMMA ExceptionType COMMAExceptionTypeS
-                    | COMMA IDENT COMMAExceptionTypeS
+def p_COMMAExceptionTypeS(p):
+    '''COMMAExceptionTypeS : COMMAExceptionTypeS COMMA ExceptionType
+                    | COMMAExceptionTypeS COMMA IDENT
                             | empty
     '''
     p[0] = mytuple(["COMMAExceptionTypeS"] + p[1 :])
 
 
-def p_ExceptionTypeList (p):
+def p_ExceptionTypeList(p):
     '''ExceptionTypeList : ExceptionType COMMAExceptionTypeS
                     | IDENT COMMAExceptionTypeS
     '''
     p[0] = mytuple(["ExceptionTypeList"] + p[1 :])
 
 
-def p_ExceptionType (p):
+def p_ExceptionType(p):
     ''' ExceptionType :  ClassType
                         | IDENT PERIOD IDENT
                         | TypeVariable
     '''
     p[0] = mytuple(["ExceptionType"] + p[1 :])
 
-def p_MethodBody (p):
+def p_MethodBody(p):
     '''MethodBody : Block
     '''
     p[0] = mytuple(["MethodBody"] + p[1 :])
 
-# def p_InstanceInitializer (p):
+# def p_InstanceInitializer(p):
 #     '''Block : Block
 #     '''
 #     p[0] = mytuple(["Block"] + p[1 :])
 
-def p_StaticInitializer (p):
+def p_StaticInitializer(p):
     '''StaticInitializer : STATIC Block
     '''
     p[0] = mytuple(["StaticInitializer"] + p[1 :])
 
-# def p_ConstructorModifierS (p):
+# def p_ConstructorModifierS(p):
 #     '''ConstructorModifierS : ConstructorModifier ConstructorModifierS
 #                             | ConstructorModifier
 #     '''
 #     p[0] = mytuple(["ConstructorModifierS"] + p[1 :])
 
-def p_ConstructorDeclaration (p):
+def p_ConstructorDeclaration(p):
     '''ConstructorDeclaration : CommonModifierS ConstructorDeclarator ConstructorBody
                                 | CommonModifierS ConstructorDeclarator Throws ConstructorBody
                                 |  ConstructorDeclarator ConstructorBody
@@ -1418,7 +1469,7 @@ def p_ConstructorDeclaration (p):
 
 
 
-# def p_ConstructorModifier (p):
+# def p_ConstructorModifier(p):
 #     '''ConstructorModifier : Annotation
 #                             | PUBLIC
 #                             | PROTECTED
@@ -1426,7 +1477,7 @@ def p_ConstructorDeclaration (p):
 #     '''
 #     p[0] = mytuple(["ConstructorModifier"] + p[1 :])
 
-def p_ConstructorDeclarator (p):
+def p_ConstructorDeclarator(p):
     '''ConstructorDeclarator : TypeParameters IDENT LPAREN FormalParameterList RPAREN
                             |  IDENT LPAREN FormalParameterList RPAREN
                             | TypeParameters IDENT LPAREN  RPAREN
@@ -1434,40 +1485,40 @@ def p_ConstructorDeclarator (p):
     '''
     p[0] = mytuple(["ConstructorDeclarator"] + p[1 :])
 
-# def p_SimpleTypeName (p):
+# def p_SimpleTypeName(p):
 #     '''IDENT : IDENT
 #     '''
 #     p[0] = mytuple(["IDENT"] + p[1 :])
 
-def p_ConstructorBody (p):
-    '''ConstructorBody : LBRACE  ExplicitConstructorInvocation BlockStatements  RBRACE
-                        | LBRACE  ExplicitConstructorInvocation SEMICOLON  RBRACE
-                        | LBRACE  ExplicitConstructorInvocation  RBRACE
-                        | LBRACE  BlockStatements  RBRACE
-                        | LBRACE  SEMICOLON  RBRACE
-                        | LBRACE  RBRACE
+def p_ConstructorBody(p):
+    '''ConstructorBody : lbrace  ExplicitConstructorInvocation BlockStatements  rbrace
+                        | lbrace  ExplicitConstructorInvocation SEMICOLON  rbrace
+                        | lbrace  ExplicitConstructorInvocation  rbrace
+                        | lbrace  BlockStatements  rbrace
+                        | lbrace  SEMICOLON  rbrace
+                        | lbrace  rbrace
     '''
     p[0] = mytuple(["ConstructorBody"] + p[1 :])
 
-# def p_ZooExplicitConstructorInvocation (p):
+# def p_ZooExplicitConstructorInvocation(p):
 #     '''ZooExplicitConstructorInvocation : ExplicitConstructorInvocation
 #                                         | empty
 #     '''
 #     p[0] = mytuple(["ZooExplicitConstructorInvocation"] + p[1 :])
 
-# def p_ZooBlockStatements (p):
+# def p_ZooBlockStatements(p):
 #     '''ZooBlockStatements : BlockStatements
 #                             | empty
 #     '''
 #     p[0] = mytuple(["ZooBlockStatements"] + p[1 :])
 
-# def p_ZooArgumentList (p):
+# def p_ZooArgumentList(p):
 #     '''ZooArgumentList : ArgumentList
 #                         | empty
 #     '''
 #     p[0] = mytuple(["ZooArgumentList"] + p[1 :])
 
-def p_ExplicitConstructorInvocation (p):
+def p_ExplicitConstructorInvocation(p):
     '''ExplicitConstructorInvocation : TypeArguments THIS LPAREN ArgumentList RPAREN SEMICOLON
                                     | TypeArguments THIS LPAREN  RPAREN SEMICOLON
                                     |  THIS LPAREN ArgumentList RPAREN SEMICOLON
@@ -1491,7 +1542,7 @@ def p_ExplicitConstructorInvocation (p):
     '''
     p[0] = mytuple(["ExplicitConstructorInvocation"] + p[1:])
 
-# def p_ClassModifierS (p):
+# def p_ClassModifierS(p):
 #     '''ClassModifierS : Annotation ClassModifierS
 #                         | PUBLIC ClassModifierS
 #                         | PROTECTED ClassModifierS
@@ -1505,7 +1556,7 @@ def p_ExplicitConstructorInvocation (p):
 #     p[0] = mytuple(["ClassModifierS"] + p[1 :])
 
 
-def p_EnumDeclaration (p):
+def p_EnumDeclaration(p):
     '''EnumDeclaration : CommonModifierS ENUM IDENT Superinterfaces EnumBody
                     | CommonModifierS ENUM IDENT EnumBody
                     |  ENUM IDENT Superinterfaces EnumBody
@@ -1513,51 +1564,51 @@ def p_EnumDeclaration (p):
     '''
     p[0] = mytuple(["EnumDeclaration"] + p[1 :])
 
-# def p_ZooEnumConstantList (p):
+# def p_ZooEnumConstantList(p):
 #     '''ZooEnumConstantList : EnumConstantList
 #                             | empty
 #     '''
 #     p[0] = mytuple(["ZooEnumConstantList"] + p[1 :])
 #
-# def p_ZooCOMMA (p):
+# def p_ZooCOMMA(p):
 #     '''ZooCOMMA : COMMA
 #                 | empty
 #     '''
 #     p[0] = mytuple(["ZooCOMMA"] + p[1 :])
 #
-# def p_ZooEnumBodyDeclarations (p):
+# def p_ZooEnumBodyDeclarations(p):
 #     '''ZooEnumBodyDeclarations : EnumBodyDeclarations
 #                                 | empty
 #     '''
 #     p[0] = mytuple(["ZooEnumBodyDeclarations"] + p[1 :])
 
 
-def p_EnumBody (p):
-    '''EnumBody : LBRACE EnumConstantList COMMA EnumBodyDeclarations  RBRACE
-                | LBRACE EnumConstantList COMMA   RBRACE
-                | LBRACE EnumConstantList  EnumBodyDeclarations  RBRACE
-                | LBRACE EnumConstantList    RBRACE
-                | LBRACE COMMA EnumBodyDeclarations  RBRACE
-                | LBRACE COMMA   RBRACE
-                | LBRACE  EnumBodyDeclarations  RBRACE
-                | LBRACE    RBRACE
+def p_EnumBody(p):
+    '''EnumBody : lbrace EnumConstantList COMMA EnumBodyDeclarations  rbrace
+                | lbrace EnumConstantList COMMA   rbrace
+                | lbrace EnumConstantList  EnumBodyDeclarations  rbrace
+                | lbrace EnumConstantList    rbrace
+                | lbrace COMMA EnumBodyDeclarations  rbrace
+                | lbrace COMMA   rbrace
+                | lbrace  EnumBodyDeclarations  rbrace
+                | lbrace    rbrace
     '''
     p[0] = mytuple(["EnumBody"] + p[1 :])
 
-def p_COMMAEnumConstantS (p):
-    '''COMMAEnumConstantS : COMMA EnumConstant COMMAEnumConstantS
+def p_COMMAEnumConstantS(p):
+    '''COMMAEnumConstantS : COMMAEnumConstantS COMMA EnumConstant
                           | empty
     '''
     p[0] = mytuple(["COMMAEnumConstantS"] + p[1 :])
 
 
-def p_EnumConstantList (p):
+def p_EnumConstantList(p):
     '''EnumConstantList : EnumConstant COMMAEnumConstantS
     '''
     p[0] = mytuple(["EnumConstantList"] + p[1 :])
 
 
-def p_EnumConstant (p):
+def p_EnumConstant(p):
     '''EnumConstant : EnumConstantModifierS IDENT LPAREN RPAREN ClassBody
     | EnumConstantModifierS IDENT LPAREN ArgumentList  RPAREN ClassBody
     | EnumConstantModifierS IDENT  ClassBody
@@ -1568,34 +1619,34 @@ def p_EnumConstant (p):
     p[0] = mytuple(["EnumConstant"] + p[1 :])
 
 
-def p_EnumConstantModifierS (p):
-    '''EnumConstantModifierS : EnumConstantModifier EnumConstantModifierS
+def p_EnumConstantModifierS(p):
+    '''EnumConstantModifierS : EnumConstantModifierS EnumConstantModifier
                             | empty
     '''
     p[0] = mytuple(["EnumConstantModifierS"] + p[1 :])
 
 
-# def p_ZooClassBody (p):
+# def p_ZooClassBody(p):
 #     '''ZooClassBody : ClassBody
 #                     | empty
 #     '''
 #     p[0] = mytuple(["ZooClassBody"] + p[1 :])
 #
 
-# def p_ZooLPARENZooArgumentListRPAREN (p):
+# def p_ZooLPARENZooArgumentListRPAREN(p):
 #     '''ZooLPARENZooArgumentListRPAREN : LPAREN ZooArgumentList RPAREN
 #                                         | LPAREN RPAREN
 #                                         | empty
 #     '''
 #     p[0] = mytuple(["ZooLPARENZooArgumentListRPAREN"] + p[1 :])
 
-def p_EnumConstantModifier (p):
+def p_EnumConstantModifier(p):
     '''EnumConstantModifier : Annotation
     '''
     p[0] = mytuple(["EnumConstantModifier"] + p[1 :])
 
 
-def p_EnumBodyDeclarations (p):
+def p_EnumBodyDeclarations(p):
     '''EnumBodyDeclarations : SEMICOLON ClassBodyDeclarationS
     '''
     p[0] = mytuple(["EnumBodyDeclarations"] + p[1 :])
@@ -1713,13 +1764,12 @@ def p_ArrayType(p):
 #
 
 def p_Dims(p):
-    '''Dims : AnnotationS LBRACE RBRACE AnnotationSLBRACERBRACES
-            | LBRACE RBRACE AnnotationSLBRACERBRACES'''
+    '''Dims : lbrace rbrace '''
     p[0]=mytuple(["Dims"]+p[1 :])
 
 def p_AnnotationSLBRACERBRACES(p):
-    '''AnnotationSLBRACERBRACES : AnnotationS LBRACE RBRACE AnnotationSLBRACERBRACES
-                                | LBRACE RBRACE AnnotationSLBRACERBRACES
+    '''AnnotationSLBRACERBRACES : AnnotationSLBRACERBRACES AnnotationS lbrace rbrace
+                                | AnnotationSLBRACERBRACES lbrace rbrace
                                 | empty '''
     p[0]=mytuple(["AnnotationSLBRACERBRACES"]+p[1 :])
 
@@ -1731,7 +1781,7 @@ def p_TypeParameter(p):
     p[0]=mytuple(["TypeParameter"]+p[1 :])
 
 def p_TypeParameterModifierS(p):
-    '''TypeParameterModifierS : TypeParameterModifier TypeParameterModifierS
+    '''TypeParameterModifierS : TypeParameterModifierS TypeParameterModifier
                               | empty '''
     p[0]=mytuple(["TypeParameterModifierS"]+p[1 :])
 
@@ -1788,8 +1838,8 @@ def p_TypeArgumentList(p):
     p[0]=mytuple(["TypeArgumentList"]+p[1 :])
 
 def p_COMMATypeArgumentS(p):
-    '''COMMATypeArgumentS : COMMA TypeArgument COMMATypeArgumentS
-                        | COMMA IDENT COMMATypeArgumentS
+    '''COMMATypeArgumentS : COMMATypeArgumentS COMMA TypeArgument
+                        | COMMATypeArgumentS COMMA IDENT
                           | empty '''
     p[0]=mytuple(["COMMATypeArgumentS"]+p[1 :])
 
@@ -1832,9 +1882,9 @@ def p_WildcardBounds(p):
 
 
 def p_Block(p):
-    '''Block : LBRACE RBRACE
-    | LBRACE BlockStatements RBRACE
-    | LBRACE SEMICOLON RBRACE
+    '''Block : lbrace rbrace
+    | lbrace BlockStatements rbrace
+    | lbrace SEMICOLON rbrace
 '''
     p[0]=mytuple(["Block"]+p[1 :])
 
@@ -1872,15 +1922,19 @@ def p_LocalVariableDeclarationStatement(p):
 
 def p_LocalVariableDeclaration(p):
     '''LocalVariableDeclaration : CommonModifierS UnannType VariableDeclaratorList
+                                | CommonModifierS NumericType VariableDeclaratorList
                                 | CommonModifierS BOOLEAN VariableDeclaratorList
                                 | CommonModifierS IDENT VariableDeclaratorList
                                 |  UnannType VariableDeclaratorList
+                                |  NumericType VariableDeclaratorList
                                 |  BOOLEAN VariableDeclaratorList
                                 |  IDENT VariableDeclaratorList
                                 | CommonModifierS UnannType IDENT
+                                | CommonModifierS NumericType IDENT
                                 | CommonModifierS BOOLEAN IDENT
                                 | CommonModifierS IDENT IDENT
                                 |  UnannType IDENT
+                                |  NumericType IDENT
                                 |  BOOLEAN IDENT
                                 |  IDENT IDENT
 '''
@@ -1891,9 +1945,7 @@ def p_LocalVariableDeclaration(p):
 #     p[0]=mytuple(["CommonModifierS"]+p[1 :])
 
 def p_Statement(p):
-    '''Statement : StatementWithoutTrailingSubstatement
-        | LabeledStatement
-        | IfThenStatement
+    '''Statement : IfThenStatement
         | IfThenElseStatement
         | WhileStatement
         | ForStatement
@@ -1991,11 +2043,11 @@ def p_SwitchStatement(p):
     p[0]=mytuple(["SwitchStatement"]+p[1 :])
 
 def p_SwitchBlock(p):
-    '''SwitchBlock : LBRACE SwitchBlockStatementGroupS SwitchLabelS RBRACE
+    '''SwitchBlock : lbrace SwitchBlockStatementGroupS SwitchLabelS rbrace
 '''
     p[0]=mytuple(["SwitchBlock"]+p[1 :])
 def p_SwitchBlockStatementGroupS(p):
-    '''SwitchBlockStatementGroupS : SwitchBlockStatementGroup SwitchBlockStatementGroupS
+    '''SwitchBlockStatementGroupS : SwitchBlockStatementGroupS SwitchBlockStatementGroup
 | empty'''
     p[0]=mytuple(["SwitchBlockStatementGroupS"]+p[1 :])
 
@@ -2015,7 +2067,7 @@ def p_SwitchLabels(p):
 '''
     p[0]=mytuple(["SwitchLabels"]+p[1 :])
 def p_SwitchLabelS(p):
-    '''SwitchLabelS : SwitchLabel SwitchLabelS
+    '''SwitchLabelS : SwitchLabelS SwitchLabel
 | empty'''
     p[0]=mytuple(["SwitchLabelS"]+p[1 :])
 
@@ -2134,7 +2186,7 @@ def p_StatementExpressionList(p):
 
 
 def p_COMMAStatementExpressionS(p):
-    '''COMMAStatementExpressionS : COMMA StatementExpression COMMAStatementExpressionS
+    '''COMMAStatementExpressionS : COMMAStatementExpressionS COMMA StatementExpression
                     | empty'''
     p[0]=mytuple(["COMMAStatementExpressionS"]+p[1 :])
 
@@ -2142,27 +2194,35 @@ def p_COMMAStatementExpressionS(p):
 
 def p_EnhancedForStatement(p):
     '''EnhancedForStatement : FOR LPAREN CommonModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN Statement
+                            | FOR LPAREN CommonModifierS NumericType VariableDeclaratorId  COLON  Expression RPAREN Statement
                             | FOR LPAREN CommonModifierS BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN Statement
                             | FOR LPAREN CommonModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN Statement
                             | FOR LPAREN CommonModifierS UnannType IDENT  COLON  Expression RPAREN Statement
+                            | FOR LPAREN CommonModifierS NumericType IDENT  COLON  Expression RPAREN Statement
                             | FOR LPAREN CommonModifierS BOOLEAN IDENT  COLON  Expression RPAREN Statement
                             | FOR LPAREN CommonModifierS IDENT IDENT  COLON  Expression RPAREN Statement
                             | FOR LPAREN  UnannType VariableDeclaratorId  COLON  Expression RPAREN Statement
+                            | FOR LPAREN  NumericType VariableDeclaratorId  COLON  Expression RPAREN Statement
                             | FOR LPAREN  BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN Statement
                             | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN Statement
                             | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN Statement
+                            | FOR LPAREN  NumericType IDENT  COLON  Expression RPAREN Statement
                             | FOR LPAREN  BOOLEAN IDENT  COLON  Expression RPAREN Statement
                             | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN Statement
                             | FOR LPAREN CommonModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN CommonModifierS NumericType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN CommonModifierS BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN CommonModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN CommonModifierS UnannType IDENT  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN CommonModifierS NumericType IDENT  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN CommonModifierS BOOLEAN IDENT  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN CommonModifierS IDENT IDENT  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN  UnannType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN  NumericType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN  BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN  NumericType IDENT  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN  BOOLEAN IDENT  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN SEMICOLON
 '''
@@ -2170,27 +2230,35 @@ def p_EnhancedForStatement(p):
 
 def p_EnhancedForStatementNoShortIf(p):
     '''EnhancedForStatementNoShortIf : FOR LPAREN CommonModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN CommonModifierS NumericType VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN CommonModifierS BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN CommonModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN CommonModifierS UnannType IDENT  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN CommonModifierS NumericType IDENT  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN CommonModifierS BOOLEAN IDENT  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN CommonModifierS IDENT IDENT  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN  UnannType VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN  NumericType VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN  BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN StatementNoShortIf
+                                    | FOR LPAREN  NumericType IDENT  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN  BOOLEAN IDENT  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN CommonModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                                    | FOR LPAREN CommonModifierS NumericType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                                     | FOR LPAREN CommonModifierS BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                                     | FOR LPAREN CommonModifierS IDENT VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                                     | FOR LPAREN CommonModifierS UnannType IDENT  COLON  Expression RPAREN SEMICOLON
+                                    | FOR LPAREN CommonModifierS NumericType IDENT  COLON  Expression RPAREN SEMICOLON
                                     | FOR LPAREN CommonModifierS BOOLEAN IDENT  COLON  Expression RPAREN SEMICOLON
                                     | FOR LPAREN CommonModifierS IDENT IDENT  COLON  Expression RPAREN SEMICOLON
                                     | FOR LPAREN  UnannType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                                    | FOR LPAREN  NumericType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                                     | FOR LPAREN  BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                                     | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                                     | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN SEMICOLON
+                                    | FOR LPAREN  NumericType IDENT  COLON  Expression RPAREN SEMICOLON
                                     | FOR LPAREN  BOOLEAN IDENT  COLON  Expression RPAREN SEMICOLON
                                     | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN SEMICOLON
 '''
@@ -2249,7 +2317,7 @@ def p_Catches(p):
 '''
     p[0]=mytuple(["Catches"]+p[1 :])
 def p_CatchClauseS(p):
-    '''CatchClauseS : CatchClause CatchClauseS
+    '''CatchClauseS : CatchClauseS CatchClause
 | empty'''
     p[0]=mytuple(["CatchClauseS"]+p[1 :])
 
@@ -2274,10 +2342,10 @@ def p_CatchType(p):
     p[0]=mytuple(["CatchType"]+p[1 :])
 
 def p_ORClassTypeS(p):
-    '''ORClassTypeS : OR ClassType ORClassTypeS
-                    | OR TypeVariable ORClassTypeS
-                    | OR IDENT PERIOD IDENT ORClassTypeS
-                    | OR IDENT ORClassTypeS
+    '''ORClassTypeS : ORClassTypeS OR ClassType
+                    | ORClassTypeS OR TypeVariable
+                    | ORClassTypeS OR IDENT PERIOD IDENT
+                    | ORClassTypeS OR IDENT
                     | empty'''
     p[0]=mytuple(["ORClassTypeS"]+p[1 :])
 
@@ -2319,7 +2387,7 @@ def p_ResourceList(p):
 
 
 def p_SEMICOLONResourceS(p):
-    '''SEMICOLONResourceS : SEMICOLON Resource SEMICOLONResourceS
+    '''SEMICOLONResourceS : SEMICOLONResourceS SEMICOLON Resource
                     | SEMICOLON Resource'''
     p[0]=mytuple(["SEMICOLONResourceS"]+p[1 :])
 
@@ -2327,7 +2395,7 @@ def p_SEMICOLONResourceS(p):
 
 
 def p_CommonModifierS(p):
-    '''CommonModifierS : CommonModifier CommonModifierS
+    '''CommonModifierS : CommonModifierS CommonModifier
                         | CommonModifier
     '''
     p[0]=mytuple(["CommonModifierS"]+p[1 :])
@@ -2354,15 +2422,19 @@ def p_CommonModifier(p):
 
 def p_Resource(p):
     '''Resource : CommonModifierS UnannType VariableDeclaratorId ASSIGN Expression
+                | CommonModifierS NumericType VariableDeclaratorId ASSIGN Expression
                 | CommonModifierS BOOLEAN VariableDeclaratorId ASSIGN Expression
                 | CommonModifierS IDENT VariableDeclaratorId ASSIGN Expression
                 | CommonModifierS UnannType IDENT ASSIGN Expression
+                | CommonModifierS NumericType IDENT ASSIGN Expression
                 | CommonModifierS BOOLEAN IDENT ASSIGN Expression
                 | CommonModifierS IDENT IDENT ASSIGN Expression
                 |  UnannType VariableDeclaratorId ASSIGN Expression
+                |  NumericType VariableDeclaratorId ASSIGN Expression
                 |  BOOLEAN VariableDeclaratorId ASSIGN Expression
                 |  IDENT VariableDeclaratorId ASSIGN Expression
                 |  UnannType IDENT ASSIGN Expression
+                |  NumericType IDENT ASSIGN Expression
                 |  BOOLEAN IDENT ASSIGN Expression
                 |  IDENT IDENT ASSIGN Expression'''
     p[0]=mytuple(["Resource"]+p[1 :])
