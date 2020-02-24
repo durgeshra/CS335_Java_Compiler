@@ -144,8 +144,10 @@ def p_ConstantDeclaration(p):
 
 def p_InterfaceMethodDeclaration(p):
     '''InterfaceMethodDeclaration : CommonModifierS MethodHeader MethodBody
+                                | DEFAULT MethodHeader MethodBody
                                 |  MethodHeader MethodBody
                                 | CommonModifierS MethodHeader SEMICOLON
+                                | DEFAULT MethodHeader SEMICOLON
                                 |  MethodHeader SEMICOLON'''
     p[0] = mytuple(["InterfaceMethodDeclaration"]+p[1 :])
 
@@ -2256,9 +2258,16 @@ def p_SwitchStatement(p):
     p[0]=mytuple(["SwitchStatement"]+p[1 :])
 
 def p_SwitchBlock(p):
-    '''SwitchBlock : lbrace SwitchBlockStatementGroupS SwitchLabelS rbrace
+    '''SwitchBlock : lbrace SwitchBlockStatementGroupS SwitchLabels rbrace
+            | lbrace SwitchBlockStatementGroupS DEFAULTCOLON rbrace
+            | lbrace SwitchBlockStatementGroupS rbrace
 '''
     p[0]=mytuple(["SwitchBlock"]+p[1 :])
+
+def p_DEFAULTCOLON(p):
+    '''DEFAULTCOLON : DEFAULT COLON'''
+    p[0]=mytuple(["DEFAULTCOLON"]+p[1 :])
+
 def p_SwitchBlockStatementGroupS(p):
     '''SwitchBlockStatementGroupS : SwitchBlockStatementGroupS SwitchBlockStatementGroup
 | empty'''
@@ -2272,22 +2281,26 @@ def p_SwitchBlockStatementGroupS(p):
 def p_SwitchBlockStatementGroup(p):
     '''SwitchBlockStatementGroup : SwitchLabels BlockStatements
                                     | SwitchLabels SEMICOLON
+                                    | DEFAULTCOLON BlockStatements
+                                    | DEFAULTCOLON SEMICOLON
 '''
     p[0]=mytuple(["SwitchBlockStatementGroup"]+p[1 :])
 
 def p_SwitchLabels(p):
-    '''SwitchLabels : SwitchLabel SwitchLabelS
+    '''SwitchLabels : SwitchLabels SwitchLabel
+                    | SwitchLabels DEFAULT  COLON
+                    | SwitchLabel
 '''
     p[0]=mytuple(["SwitchLabels"]+p[1 :])
-def p_SwitchLabelS(p):
-    '''SwitchLabelS : SwitchLabelS SwitchLabel
-| empty'''
-    p[0]=mytuple(["SwitchLabelS"]+p[1 :])
+
+# def p_SwitchLabelS(p):
+#     '''SwitchLabelS : SwitchLabelS SwitchLabel
+# | empty'''
+#     p[0]=mytuple(["SwitchLabelS"]+p[1 :])
 
 def p_SwitchLabel(p):
     '''SwitchLabel : CASE ConstantExpression  COLON
-    | CASE IDENT COLON
-    | DEFAULT  COLON '''
+    | CASE IDENT COLON'''
     p[0]=mytuple(["SwitchLabel"]+p[1 :])
 
 # def p_EnumConstantName(p):
@@ -2627,7 +2640,6 @@ def p_CommonModifier(p):
                      | SYNCHRONIZED
                     | NATIVE
                     | STRICTFP
-                    | DEFAULT
     '''
     # TODO: Remove annotation
     p[0]=mytuple(["CommonModifier"]+p[1 :])
