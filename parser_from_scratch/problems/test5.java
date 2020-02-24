@@ -212,7 +212,7 @@ class Codechef {
                 int y = sc.readInt();
                 ans[y] = x;
             }
-            System.out.println(calculate(k, ans, 0, 1, adj));
+            Systemoutprintln(k, ans, 0, 1, adj);
 
         }
     }
@@ -243,5 +243,6 @@ class Codechef {
         return fex;
     }
 }
+
 
 

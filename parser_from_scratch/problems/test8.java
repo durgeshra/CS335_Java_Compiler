@@ -3,12 +3,12 @@ import java.io.*;
 import java.text.*;
 
 public class Main{
-    
+
     void pre() throws Exception{}
     int[][][] D = new int[][][]{
         {{2,-2,0}, {1,0,-2}, {2,1,0}, {1,0,1}},
         {{1,-1,0}, {1,1,0}, {0,0,-1},{0,0,2}},
-        {{0,-1,0}, {0,2,0}, {2,0,-1},{2,0,1}},
+        {{0,-1,0}, {0,2,0}, {2,0,-1},{2,0,1}}
     };
     void solve(int TC) throws Exception{
         int n = ni(), m = ni();
@@ -61,7 +61,7 @@ public class Main{
             return "state = "+st+" pos "+x+" "+y +" dis "+di;
         }
     }
-    
+
     void hold(boolean b)throws Exception{if(!b)throw new Exception("Hold right there, Sparky!");}
     long mod = (long)1e9+7, IINF = (long)1e18;
     final int INF = (int)1e9, MX = (int)3e5+1;
@@ -72,8 +72,8 @@ public class Main{
     void run() throws Exception{
         in = new FastReader();
         out = new PrintWriter(System.out);
-        int T = (multipleTC)?ni():1;
-        
+        int T = (snksn)?ni:1;
+
         pre();for(int t = 1; t<= T; t++)solve(t);
         out.flush();
         out.close();
@@ -118,11 +118,11 @@ public class Main{
 
         String nextLine() throws Exception{
             String str = "";
-            try{   
+            try{
                 str = br.readLine();
             }catch (IOException e){
                 throw new Exception(e.toString());
-            }  
+            }
             return str;
         }
     }

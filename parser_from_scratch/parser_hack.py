@@ -295,6 +295,8 @@ def p_ElementValue(p):
 def p_ElementValueArrayInitializer(p):
     '''ElementValueArrayInitializer : lbrace ElementValueList COMMA rbrace
     | lbrace ElementValueList  rbrace
+    | lbrace IDENT COMMA rbrace
+    | lbrace IDENT  rbrace
     | lbrace  COMMA rbrace
     | lbrace   rbrace'''
     p[0] = mytuple(["ElementValueArrayInitializer"]+p[1 :])
@@ -312,13 +314,15 @@ def p_ElementValueArrayInitializer(p):
 
 def p_ElementValueList(p):
     '''ElementValueList : ElementValue  COMMAElementValueS
-                    |  IDENT  COMMAElementValueS'''
+                    |  IDENT  COMMAElementValueS
+                    | ElementValue'''
     p[0] = mytuple(["ElementValueList"]+p[1 :])
 
 def p_COMMAElementValueS(p):
     '''COMMAElementValueS : COMMAElementValueS COMMA ElementValue
                     | COMMAElementValueS COMMA IDENT
-                         | empty '''
+                    | COMMA ElementValue
+                    | COMMA IDENT'''
     p[0] = mytuple(["COMMAElementValueS"]+p[1 :])
 
 def p_MarkerAnnotation(p):
@@ -386,6 +390,7 @@ def p_PrimaryNoNewArray(p):
                         | THIS
                         | IDENT PERIOD THIS
                         | IDENT ExpressionName PERIOD THIS
+                        | LPAREN IDENT RPAREN
                         | LPAREN Expression RPAREN
                         | ClassInstanceCreationExpression
                         | FieldAccess
@@ -1352,16 +1357,37 @@ def p_MethodDeclaration(p):
 #     p[0] = mytuple(["ZooThrows"]+p[1 :])
 
 def p_MethodHeader(p):
-    '''MethodHeader : TypeParameters AnnotationS UnannType MethodDeclarator Throws
-                    | TypeParameters UnannType MethodDeclarator Throws
-                    | TypeParameters AnnotationS NumericType MethodDeclarator Throws
-                    | TypeParameters NumericType MethodDeclarator Throws
-                    | TypeParameters AnnotationS BOOLEAN MethodDeclarator Throws
-                    | TypeParameters BOOLEAN MethodDeclarator Throws
-                    | TypeParameters AnnotationS VOID MethodDeclarator Throws
-                    | TypeParameters VOID MethodDeclarator Throws
-                    | TypeParameters AnnotationS IDENT MethodDeclarator Throws
-                    | TypeParameters IDENT MethodDeclarator Throws
+    '''MethodHeader :
+                    | TypeParameters AnnotationS UnannType MethodDeclarator THROWS IDENT
+                    | TypeParameters AnnotationS UnannType MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters UnannType MethodDeclarator THROWS IDENT
+                    | TypeParameters UnannType MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | TypeParameters UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS NumericType MethodDeclarator THROWS IDENT
+                    | TypeParameters AnnotationS NumericType MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters NumericType MethodDeclarator THROWS IDENT
+                    | TypeParameters NumericType MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | TypeParameters NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS BOOLEAN MethodDeclarator THROWS IDENT
+                    | TypeParameters AnnotationS BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters BOOLEAN MethodDeclarator THROWS IDENT
+                    | TypeParameters BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | TypeParameters BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS VOID MethodDeclarator THROWS IDENT
+                    | TypeParameters AnnotationS VOID MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters VOID MethodDeclarator THROWS IDENT
+                    | TypeParameters VOID MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | TypeParameters VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS IDENT MethodDeclarator THROWS IDENT
+                    | TypeParameters AnnotationS IDENT MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | TypeParameters AnnotationS IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | TypeParameters IDENT MethodDeclarator THROWS IDENT
+                    | TypeParameters IDENT MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | TypeParameters IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
                     | TypeParameters AnnotationS UnannType MethodDeclarator
                     | TypeParameters UnannType MethodDeclarator
                     | TypeParameters AnnotationS NumericType MethodDeclarator
@@ -1372,15 +1398,25 @@ def p_MethodHeader(p):
                     | TypeParameters VOID MethodDeclarator
                     | TypeParameters AnnotationS IDENT MethodDeclarator
                     | TypeParameters IDENT MethodDeclarator
-                    | BOOLEAN MethodDeclarator Throws
+                    | BOOLEAN MethodDeclarator THROWS IDENT
+                    | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
                     | BOOLEAN MethodDeclarator
-                    | IDENT MethodDeclarator Throws
+                    | IDENT MethodDeclarator THROWS IDENT
+                    | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
                     | IDENT MethodDeclarator
-                    | VOID MethodDeclarator Throws
+                    | VOID MethodDeclarator THROWS IDENT
+                    | VOID MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
                     | VOID MethodDeclarator
                     | UnannType MethodDeclarator
-                    | UnannType MethodDeclarator Throws
-                    | NumericType MethodDeclarator Throws
+                    | UnannType MethodDeclarator THROWS IDENT
+                    | UnannType MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
+                    | NumericType MethodDeclarator THROWS IDENT
+                    | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT
+                    | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
                     | NumericType MethodDeclarator
     '''
     p[0] = mytuple(["MethodHeader"]+p[1 :])

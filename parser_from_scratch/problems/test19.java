@@ -9,60 +9,60 @@ import java.util.Iterator;
 import java.util.Map;
 
 class A{
-	static void DFSUtil(int v, boolean[] visited, ArrayList<Integer>[] adj, ArrayList<ArrayList<Integer>> al, int k) { 
-        visited[v] = true; 
+	static void DFSUtil(int v, boolean[] visited, ArrayList<Integer>[] adj, ArrayList<ArrayList<Integer> > al, int k) {
+        visited[v] = true;
         al.get(k).add(v);
-        for (int x : adj[v]) { 
-            if(!visited[x]) DFSUtil(x,visited, adj, al, k); 
-        } 
-  
-    } 
-    static ArrayList<ArrayList<Integer>> connectedComponents(ArrayList<Integer>[] adj) { 
+        for (int x : adj[v]) {
+            if(!visited[x]) DFSUtil(x,visited, adj, al, k);
+        }
+
+    }
+    static ArrayList<ArrayList<Integer> > connectedComponents(ArrayList<Integer>[] adj) {
         boolean[] visited = new boolean[adj.length];
-        ArrayList<ArrayList<Integer>> al = new ArrayList<>();
+        ArrayList<ArrayList<Integer> > al = new ArrayList<>();
         int k = 0;
-        for(int v = 1; v < adj.length; ++v) { 
-            if(!visited[v]) { 
+        for(int v = 1; v < adj.length; ++v) {
+            if(!visited[v]) {
             	al.add(new ArrayList<Integer>());
-                DFSUtil(v,visited, adj, al, k); 
+                DFSUtil(v,visited, adj, al, k);
                 k++;
-            } 
-        } 
+            }
+        }
         return al;
     }
     static void util(int v, ArrayList[] adj, boolean visited[], HashMap[] map, int prev) {
         visited[v] = true;
         if(prev>-1) {
-        Iterator<Integer> i = adj[prev].listIterator(); 
+        Iterator<Integer> i = adj[prev].listIterator();
         while (i.hasNext()) {
-            int n = i.next(); 
+            int n = i.next();
            if(n!=v&&!map[Math.min(prev, n)].containsKey(Math.max(prev, n))) {
         	   if(prev<n)
         		   map[prev].put(n, 1);
         	   else
         		   map[n].put(prev, 1);
            }
-        } 
+        }
         }
         prev = v;
-        Iterator<Integer> i = adj[v].listIterator(); 
-        while (i.hasNext()) 
-        { 
-            int n = i.next(); 
-            if (!visited[n]) 
-                util(v, adj, visited, map, prev); 
-        } 
-    } 
+        Iterator<Integer> i = adj[v].listIterator();
+        while (i.hasNext())
+        {
+            int n = i.next();
+            if (!visited[n])
+                util(v, adj, visited, map, prev);
+        }
+    }
     static void DFS(int v, ArrayList[] adj, HashMap[] map) {
         boolean visited[] = new boolean[adj.length];
-        util(v, adj, visited, map, -1); 
+        util(v, adj, visited, map, -1);
     }
 	public static void main(String[] args) {
 		try {
 			BufferInput in = new BufferInput();
 			StringBuilder sb = new StringBuilder();
 			StringBuilder rem = new StringBuilder();
-	
+
 			int n = in.nextInt();
 			int m = in.nextInt();
 			int a = in.nextInt();
@@ -105,15 +105,15 @@ class A{
 
 	}
 static class BufferInput {
-		
+
 		final private int BUFFER_SIZE = 1 << 16;
-		
+
 		private DataInputStream din;
-		
+
 		private byte[] buffer;
-		
+
 		private int bufferPointer, bytesRead;
-		
+
 		public BufferInput() {
 			din = new DataInputStream(System.in);
 			buffer = new byte[BUFFER_SIZE];
@@ -136,14 +136,14 @@ static class BufferInput {
 			}
 			return new String(buf, 0, cnt);
 		}
-		
+
 		public String nextString() throws IOException{
-			
+
 			byte c = read();
 			while(Character.isWhitespace(c)){
 				c = read();
 			}
-			
+
 			StringBuilder builder = new StringBuilder();
 			builder.append((char)c);
 			c = read();
@@ -151,10 +151,10 @@ static class BufferInput {
 				builder.append((char)c);
 				c = read();
 			}
-			
+
 			return builder.toString();
 		}
-		
+
 		public int nextInt() throws IOException {
 			int ret = 0;
 			byte c = read();
@@ -171,7 +171,7 @@ static class BufferInput {
 				return -ret;
 			return ret;
 		}
-		
+
 		public int[] nextIntArray(int n) throws IOException {
 			int arr[] = new int[n];
 			for(int i = 0; i < n; i++){
@@ -194,7 +194,7 @@ static class BufferInput {
 				return -ret;
 			return ret;
 		}
-		
+
 		public long[] nextLongArray(int n) throws IOException {
 			long arr[] = new long[n];
 			for(int i = 0; i < n; i++){
@@ -202,13 +202,13 @@ static class BufferInput {
 			}
 			return arr;
 		}
-		
+
 		public char nextChar() throws IOException{
 			byte c = read();
 			while(Character.isWhitespace(c)){
 				c = read();
 			}
-			return (char) c;	
+			return (char) c;
 		}
 		public double nextDouble() throws IOException {
 			double ret = 0, div = 1;
@@ -258,8 +258,5 @@ static class BufferInput {
 		}
 	}
 }
-
-
-
 
 

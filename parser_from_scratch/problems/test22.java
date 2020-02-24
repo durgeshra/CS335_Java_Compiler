@@ -1,14 +1,14 @@
-    
 
 
 
 
-     
+
+
     import java.util.*;
     import java.lang.*;
     import java.io.*;
-     
-    
+
+
 
 
 
@@ -17,15 +17,9 @@
     {
     	public static void main (String[] args) throws java.lang.Exception
     	{
-    		
-    		String h="Harsh
-    		Agarwal";
-            char c = '
-'; 
+
+    		String h="HarshAgarwal";
+        char c = 'a';
     	}
     }
-
-
-
-
 
