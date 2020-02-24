@@ -2524,5 +2524,5 @@ def parse_file(_file, debug=0):
 # print(parse_out)
 # t = tac.code
 # print(t)
-parse_out = parse_file("./ackermann.java")
+parse_out = parse_file("./problems/test10.java")
 print(parse_out)
