@@ -2684,6 +2684,14 @@ def p_error( p):
     print('error: {}'.format(p))
 
 
+# precedence = (
+#     ('right', 'ASSIGN', 'NOT'),
+#     ('left', 'LOR'),
+#     ('left', 'LAND'),
+#     ('nonassoc', 'EQL', 'NEQ', 'LSS', 'LEQ', 'GTR', 'GEQ'),
+#     ('left', 'ADD', 'SUB', 'OR', 'XOR'),
+#     ('left', 'MUL', 'QUO', 'REM', 'SHL', 'SHR', 'AND')
+# )
 lexer = lex.lex(module=lexRule)
 parser = yacc.yacc(start='start', debug = 1)
         # parser = yacc.yacc(start='start', debug = 0)
@@ -2750,3 +2758,32 @@ def parse_file(_file, debug=0):
 import sys
 parse_out = parse_file(sys.argv[1])
 print(parse_out)
+
+
+
+from graphviz import Digraph
+import os
+def plot_ast(output):
+    ast = Digraph(comment='Abstract Syntax Tree')
+    node_i = 0
+
+    def process_node(data, parent):
+        if type(data) == str:
+            nonlocal node_i
+            node_i = node_i + 1
+            ast.node(str(node_i), data)
+            ast.edge(str(parent), str(node_i))
+            return
+
+        process_node(data[0], parent)
+        lparent = node_i
+        for i in data[1:]:
+            if type(i) == str:
+                process_node(i, lparent)
+            elif type(i) == tuple:
+                process_node(i, lparent)
+    process_node(output, 0)
+    ast.node(str(0), os.path.basename(sys.argv[1]))
+    ast.render("AST", view=True)
+
+plot_ast(parse_out)

@@ -2,11 +2,11 @@ import os
 import glob
 count=0
 # filenames = glob.glob("../java_compiler/test/*")
-filenames = glob.glob("./problems/*")
-# filenames = glob.glob("../testcases/*")
+# filenames = glob.glob("./problems/*")
+filenames = glob.glob("../testcases/*")
 
-mypython="/usr/local/Cellar/python/3.7.6_1/bin/python3.7"
-# mypython = "/home/harsh/Skillate/python_vir/venv/bin/python"
+# mypython="/usr/local/Cellar/python/3.7.6_1/bin/python3.7"
+mypython = "/home/harsh/Skillate/python_vir/venv/bin/python"
 print(filenames)
 for filename in filenames:
     os.system("python uncomment.py "+filename+ " > "+filename+"u")
