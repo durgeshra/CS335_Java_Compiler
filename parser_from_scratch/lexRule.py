@@ -59,25 +59,29 @@ reserved = {
     'while':        'WHILE'
 }
 
-literals_ = ['BOOL_LIT', 'NULL_LIT', 'DECIMAL_LIT', 'HEX_LIT', 'OCTAL_LIT', 'BINARY_LIT', 'FLOAT_DEC_LIT', 'FLOAT_HEX_LIT', 'STRING_LIT', 'CHAR_LIT'] ## Add int, float, character, strong, null
+literals_ = ['BOOL_LIT', 'NULL_LIT', 'DECIMAL_LIT', 'HEX_LIT', 'OCTAL_LIT', 'BINARY_LIT',
+             'FLOAT_DEC_LIT', 'FLOAT_HEX_LIT', 'STRING_LIT', 'CHAR_LIT']  # Add int, float, character, strong, null
 
-separators = ['LPAREN', 'LBRACK', 'LBRACE', 'RPAREN', 'RBRACK', 'RBRACE', 'COMMA', 'PERIOD', 'SEMICOLON', 'ELLIPSIS', 'ATRATE', 'COLON_SEP']
+separators = ['LPAREN', 'LBRACK', 'LBRACE', 'RPAREN', 'RBRACK', 'RBRACE',
+              'COMMA', 'PERIOD', 'SEMICOLON', 'ELLIPSIS', 'ATRATE', 'COLON_SEP']
 
-operators = ['ADD', 'SUB', 'MUL', 'QUO', 'REM', 'AND', 'OR', 'XOR','SHL', 'SHR', 'ADD_ASSIGN', 'SUB_ASSIGN', 'MUL_ASSIGN','QUO_ASSIGN', 'REM_ASSIGN', 'AND_ASSIGN', 'OR_ASSIGN','XOR_ASSIGN', 'SHL_ASSIGN', 'SHR_ASSIGN', 'LAND', 'LOR','ARROW', 'INC', 'DEC', 'EQL', 'LSS', 'GTR', 'ASSIGN', 'NOT', 'NEQ', 'LEQ', 'GEQ','LNOT', 'QUES', 'COLON', 'SHR_UN', 'SHR_UN_ASSIGN']
+operators = ['ADD', 'SUB', 'MUL', 'QUO', 'REM', 'AND', 'OR', 'XOR', 'SHL', 'SHR', 'ADD_ASSIGN', 'SUB_ASSIGN', 'MUL_ASSIGN', 'QUO_ASSIGN', 'REM_ASSIGN', 'AND_ASSIGN', 'OR_ASSIGN',
+             'XOR_ASSIGN', 'SHL_ASSIGN', 'SHR_ASSIGN', 'LAND', 'LOR', 'ARROW', 'INC', 'DEC', 'EQL', 'LSS', 'GTR', 'ASSIGN', 'NOT', 'NEQ', 'LEQ', 'GEQ', 'LNOT', 'QUES', 'COLON', 'SHR_UN', 'SHR_UN_ASSIGN']
 
 misc = ['IDENT', 'COMMENT']
 
 err = ['UNCLOSED_CHAR', 'UNCLOSED_STR']
 
-tokens = separators + literals_ + operators + list(reserved.values()) + misc + err
+tokens = separators + literals_ + operators + \
+    list(reserved.values()) + misc + err
 
 
-t_HEX_LIT = r'0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[lL]?'
-t_OCTAL_LIT = r'0[_]*[1-8]([_]*[0-8])*[lL]?'
-t_BINARY_LIT = r'0[bB][0-1]([_]*[0-1])*[lL]?'
-t_DECIMAL_LIT = r'0[lL]?|([1-9]([_]*[0-9])*)[lL]?'
+# t_HEX_LIT = r'0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[lL]?'
+# t_OCTAL_LIT = r'0[_]*[1-8]([_]*[0-8])*[lL]?'
+# t_BINARY_LIT = r'0[bB][0-1]([_]*[0-1])*[lL]?'
+# t_DECIMAL_LIT = r'0[lL]?|([1-9]([_]*[0-9])*)[lL]?'
 
-t_FLOAT_HEX_LIT = r'((0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[\.]?)|(0[xX]([0-9a-fA-F]([_]*[0-9a-fA-F])*)?\.[0-9a-fA-F]([_]*[0-9a-fA-F])*))[pP][\+\-]?[0-9]+'
+# t_FLOAT_HEX_LIT = r'((0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[\.]?)|(0[xX]([0-9a-fA-F]([_]*[0-9a-fA-F])*)?\.[0-9a-fA-F]([_]*[0-9a-fA-F])*))[pP][\+\-]?[0-9]+'
 
 # Explanation of regex (first two combined with ORs)
 # 0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[\.]?
@@ -89,7 +93,7 @@ t_FLOAT_HEX_LIT = r'((0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[\.]?)|(0[xX]([0-9a-fA-F
 # 0x21111.p-0, 0x0.p-0, 0x.0p-0
 
 
-t_FLOAT_DEC_LIT = r'([0-9]+\.[0-9]* ([eE][\+\-]?[0-9]+)? [fFdD]?)|([0-9]*\.[0-9]+ ([eE][\+\-]?[0-9]+)? [fFdD]?)|([0-9]+ ([eE][\+\-]?[0-9]+) [fFdD]?)|([0-9]+ ([eE][\+\-]?[0-9]+)?[fFdD])'
+# t_FLOAT_DEC_LIT = r'([0-9]+\.[0-9]* ([eE][\+\-]?[0-9]+)? [fFdD]?)|([0-9]*\.[0-9]+ ([eE][\+\-]?[0-9]+)? [fFdD]?)|([0-9]+ ([eE][\+\-]?[0-9]+) [fFdD]?)|([0-9]+ ([eE][\+\-]?[0-9]+)?[fFdD])'
 # Explanation of regex (combined with ORs)
 # [0-9]+\.[0-9]* ([eE][\+\-]?[0-9]+)? [fFdD]?
 # [0-9]*\.[0-9]+ ([eE][\+\-]?[0-9]+)? [fFdD]?
@@ -101,15 +105,15 @@ t_FLOAT_DEC_LIT = r'([0-9]+\.[0-9]* ([eE][\+\-]?[0-9]+)? [fFdD]?)|([0-9]*\.[0-9]
 # 2122.120e+0233, .2334, .2334e+29292f, 2e-1f, 2d, 3D
 
 # A string containing ignored characters (spaces and tabs)
-t_ignore  = ' \t\f'
+t_ignore = ' \t\f'
 
-## Null literal
+# Null literal
 t_NULL_LIT = r'(null)'
 
-## Boolean literals
+# Boolean literals
 t_BOOL_LIT = r'((true)|(false))'
 
-## Operators
+# Operators
 t_ADD = r'\+'
 t_SUB = r'-'
 t_MUL = r'\*'
@@ -117,7 +121,7 @@ t_QUO = r'/'
 t_REM = r'%'
 
 t_AND = r'&'
-t_OR =  r'\|'
+t_OR = r'\|'
 t_XOR = r'\^'
 t_SHL = r'(<<)'
 t_SHR = r'(>>)'
@@ -156,7 +160,7 @@ t_COLON = r'\:'
 t_SHR_UN = r'(\>\>\>)'
 t_SHR_UN_ASSIGN = r'(\>\>\>\=)'
 
-## Separators
+# Separators
 t_LPAREN = r'\('
 t_LBRACK = r'\['
 t_LBRACE = r'\{'
@@ -164,7 +168,7 @@ t_RPAREN = r'\)'
 t_RBRACK = r'\]'
 t_RBRACE = r'\}'
 
-t_COMMA =  r','
+t_COMMA = r','
 t_PERIOD = r'\.'
 t_SEMICOLON = r';'
 t_ELLIPSIS = r'(\.\.\.)'
@@ -190,9 +194,41 @@ def print_err(s):
 
 #     infile = infile[0]
 
+
+def t_FLOAT_HEX_LIT(t):
+    r'((0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[\.]?)|(0[xX]([0-9a-fA-F]([_]*[0-9a-fA-F])*)?\.[0-9a-fA-F]([_]*[0-9a-fA-F])*))[pP][\+\-]?[0-9]+'
+    return t
+
+
+def t_FLOAT_DEC_LIT(t):
+    r'([0-9]+([_]*[0-9]+)*\.([0-9]*[_]*)*([eE][\+\-]?([0-9]+[_]*)+)?[fFdD]?)|([0-9]*([_]*[0-9]+)*\.([0-9]+[_]*)+([eE][\+\-]?([0-9]+[_]*)+)?[fFdD]?)|([0-9]+([_]*[0-9]+)*([eE][\+\-]?([0-9]+[_]*)+)[fFdD]?)|([0-9]+([_]*[0-9]+)*([eE][\+\-]?([0-9]+[_]*)+)?[fFdD])'
+    # r'([0-9]+\.[0-9]* ([eE][\+\-]?[0-9]+)? [fFdD]?)|([0-9]*\.[0-9]+ ([eE][\+\-]?[0-9]+)? [fFdD]?)|([0-9]+ ([eE][\+\-]?[0-9]+) [fFdD]?)|([0-9]+ ([eE][\+\-]?[0-9]+)?[fFdD])'
+    return t
+
+
+def t_HEX_LIT(t):
+    r'0[xX][0-9a-fA-F]([_]*[0-9a-fA-F])*[lL]?'
+    return t
+
+
+def t_BINARY_LIT(t):
+    r'0[bB][0-1]([_]*[0-1])*[lL]?'
+    return t
+
+
+def t_OCTAL_LIT(t):
+    r'0[_]*[1-8]([_]*[0-8])*[lL]?'
+    return t
+
+
+def t_DECIMAL_LIT(t):
+    r'0[lL]?|([1-9]([_]*[0-9])*)[lL]?'
+    return t
+
+
 def t_IDENT(t):
     r'[a-zA-Z_$][a-zA-Z_$0-9]*'
-    t.type = reserved.get(t.value,'IDENT')    # Check for reserved words
+    t.type = reserved.get(t.value, 'IDENT')    # Check for reserved words
     # DONE check it is not a bool lit or null lit
     if t.value == 'true' or t.value == 'false':
         t.type = 'BOOL_LIT'
@@ -205,9 +241,11 @@ def t_CHAR_LIT(t):
     r'\'([^\\\'\n\r\t]|(\\[btnfr\"\'\\0-7]))\''
     return t
 
+
 def t_STRING_LIT(t):
-    r'\"[^\"\\]*(\\.[^\"\\]*)*\"'
+    r'\"([^\\\"\n\r\t]|(\\[btnfr\"\'\\0-7]))*\"'
     return t
+
 
 def t_UNCLOSED_STR(t):
     r'\"'
@@ -215,23 +253,31 @@ def t_UNCLOSED_STR(t):
     t.lexer.skip(1)
     return t
 
+
 def t_UNCLOSED_CHAR(t):
     r'\''
     print("Unmatched ' in line %d" % t.lexer.lineno)
     t.lexer.skip(0)
     return t
 
+
 def t_COMMENT(t):
     r'(/\*([^*]|\n|(\*+([^*/]|\n)))*\*+/)|(//.*)'
-    t.lexer.lineno += t.value.count('\n');
-    return t
+    t.lexer.lineno += t.value.count('\n')
+    # pass
+    pass
+    # return t
 
 # Error handling rule
+
+
 def t_error(t):
     print("Invalid character '" + t.value[0] + "' at line %d" % t.lexer.lineno)
     t.lexer.skip(1)
 
 # Define a rule so we can track line numbers
+
+
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)

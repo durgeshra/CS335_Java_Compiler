@@ -99,7 +99,7 @@ def p_ExtendsInterfaces(p):
 
 
 def p_InterfaceBody(p):
-    '''InterfaceBody : lbrace InterfaceMemberDeclarationS rbrace '''
+    '''InterfaceBody : LBRACE InterfaceMemberDeclarationS RBRACE '''
     p[0] = mytuple(["InterfaceBody"]+p[1:])
 
 
@@ -186,7 +186,7 @@ def p_AnnotationTypeDeclaration(p):
 
 
 def p_AnnotationTypeBody(p):
-    '''AnnotationTypeBody :  lbrace AnnotationTypeMemberDeclarationS rbrace'''
+    '''AnnotationTypeBody :  LBRACE AnnotationTypeMemberDeclarationS RBRACE'''
     p[0] = mytuple(["AnnotationTypeBody"]+p[1:])
 
 
@@ -314,13 +314,15 @@ def p_ElementValue(p):
     p[0] = mytuple(["ElementValue"]+p[1:])
 
 
+
 def p_ElementValueArrayInitializer(p):
-    '''ElementValueArrayInitializer : lbrace ElementValueList COMMA rbrace
-    | lbrace ElementValueList  rbrace
-    | lbrace IDENT COMMA rbrace
-    | lbrace IDENT  rbrace
-    | lbrace  COMMA rbrace
-    | lbrace   rbrace'''
+    '''ElementValueArrayInitializer : LBRACE ElementValueList COMMA RBRACE
+    | LBRACE ElementValueList  RBRACE
+    | LBRACE IDENT COMMA RBRACE
+    | LBRACE IDENT  RBRACE
+    | LBRACE  COMMA RBRACE
+    | LBRACE   RBRACE'''
+    print("Here is it")
     p[0] = mytuple(["ElementValueArrayInitializer"]+p[1:])
 
 
@@ -371,21 +373,23 @@ def p_SingleElementAnnotation(p):
 
 
 def p_ArrayInitializer(p):
-    '''ArrayInitializer : lbrace VariableInitializerList COMMA rbrace
-    | lbrace VariableInitializerList rbrace
-    | lbrace COMMA rbrace
-    | lbrace rbrace '''
+    '''ArrayInitializer : LBRACE VariableInitializerList COMMA RBRACE
+    | LBRACE VariableInitializerList RBRACE
+    | LBRACE COMMA RBRACE
+    | LBRACE RBRACE '''
+    print("In arrrayIntializer")
+    print(p[1:])
     p[0] = mytuple(["ArrayInitializer"]+p[1:])
 
 
-def p_lbrace(p):
-    '''lbrace : LBRACE'''
-    p[0] = mytuple(["lbrace"]+p[1:])
+# def p_lbrace(p):
+#     '''LBRACE : LBRACE'''
+#     p[0] = mytuple(["LBRACE"]+p[1:])
 
 
-def p_rbrace(p):
-    '''rbrace : RBRACE'''
-    p[0] = mytuple(["rbrace"]+p[1:])
+# def p_rbrace(p):
+#     '''RBRACE : RBRACE'''
+#     p[0] = mytuple(["RBRACE"]+p[1:])
 
 # def p_ZooVariableInitializerList(p):
 #     '''ZooVariableInitializerList : VariableInitializerList
@@ -394,13 +398,14 @@ def p_rbrace(p):
 
 
 def p_VariableInitializerList(p):
-    '''VariableInitializerList : VariableInitializer COMMAVariableInitializerS'''
+    '''VariableInitializerList : VariableInitializer COMMAVariableInitializerS
+                                | VariableInitializer '''
     p[0] = mytuple(["VariableInitializerList"]+p[1:])
 
 
 def p_COMMAVariableInitializerS(p):
     '''COMMAVariableInitializerS : COMMAVariableInitializerS COMMA VariableInitializer
-                                 | empty'''
+                                 | COMMA VariableInitializer'''
     p[0] = mytuple(["COMMAVariableInitializerS"]+p[1:])
 
 #</editor-fold>############################################
@@ -527,8 +532,8 @@ def p_PERIODAnnotationSIDENTS(p):
 def p_TypeArgumentsOrDiamond(p):
     '''TypeArgumentsOrDiamond : TypeArguments
                              | LSS GTR'''
-    print("I am TypeArgumentsOrDiamond!!!!")
-    print("\n"*20)
+    # print("I am TypeArgumentsOrDiamond!!!!")
+    # print("\n"*20)
     p[0] = mytuple(["TypeArgumentsOrDiamond"]+p[1:])
 
 
@@ -1256,7 +1261,7 @@ def p_ClassBodyDeclarationS(p):
 
 
 def p_ClassBody(p):
-    '''ClassBody : lbrace ClassBodyDeclarationS rbrace
+    '''ClassBody : LBRACE ClassBodyDeclarationS RBRACE
     '''
     p[0] = mytuple(["ClassBody"]+p[1:])
 
@@ -1429,7 +1434,6 @@ def p_UnannArrayType(p):
                         | IDENT PERIOD IDENT Dims
                         | IDENT Dims
     '''
-    print("I am here!")
     p[0] = mytuple(["UnannArrayType"]+p[1:])
 
 
@@ -1816,12 +1820,12 @@ def p_ConstructorDeclarator(p):
 
 
 def p_ConstructorBody(p):
-    '''ConstructorBody : lbrace  ExplicitConstructorInvocation BlockStatements  rbrace
-                        | lbrace  ExplicitConstructorInvocation SEMICOLON  rbrace
-                        | lbrace  ExplicitConstructorInvocation  rbrace
-                        | lbrace  BlockStatements  rbrace
-                        | lbrace  SEMICOLON  rbrace
-                        | lbrace  rbrace
+    '''ConstructorBody : LBRACE  ExplicitConstructorInvocation BlockStatements  RBRACE
+                        | LBRACE  ExplicitConstructorInvocation SEMICOLON  RBRACE
+                        | LBRACE  ExplicitConstructorInvocation  RBRACE
+                        | LBRACE  BlockStatements  RBRACE
+                        | LBRACE  SEMICOLON  RBRACE
+                        | LBRACE  RBRACE
     '''
     p[0] = mytuple(["ConstructorBody"] + p[1:])
 
@@ -1910,14 +1914,14 @@ def p_EnumDeclaration(p):
 
 
 def p_EnumBody(p):
-    '''EnumBody : lbrace EnumConstantList COMMA EnumBodyDeclarations  rbrace
-                | lbrace EnumConstantList COMMA   rbrace
-                | lbrace EnumConstantList  EnumBodyDeclarations  rbrace
-                | lbrace EnumConstantList    rbrace
-                | lbrace COMMA EnumBodyDeclarations  rbrace
-                | lbrace COMMA   rbrace
-                | lbrace  EnumBodyDeclarations  rbrace
-                | lbrace    rbrace
+    '''EnumBody : LBRACE EnumConstantList COMMA EnumBodyDeclarations  RBRACE
+                | LBRACE EnumConstantList COMMA   RBRACE
+                | LBRACE EnumConstantList  EnumBodyDeclarations  RBRACE
+                | LBRACE EnumConstantList    RBRACE
+                | LBRACE COMMA EnumBodyDeclarations  RBRACE
+                | LBRACE COMMA   RBRACE
+                | LBRACE  EnumBodyDeclarations  RBRACE
+                | LBRACE    RBRACE
     '''
     p[0] = mytuple(["EnumBody"] + p[1:])
 
@@ -2170,8 +2174,8 @@ def p_AdditionalBound(p):
 
 def p_TypeArguments(p):
     '''TypeArguments : LSS TypeArgumentList GTR'''
-    print("I am TypeArguments!!!!")
-    print("\n"*20)
+    # print("I am TypeArguments!!!!")
+    # print("\n"*20)
     p[0] = mytuple(["TypeArguments"]+p[1:])
 
 #
@@ -2231,9 +2235,9 @@ def p_WildcardBounds(p):
 
 
 def p_Block(p):
-    '''Block : lbrace rbrace
-    | lbrace BlockStatements rbrace
-    | lbrace SEMICOLON rbrace
+    '''Block : LBRACE RBRACE
+    | LBRACE BlockStatements RBRACE
+    | LBRACE SEMICOLON RBRACE
 '''
     p[0] = mytuple(["Block"]+p[1:])
 
@@ -2410,9 +2414,9 @@ def p_SwitchStatement(p):
 
 
 def p_SwitchBlock(p):
-    '''SwitchBlock : lbrace SwitchBlockStatementGroupS SwitchLabels rbrace
-            | lbrace SwitchBlockStatementGroupS DEFAULTCOLON rbrace
-            | lbrace SwitchBlockStatementGroupS rbrace
+    '''SwitchBlock : LBRACE SwitchBlockStatementGroupS SwitchLabels RBRACE
+            | LBRACE SwitchBlockStatementGroupS DEFAULTCOLON RBRACE
+            | LBRACE SwitchBlockStatementGroupS RBRACE
 '''
     p[0] = mytuple(["SwitchBlock"]+p[1:])
 
@@ -2942,7 +2946,7 @@ def parse_file(_file, debug=0):
 # t = tac.code
 # print(t)
 parse_out = parse_file(sys.argv[1])
-print(parse_out)
+# print(parse_out)
 
 
 def plot_parse(output):
@@ -3000,15 +3004,17 @@ def reduce(ele):
 
     new_ele.append(ele[0])
     if(type(ele) ==str):
-        return ele
+	    return ele
     elif(type(ele)==tuple and len(ele)==1):
         return ele
-
-    if(len(ele)==2):
+    elif(len(ele)==2 and type(ele[1])==str):
+	    return ele
+    elif(len(ele)==2 and type(ele[1])==tuple):
         return reduce(ele[1])
     else:
         for data in ele[1:]:
             new_ele.append(reduce(data))
         return tuple(new_ele)
 
+    
 plot_ast(reduce(parse_out))

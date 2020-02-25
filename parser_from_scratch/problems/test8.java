@@ -4,12 +4,12 @@ import java.text.*;
 
 public class Main{
 
+    
+    
+
+
     void pre() throws Exception{}
-    int[][][] D = new int[][][]{
-        {{2,-2,0}, {1,0,-2}, {2,1,0}, {1,0,1}},
-        {{1,-1,0}, {1,1,0}, {0,0,-1},{0,0,2}},
-        {{0,-1,0}, {0,2,0}, {2,0,-1},{2,0,1}}
-    };
+    int[][][] D = new int[][][]{1,2,3};
     void solve(int TC) throws Exception{
         int n = ni(), m = ni();
         int x = ni()-1, y = ni()-1;
@@ -127,6 +127,9 @@ public class Main{
         }
     }
 }
+
+
+
 
 
 
