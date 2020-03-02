@@ -1729,7 +1729,6 @@ def p_ElementValueArrayInitializer(p):
     | LBRACE IDENT  RBRACE
     | LBRACE  COMMA RBRACE
     | LBRACE   RBRACE'''
-    print("Here is it")
     p[0] = mytuple(["ElementValueArrayInitializer"]+p[1:])
 
 
@@ -1784,8 +1783,8 @@ def p_ArrayInitializer(p):
     | LBRACE VariableInitializerList RBRACE
     | LBRACE COMMA RBRACE
     | LBRACE RBRACE '''
-    print("In arrrayIntializer")
-    print(p[1:])
+    # print("In arrrayIntializer")
+    # print(p[1:])
     p[0] = mytuple(["ArrayInitializer"]+p[1:])
 
 
@@ -2614,8 +2613,8 @@ def p_NormalClassDeclaration(p):
 def p_TypeParameters(p):
     '''TypeParameters : LSS TypeParameterList GTR
     '''
-    print("I am TypeParameters!!!!")
-    print("\n"*20)
+    # print("I am TypeParameters!!!!")
+    # print("\n"*20)
     p[0] = mytuple(["TypeParameters"]+p[1:])
 
 
@@ -4308,39 +4307,36 @@ parser = yacc.yacc(start='start', debug=1)
     # def parse_statement( code, debug=0, lineno=1):
     #     return parse_string(code, debug, lineno, prefix='* ')
 global HASH_MAP
-
-
+HASH_MAP = {}
 def parse_string(code, debug=0, lineno=1, prefix='++'):
+    if(verbose_flag):
+        print("Lexing Started")
     lexer.input(code)
-    print("In parse_string!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
     while True:
         tok = lexer.token()
         if not tok:  # No more input
             break
-        # elif tok.type in lexRule.literals_ :
-        #     HASH_MAP[tok.value] = "Literal"
-        # elif tok.type in lexRule.separators :
-        #     HASH_MAP[tok.value] = "Separator"
-        # elif tok.type == 'IDENT' :
-        #     HASH_MAP[tok.value] = "IDENT"
-        # elif tok.type in lexRule.operators :
-        #     HASH_MAP[tok.value] = "Operator"
-        # elif tok.type in list(lexRule.reserved.values()):
-        #     HASH_MAP[tok.value] = "Keyword"
-        # else : # Comments or unknown
-        # continue
-        #
-        # print(tok)
-        #
+       elif tok.type in lexRule.literals_ :
+            HASH_MAP[tok.value] = "Literal"
+        elif tok.type in lexRule.separators :
+            HASH_MAP[tok.value] = "Separator"
+        elif tok.type == 'IDENT' :
+            HASH_MAP[tok.value] = "IDENT"
+        elif tok.type in lexRule.operators :
+            HASH_MAP[tok.value] = "Operator"
+        elif tok.type in list(lexRule.reserved.values()):
+            HASH_MAP[tok.value] = "Keyword"
+        else : # Comments or unknown
+            continue
 
-    print("END of TOKENS")
     lexer.lineno = lineno
+    if(verbose_flag):
+        print("Lexing Done")
+        print("Parsing Start")
     return parser.parse(prefix + code, lexer=lexer, debug=0)
 
 
 def parse_file(_file, debug=0):
-    print("In parse_file!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     if type(_file) == str:
         _file = open(_file)
     content = _file.read()
@@ -4352,11 +4348,11 @@ def parse_file(_file, debug=0):
 # print(parse_out)
 # t = tac.code
 # print(t)
-parse_out = parse_file(sys.argv[1])
+# parse_out = parse_file(sys.argv[1])
 # print(parse_out)
 
 
-def plot_parse(output):
+def plot_ast(output,filename,input_file):
     ast = Digraph(comment='Abstract Syntax Tree')
     node_i = 0
 
@@ -4364,6 +4360,8 @@ def plot_parse(output):
         if type(data) == str:
             nonlocal node_i
             node_i = node_i + 1
+            if data in HASH_MAP:
+                data = data + "\n(" + HASH_MAP[data]+")"
             ast.node(str(node_i), data)
             ast.edge(str(parent), str(node_i))
             return
@@ -4376,34 +4374,9 @@ def plot_parse(output):
             elif type(i) == tuple:
                 process_node(i, lparent)
     process_node(output, 0)
-    ast.node(str(0), os.path.basename(sys.argv[1]))
-    ast.render("parse_tree", view=True)
+    ast.node(str(0), os.path.basename(input_file))
+    ast.render(filename + ".dot", view=True)
 
-
-def plot_ast(output):
-    ast = Digraph(comment='Abstract Syntax Tree')
-    node_i = 0
-
-    def process_node(data, parent):
-        if type(data) == str:
-            nonlocal node_i
-            node_i = node_i + 1
-            ast.node(str(node_i), data)
-            ast.edge(str(parent), str(node_i))
-            return
-
-        process_node(data[0], parent)
-        lparent = node_i
-        for i in data[1:]:
-            if type(i) == str:
-                process_node(i, lparent)
-            elif type(i) == tuple:
-                process_node(i, lparent)
-    process_node(output, 0)
-    ast.node(str(0), os.path.basename(sys.argv[1]))
-    ast.render("AST", view=True)
-
-plot_parse(parse_out)
 
 
 def reduce(ele):
@@ -4414,9 +4387,7 @@ def reduce(ele):
 	    return ele
     elif(type(ele)==tuple and len(ele)==1):
         return ele
-    elif(len(ele)==2 and type(ele[1])==str):
-	    return ele
-    elif(len(ele)==2 and type(ele[1])==tuple):
+    if(len(ele)==2):
         return reduce(ele[1])
     else:
         for data in ele[1:]:
@@ -4424,4 +4395,58 @@ def reduce(ele):
         return tuple(new_ele)
 
 
-plot_ast(reduce(parse_out))
+def reduce_epsilon(ele):
+    new_ele = []
+    new_ele.append(ele[0])
+    if(type(ele)==str):
+        return ele
+    else:
+        for data in ele[1:]:
+            if(data!="epsilon"):
+                new_ele.append(reduce_epsilon(data))
+        return tuple(new_ele)
+
+import os 
+import argparse 
+argument_parser = argparse.ArgumentParser(description = "AST generator for Java!") 
+
+requiredNamed = argument_parser.add_argument_group('required named arguments')
+requiredNamed.add_argument("-i", "--input", type = str, nargs = 1, 
+                    metavar = "file_name", required = True,
+                    help = "Input file for parsing") 
+    
+argument_parser.add_argument("-o", "--output", type = str, nargs = 1, 
+                    metavar = "file_name", default = "graph", 
+                    help = "Enter output file name without extension. Creates DOT(.dot) file and PDF(.pdf) file with same name") 
+
+argument_parser.add_argument("-v", "--verbose", type = bool, nargs = 1, 
+                    metavar = "verbose", default = False, 
+                    help = "Takes boolean value.") 
+
+args = argument_parser.parse_args() 
+
+if args.input != None: 
+
+    input_file = args.input[0]
+
+if args.output != None: 
+    if(type(args.output)==list):
+        output_file = args.output[0]
+    else:
+        output_file = args.output
+verbose_flag = False
+if args.verbose != None:
+    if(type(args.verbose)==list):
+        verbose_flag = args.verbose[0]
+    else:
+        verbose_flag = args.verbose
+
+
+parse_out = parse_file(input_file)
+if(verbose_flag):
+    print("Parsing Done")
+    print("Graph Plotting Started")
+# print(parse_out)
+plot_ast(reduce(reduce_epsilon(reduce(parse_out))), output_file,input_file)
+if(verbose_flag):
+    print("Graph Plotting Ended")
