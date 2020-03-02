@@ -4316,7 +4316,7 @@ def parse_string(code, debug=0, lineno=1, prefix='++'):
         tok = lexer.token()
         if not tok:  # No more input
             break
-       elif tok.type in lexRule.literals_ :
+        elif tok.type in lexRule.literals_ :
             HASH_MAP[tok.value] = "Literal"
         elif tok.type in lexRule.separators :
             HASH_MAP[tok.value] = "Separator"
