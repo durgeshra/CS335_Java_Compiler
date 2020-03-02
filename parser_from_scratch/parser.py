@@ -8,6 +8,7 @@ import ply.yacc as yacc
 tokens = lexRule.tokens
 
 
+#<editor-fold> SACRED #########################
 #####################################################
 # Milestone 2
 #####################################################
@@ -117,7 +118,7 @@ def add_scope(p = None):
         #         scopes[current_scope].add_extra(p[-1].type_list[0], "switch_expr_type")
         #         scopes[current_scope].add_extra(p[-1].place_list[0], "switch_expr_var")
 
-        # # taken from p_add_scope 
+        # # taken from p_add_scope
         # TODO (Durgesh): Add support for while
 
 def end_scope(p):
@@ -143,7 +144,7 @@ def end_scope(p):
     #     elif p[-6] == "switch":
     #         p[0] = Node()
     #         end_switch_label = find_info("__EndSwitch", p.lexer.lineno, current_scope)["value"]
-    #         p[0].code += [["label", end_switch_label]]            
+    #         p[0].code += [["label", end_switch_label]]
 
     # # taken from p_end_scope
     # TODO (Durgesh): Add support for while
@@ -200,7 +201,7 @@ def p_type_token(p):
                     | INT64
                     | FLOAT32
                     | FLOAT64
-                    | BYTE  
+                    | BYTE
                     | BOOL
                     | UINT
                     | INT
@@ -1406,6 +1407,8 @@ def p_comma_opt(p):
     p[0] = p[1]
 
 ################################################# SACRED END ##########################################
+#</editor-fold> SACRED END #########################
+
 
 
 ######################################################
@@ -4420,5 +4423,5 @@ def reduce(ele):
             new_ele.append(reduce(data))
         return tuple(new_ele)
 
-    
+
 plot_ast(reduce(parse_out))
