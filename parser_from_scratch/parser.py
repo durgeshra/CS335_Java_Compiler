@@ -70,24 +70,28 @@ def new_label():
     return "label" + str(label_ctr)
 
 def in_scope(ident, scope = None):
-    global scope_stack, scopes
+    global scope_stack
     if scope != None:
-        if scopes[scope].look_up(ident):
+        if scope_stack[scope].look_up(ident):
             return True
         return False
-    for scope in scope_stack[::-1]:
-        if scopes[scope].look_up(ident):
+    stack_size = len(scope_stack)
+    for scope in range(stack_size-1,-1,-1):
+        if scope_stack[scope].look_up(ident):
             return True
     return False
 
+# Updated (anay)
 def add_scope(p = None):
-    global scope_stack, scopes, current_scope, scopes_ctr
-    scopes_ctr += 1
-    previous_scope = current_scope
-    current_scope = scopes_ctr
-    scope_stack += [current_scope]
-    scopes += [SymbolTable()]
-    scopes[current_scope].set_parent(previous_scope)
+    global scope_stack
+    scope_stack += [SymbolTable()]
+    scope_stack[-1].set_parent(len(scope_stack)-2) # -1 means there is no parent
+
+
+    # scopes_ctr += 1
+    # previous_scope = current_scope
+    # current_scope = scopes_ctr
+    # scope_stack += [current_scope]
 
     # if p is not None:
         # if p[-1] == "for":
@@ -141,8 +145,9 @@ def add_scope(p = None):
         # TODO (Durgesh): Add support for while
     return
 
-def end_scope(p):
-
+# Updated (anay)
+def end_scope(p = None):
+    global scope_stack
     # if p is not None:
     #     if p[-3] == "for" or p[-4] == "for":
     #         p[0] = Node()
@@ -168,32 +173,31 @@ def end_scope(p):
 
     # # taken from p_end_scope
     # TODO (Durgesh): Add support for while
-
-
-    global scope_stack, current_scope
     scope_stack.pop()
-    current_scope = scope_stack[-1]
 
+# Updated (anay)
 def find_scope(ident, line):
-    global scope_stack, scopes
-    for scope in scope_stack[::-1]:
-        if scopes[scope].look_up(ident):
+    global scope_stack
+    stack_size = len(scope_stack)
+    for scope in range(stack_size-1,-1,-1):
+        if scope_stack[scope].look_up(ident):
             return scope
     raise NameError(str(line) + ": Identifier " + ident + " is not in any scope")
 
+# Updated (anay)
 def find_info(ident, line, scope = None):
-    global scope_stack, scopes
+    global scope_stack
     if scope != None:
-        temp = scopes[scope].get_info(ident)
+        temp = scope_stack[scope].get_info(ident)
         if temp != None:
             return temp
         raise NameError(str(line) + ": Identifier " + ident + " is not in this scope")
-
-    for scope in scope_stack[::-1]:
-        if scopes[scope].look_up(ident):
-            return scopes[scope].get_info(ident)
+en
+    stack_size = len(scope_stack)
+    for scope in range(stack_size-1,-1,-1):
+        if scope_stack[scope].look_up(ident):
+            return scope_stack[scope].get_info(ident)
     raise NameError(str(line) + ": Identifier " + ident + " is not in any scope")
-
 
 
 #<editor-fold> SACRED #########################

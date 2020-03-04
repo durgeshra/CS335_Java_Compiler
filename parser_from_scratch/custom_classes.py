@@ -4,7 +4,7 @@ class SymbolTable():
         self.var_dict = dict()              # dict of variables in current scope: key:name val:type
         self.method_dict = dict()           # dict of variables in current scope: key:name val:MethodObj
         self.class_dict = dict()            # dict of variables in current scope: key:name val:ClassObj
-        self.parent = None                  # A scope maybe a subscope some other scope, thus there maybe a parent
+        self.parent = None                  # A scope maybe a subscope some other scope, thus there maybe a parent. The parent is the index of the parent_scope in the scope_stack
         self.extra = dict()                 # Any extra values required in the table goes here
 
     def look_up_var(self, name):
@@ -13,6 +13,15 @@ class SymbolTable():
         return (name in self.method_dict)
     def look_up_class(self, name):
         return (name in self.class_dict)
+    def look_up(self, name):
+        if self.look_up_var(name):
+            return True
+        elif self.look_up_method(name):
+            return True
+        elif self.look_up_class(name):
+            return True
+        return False
+
 
     def get_var_type(self, name):
         if not self.look_up_var(name):
