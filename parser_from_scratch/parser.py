@@ -2,32 +2,51 @@ import os
 from graphviz import Digraph
 import sys
 import lexRule
-from  symbol_table import SymbolTable
+from  custom_classes import SymbolTable, MethodObj, ClassObj, Node
 import ply.lex as lex
 import ply.yacc as yacc
 tokens = lexRule.tokens
 
 
-#<editor-fold> SACRED #########################
+
 #####################################################
 # Milestone 2
 #####################################################
 
+#-------------------GLOBAL DATA-STRUCTURES-----------------------------
+
+# Elements of the tuple represent size and order of precedence (default -1)
+# TODO: anay - add precedences
+type_dict = {'boolean': (1,-1), \
+             'char': (2,-1), \
+             'byte': (1,-1), \
+             'short': (2,-1), \
+             'int': (4,-1), \
+             'long': (8,-1), \
+             'float': (4,-1), \
+             'double': (8,-1)}
+
+
 #-------------------SYMBOL TABLE STUFF-----------------------------
-scopes_ctr = 0
-scopes = [SymbolTable()]
-current_scope = 0
-scope_stack = [0]   #TODO (Durgesh): to remove
-root_node = None
+scope_stack = [SymbolTable()]
+
+# Removed stuff from PyGo
+# scopes_ctr = 0    #TODO (anay): I don't think we need this, it is basically equal to len(scope_stack).
+# current_scope = 0  #TODO (anay): I don't think we need this, it is basically scope_stack.top()
+# scope_stack_old = [0]   #TODO (Durgesh): to remove
+                          #TODO (anay): I agree, we don't need this.
+# root_node = None  #TODO (Anay): I don't think we need this.
 #-------------------TEMPORARY VARIABLE STUFF-----------------------------
 temp_ctr = 0
 label_ctr = 0
 label_dict = dict()
-sizeof = dict()
-sizeof["uint8"] = 4; sizeof["uint16"] = 2; sizeof["uint32"] = 4; sizeof["uint"] = 4; sizeof["uint64"] = 4;
-sizeof["int8"] = 4; sizeof["int16"] = 2; sizeof["int32"] = 4; sizeof["int"] = 4; sizeof["int64"] = 4;
-sizeof["float32"] = 4; sizeof["float64"] = 4;
-sizeof["byte"] = 4; sizeof["bool"] = 4; sizeof["string"] = 4; sizeof["file"] = 4
+# Use type_dict instead of sizeof
+# sizeof = dict()
+# sizeof["uint8"] = 4; sizeof["uint16"] = 2; sizeof["uint32"] = 4; sizeof["uint"] = 4; sizeof["uint64"] = 4;
+# sizeof["int8"] = 4; sizeof["int16"] = 2; sizeof["int32"] = 4; sizeof["int"] = 4; sizeof["int64"] = 4;
+# sizeof["float32"] = 4; sizeof["float64"] = 4;
+# sizeof["byte"] = 4; sizeof["bool"] = 4; sizeof["string"] = 4; sizeof["file"] = 4
+
 temp_array = [] #used to store the temporary varibles used to define an array   #TODO (Durgesh): Change variable type names
 
 
@@ -120,6 +139,7 @@ def add_scope(p = None):
 
         # # taken from p_add_scope
         # TODO (Durgesh): Add support for while
+    return
 
 def end_scope(p):
 
@@ -176,7 +196,7 @@ def find_info(ident, line, scope = None):
 
 
 
-######################################################## SACRED START ################################################s
+#<editor-fold> SACRED #########################
 
 def p_add_scope_with_lbrace(p):
     '''add_scope_with_lbrace    : LBRACE'''
@@ -1409,8 +1429,6 @@ def p_comma_opt(p):
 ################################################# SACRED END ##########################################
 #</editor-fold> SACRED END #########################
 
-
-
 ######################################################
 ######################################################
 
@@ -1425,7 +1443,7 @@ def p_empty(p):
     '''empty : '''
     p[0] = "epsilon"
 
-#<editor-fold Section 3 #########################
+#<editor-fold Section 3 Literals #########################
 ################################################
 # SECTION 3 :
 ################################################
@@ -4406,30 +4424,30 @@ def reduce_epsilon(ele):
                 new_ele.append(reduce_epsilon(data))
         return tuple(new_ele)
 
-import os 
-import argparse 
-argument_parser = argparse.ArgumentParser(description = "AST generator for Java!") 
+import os
+import argparse
+argument_parser = argparse.ArgumentParser(description = "AST generator for Java!")
 
 requiredNamed = argument_parser.add_argument_group('required named arguments')
-requiredNamed.add_argument("-i", "--input", type = str, nargs = 1, 
+requiredNamed.add_argument("-i", "--input", type = str, nargs = 1,
                     metavar = "file_name", required = True,
-                    help = "Input file for parsing") 
-    
-argument_parser.add_argument("-o", "--output", type = str, nargs = 1, 
-                    metavar = "file_name", default = "graph", 
-                    help = "Enter output file name without extension. Creates DOT(.dot) file and PDF(.pdf) file with same name") 
+                    help = "Input file for parsing")
 
-argument_parser.add_argument("-v", "--verbose", type = bool, nargs = 1, 
-                    metavar = "verbose", default = False, 
-                    help = "Takes boolean value.") 
+argument_parser.add_argument("-o", "--output", type = str, nargs = 1,
+                    metavar = "file_name", default = "graph",
+                    help = "Enter output file name without extension. Creates DOT(.dot) file and PDF(.pdf) file with same name")
 
-args = argument_parser.parse_args() 
+argument_parser.add_argument("-v", "--verbose", type = bool, nargs = 1,
+                    metavar = "verbose", default = False,
+                    help = "Takes boolean value.")
 
-if args.input != None: 
+args = argument_parser.parse_args()
+
+if args.input != None:
 
     input_file = args.input[0]
 
-if args.output != None: 
+if args.output != None:
     if(type(args.output)==list):
         output_file = args.output[0]
     else:
