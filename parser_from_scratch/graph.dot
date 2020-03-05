@@ -1,0 +1,441 @@
+// Abstract Syntax Tree
+digraph {
+	1 [label=CompilationUnit]
+	0 -> 1
+	2 [label=PackageDeclaration]
+	1 -> 2
+	3 [label="package
+(Keyword)"]
+	2 -> 3
+	4 [label="com
+(IDENT)"]
+	2 -> 4
+	5 [label=PERIODIDENTS]
+	2 -> 5
+	6 [label=PERIODIDENTS]
+	5 -> 6
+	7 [label=".
+(Separator)"]
+	6 -> 7
+	8 [label="journaldev
+(IDENT)"]
+	6 -> 8
+	9 [label=".
+(Separator)"]
+	5 -> 9
+	10 [label="files
+(IDENT)"]
+	5 -> 10
+	11 [label=";
+(Separator)"]
+	2 -> 11
+	12 [label=SingleTypeImportDeclaration]
+	1 -> 12
+	13 [label="import
+(Keyword)"]
+	12 -> 13
+	14 [label="java
+(IDENT)"]
+	12 -> 14
+	15 [label=CommonName]
+	12 -> 15
+	16 [label=CommonName]
+	15 -> 16
+	17 [label=".
+(Separator)"]
+	16 -> 17
+	18 [label="io
+(IDENT)"]
+	16 -> 18
+	19 [label=".
+(Separator)"]
+	15 -> 19
+	20 [label="File
+(IDENT)"]
+	15 -> 20
+	21 [label=";
+(Separator)"]
+	12 -> 21
+	22 [label=NormalClassDeclaration]
+	1 -> 22
+	23 [label="public
+(Keyword)"]
+	22 -> 23
+	24 [label="class
+(Keyword)"]
+	22 -> 24
+	25 [label="FileSeparator
+(IDENT)"]
+	22 -> 25
+	26 [label=ClassBody]
+	22 -> 26
+	27 [label="{
+(Separator)"]
+	26 -> 27
+	28 [label=MethodDeclaration]
+	26 -> 28
+	29 [label=CommonModifierS]
+	28 -> 29
+	30 [label="public
+(Keyword)"]
+	29 -> 30
+	31 [label="static
+(Keyword)"]
+	29 -> 31
+	32 [label=MethodHeader]
+	28 -> 32
+	33 [label="void
+(Keyword)"]
+	32 -> 33
+	34 [label=MethodDeclarator]
+	32 -> 34
+	35 [label="main
+(IDENT)"]
+	34 -> 35
+	36 [label="(
+(Separator)"]
+	34 -> 36
+	37 [label=FormalParameter]
+	34 -> 37
+	38 [label=UnannArrayType]
+	37 -> 38
+	39 [label="String
+(IDENT)"]
+	38 -> 39
+	40 [label=Dims]
+	38 -> 40
+	41 [label="[
+(Separator)"]
+	40 -> 41
+	42 [label="]
+(Separator)"]
+	40 -> 42
+	43 [label="args
+(IDENT)"]
+	37 -> 43
+	44 [label=")
+(Separator)"]
+	34 -> 44
+	45 [label=Block]
+	28 -> 45
+	46 [label="{
+(Separator)"]
+	45 -> 46
+	47 [label=BlockStatements]
+	45 -> 47
+	48 [label=ExpressionStatement]
+	47 -> 48
+	49 [label=MethodInvocation]
+	48 -> 49
+	50 [label="System
+(IDENT)"]
+	49 -> 50
+	51 [label=CommonName]
+	49 -> 51
+	52 [label=".
+(Separator)"]
+	51 -> 52
+	53 [label="out
+(IDENT)"]
+	51 -> 53
+	54 [label=".
+(Separator)"]
+	49 -> 54
+	55 [label="println
+(IDENT)"]
+	49 -> 55
+	56 [label="(
+(Separator)"]
+	49 -> 56
+	57 [label=AdditiveExpression]
+	49 -> 57
+	58 [label="\"File.separator = \"
+(Literal)"]
+	57 -> 58
+	59 [label="+
+(Operator)"]
+	57 -> 59
+	60 [label=UnaryExpression]
+	57 -> 60
+	61 [label="File
+(IDENT)"]
+	60 -> 61
+	62 [label=CommonName]
+	60 -> 62
+	63 [label=".
+(Separator)"]
+	62 -> 63
+	64 [label="separator
+(IDENT)"]
+	62 -> 64
+	65 [label=")
+(Separator)"]
+	49 -> 65
+	66 [label=";
+(Separator)"]
+	48 -> 66
+	67 [label=BlockStatements]
+	47 -> 67
+	68 [label=ExpressionStatement]
+	67 -> 68
+	69 [label=MethodInvocation]
+	68 -> 69
+	70 [label="System
+(IDENT)"]
+	69 -> 70
+	71 [label=CommonName]
+	69 -> 71
+	72 [label=".
+(Separator)"]
+	71 -> 72
+	73 [label="out
+(IDENT)"]
+	71 -> 73
+	74 [label=".
+(Separator)"]
+	69 -> 74
+	75 [label="println
+(IDENT)"]
+	69 -> 75
+	76 [label="(
+(Separator)"]
+	69 -> 76
+	77 [label=AdditiveExpression]
+	69 -> 77
+	78 [label="\"File.separatorChar = \"
+(Literal)"]
+	77 -> 78
+	79 [label="+
+(Operator)"]
+	77 -> 79
+	80 [label=UnaryExpression]
+	77 -> 80
+	81 [label="File
+(IDENT)"]
+	80 -> 81
+	82 [label=CommonName]
+	80 -> 82
+	83 [label=".
+(Separator)"]
+	82 -> 83
+	84 [label="separatorChar
+(IDENT)"]
+	82 -> 84
+	85 [label=")
+(Separator)"]
+	69 -> 85
+	86 [label=";
+(Separator)"]
+	68 -> 86
+	87 [label=BlockStatements]
+	67 -> 87
+	88 [label=ExpressionStatement]
+	87 -> 88
+	89 [label=MethodInvocation]
+	88 -> 89
+	90 [label="System
+(IDENT)"]
+	89 -> 90
+	91 [label=CommonName]
+	89 -> 91
+	92 [label=".
+(Separator)"]
+	91 -> 92
+	93 [label="out
+(IDENT)"]
+	91 -> 93
+	94 [label=".
+(Separator)"]
+	89 -> 94
+	95 [label="println
+(IDENT)"]
+	89 -> 95
+	96 [label="(
+(Separator)"]
+	89 -> 96
+	97 [label=AdditiveExpression]
+	89 -> 97
+	98 [label="\"File.pathSeparator = \"
+(Literal)"]
+	97 -> 98
+	99 [label="+
+(Operator)"]
+	97 -> 99
+	100 [label=UnaryExpression]
+	97 -> 100
+	101 [label="File
+(IDENT)"]
+	100 -> 101
+	102 [label=CommonName]
+	100 -> 102
+	103 [label=".
+(Separator)"]
+	102 -> 103
+	104 [label="pathSeparator
+(IDENT)"]
+	102 -> 104
+	105 [label=")
+(Separator)"]
+	89 -> 105
+	106 [label=";
+(Separator)"]
+	88 -> 106
+	107 [label=BlockStatements]
+	87 -> 107
+	108 [label=ExpressionStatement]
+	107 -> 108
+	109 [label=MethodInvocation]
+	108 -> 109
+	110 [label="System
+(IDENT)"]
+	109 -> 110
+	111 [label=CommonName]
+	109 -> 111
+	112 [label=".
+(Separator)"]
+	111 -> 112
+	113 [label="out
+(IDENT)"]
+	111 -> 113
+	114 [label=".
+(Separator)"]
+	109 -> 114
+	115 [label="println
+(IDENT)"]
+	109 -> 115
+	116 [label="(
+(Separator)"]
+	109 -> 116
+	117 [label=AdditiveExpression]
+	109 -> 117
+	118 [label="\"File.pathSeparatorChar = \"
+(Literal)"]
+	117 -> 118
+	119 [label="+
+(Operator)"]
+	117 -> 119
+	120 [label=UnaryExpression]
+	117 -> 120
+	121 [label="File
+(IDENT)"]
+	120 -> 121
+	122 [label=CommonName]
+	120 -> 122
+	123 [label=".
+(Separator)"]
+	122 -> 123
+	124 [label="pathSeparatorChar
+(IDENT)"]
+	122 -> 124
+	125 [label=")
+(Separator)"]
+	109 -> 125
+	126 [label=";
+(Separator)"]
+	108 -> 126
+	127 [label=BlockStatements]
+	107 -> 127
+	128 [label=LocalVariableDeclarationStatement]
+	127 -> 128
+	129 [label=LocalVariableDeclaration]
+	128 -> 129
+	130 [label="File
+(IDENT)"]
+	129 -> 130
+	131 [label=VariableDeclarator]
+	129 -> 131
+	132 [label="fileUnsafe
+(IDENT)"]
+	131 -> 132
+	133 [label="=
+(Operator)"]
+	131 -> 133
+	134 [label=UnqualifiedClassInstanceCreationExpression]
+	131 -> 134
+	135 [label="new
+(Keyword)"]
+	134 -> 135
+	136 [label="File
+(IDENT)"]
+	134 -> 136
+	137 [label="(
+(Separator)"]
+	134 -> 137
+	138 [label="\"tmp/abc.txt\"
+(Literal)"]
+	134 -> 138
+	139 [label=")
+(Separator)"]
+	134 -> 139
+	140 [label=";
+(Separator)"]
+	128 -> 140
+	141 [label=LocalVariableDeclarationStatement]
+	127 -> 141
+	142 [label=LocalVariableDeclaration]
+	141 -> 142
+	143 [label="File
+(IDENT)"]
+	142 -> 143
+	144 [label=VariableDeclarator]
+	142 -> 144
+	145 [label="fileSafe
+(IDENT)"]
+	144 -> 145
+	146 [label="=
+(Operator)"]
+	144 -> 146
+	147 [label=UnqualifiedClassInstanceCreationExpression]
+	144 -> 147
+	148 [label="new
+(Keyword)"]
+	147 -> 148
+	149 [label="File
+(IDENT)"]
+	147 -> 149
+	150 [label="(
+(Separator)"]
+	147 -> 150
+	151 [label=AdditiveExpression]
+	147 -> 151
+	152 [label=AdditiveExpression]
+	151 -> 152
+	153 [label="\"tmp\"
+(Literal)"]
+	152 -> 153
+	154 [label="+
+(Operator)"]
+	152 -> 154
+	155 [label=UnaryExpression]
+	152 -> 155
+	156 [label="File
+(IDENT)"]
+	155 -> 156
+	157 [label=CommonName]
+	155 -> 157
+	158 [label=".
+(Separator)"]
+	157 -> 158
+	159 [label="separator
+(IDENT)"]
+	157 -> 159
+	160 [label="+
+(Operator)"]
+	151 -> 160
+	161 [label="\"abc.txt\"
+(Literal)"]
+	151 -> 161
+	162 [label=")
+(Separator)"]
+	147 -> 162
+	163 [label=";
+(Separator)"]
+	141 -> 163
+	164 [label="}
+(Separator)"]
+	45 -> 164
+	165 [label="}
+(Separator)"]
+	26 -> 165
+	0 [label="test28.java"]
+}

@@ -23,16 +23,26 @@ class SymbolTable():
         return False
 
 
+    def get_info(self, name):
+        if self.look_up_var(name):
+            return ["var", self.var_dict[name]]
+        elif self.look_up_method(name):
+            return ["method", self.method_dict[name]]
+        elif self.look_up_class(name):
+            return ["class", self.class_dict[name]]
+        else:
+            raise KeyError("IDENT " + str(name) + " does not exist.")
+
     def get_var_type(self, name):
         if not self.look_up_var(name):
             raise KeyError("Variable " + str(name) + " does not exist.")
         return self.var_dict[name]
     def get_method(self, name):
-        if not self.look_up_var(name):
+        if not self.look_up_method(name):
             raise KeyError("Method " + str(name) + " does not exist.")
         return self.method_dict[name]
     def get_class(self, name):
-        if not self.look_up_var(name):
+        if not self.look_up_class(name):
             raise KeyError("Class " + str(name) + " does not exist.")
         return self.class_dict[name]
 
@@ -184,8 +194,8 @@ class ClassObj():
 
 class Node:
     def __init__(self):
-        self.id_list = []       # For identifier
-        self.code = []          # For 3AC
-        self.type_list = []     # For types (like int etc.)
-        self.place_list = []    # For temporary variables
+        self.id_list = []       # List of identifier names. Usually it only has one element, but for example, in FormalParameterList we need a list of names.
+        self.code = []          # For 3AC: A list of lists.
+        self.type_list = []     # List of types (like int etc.). Usually it only has one element, but for example, in FormalParameterList we need a list of types.
         self.extra = {}         # Extra info in special cases like return type
+        # self.place_list = []  # For temporary variables ?? TODO (anay): Don't need this yet

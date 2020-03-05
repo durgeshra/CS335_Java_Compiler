@@ -1,25 +1,25 @@
 import java.util.*;
 import java.io.*;
- 
 
 
 
 
- 
+
+
 class ANDMIN{
-    
+
     public static int mod = (int) (1e9+7);
-    
+
     public static long[] arr;
-    
+
     public static class SegmentTree {
         long st[];
- 
+
         SegmentTree(int n)  {
             st = new long[4*n];
             build(0, n - 1, 1);
         }
-    
+
         public int getMid(int s, int e) {
             return (s+e)>>1;
         }
@@ -30,7 +30,7 @@ class ANDMIN{
             }
             else{
                 int mid = getMid(s, e);
-                if(y <= mid)    
+                if(y <= mid)
                     update(s, mid, x, y, c, 2*si);
                 else if(x > mid)
                     update(mid + 1, e, x ,y ,c ,2*si + 1);
@@ -70,18 +70,18 @@ class ANDMIN{
             System.out.println(Arrays.toString(st));
         }
     }
-    
+
     public static void main(String[] args) {
- 
+
         InputReader in = new InputReader(System.in);
         PrintWriter out = new PrintWriter(System.out);
-        
+
         int n=in.nextInt();
         int q=in.nextInt();
-        
+
         arr=in.nextLongArray(n);
         SegmentTree segmentTree=new SegmentTree(n);
-        
+
         TreeSet<Integer>[] set=new TreeSet[31];
         for(int j=0;j<31;j++){
             set[j]=new TreeSet();
@@ -91,7 +91,7 @@ class ANDMIN{
                 }
             }
         }
-        
+
         while(q-->0){
             int t=in.nextInt();
             int l=in.nextInt()-1;
@@ -116,14 +116,14 @@ class ANDMIN{
                 }
             }
         }
-        
+
         out.close();
     }
-    
+
     static class Pair implements Comparable<Pair>{
 
         int x,y,i;
-        
+
 	Pair (int x,int y,int i){
 		this.x=x;
 		this.y=y;
@@ -134,23 +134,23 @@ class ANDMIN{
 		this.x=x;
 		this.y=y;
 	}
-        
+
 	public int compareTo(Pair o) {
 		if(this.x!=o.x)
                     return Integer.compare(this.x,o.x);
 		else
                     return Integer.compare(this.y,o.y);
-		
+
 	}
 
         public boolean equals(Object o) {
             if (o instanceof Pair) {
-                Pair p = (Pair)o;
+                Pair p = (Pair) o;
                 return p.x == x && p.y == y && p.i==i;
             }
             return false;
         }
-            
+
         public int hashCode() {
             return new Integer(x).hashCode() * 31 + new Integer(y).hashCode()+new Integer(i).hashCode()*37;
         }
@@ -159,9 +159,9 @@ class ANDMIN{
         public String toString() {
             return  x + " " + y ;
         }
-    
-    } 
-    
+
+    }
+
     public static boolean isPal(String s){
         for(int i=0, j=s.length()-1;i<=j;i++,j--){
                 if(s.charAt(i)!=s.charAt(j)) return false;
@@ -173,23 +173,23 @@ class ANDMIN{
 		sb.reverse();
 		return sb.toString();
     }
-    
+
     public static long gcd(long x,long y){
 	if(x%y==0)
 		return y;
 	else
 		return gcd(y,x%y);
     }
-    
+
     public static int gcd(int x,int y){
 	if(x%y==0)
 		return y;
-	else 
+	else
 		return gcd(y,x%y);
     }
-    
+
     public static long gcdExtended(long a,long b,long[] x){
-        
+
         if(a==0){
             x[0]=0;
             x[1]=1;
@@ -197,49 +197,49 @@ class ANDMIN{
         }
         long[] y=new long[2];
         long gcd=gcdExtended(b%a, a, y);
-        
+
         x[0]=y[1]-(b/a)*y[0];
         x[1]=y[0];
-        
+
         return gcd;
     }
-    
+
     public static int abs(int a,int b){
 	return (int)Math.abs(a-b);
     }
- 
+
     public static long abs(long a,long b){
 	return (long)Math.abs(a-b);
     }
-    
+
     public static int max(int a,int b){
 	if(a>b)
 		return a;
 	else
 		return b;
     }
- 
+
     public static int min(int a,int b){
 	if(a>b)
 		return b;
-	else 
+	else
 		return a;
     }
-    
+
     public static long max(long a,long b){
 	if(a>b)
 		return a;
 	else
 		return b;
     }
- 
+
     public static long min(long a,long b){
 	if(a>b)
 		return b;
-	else 
+	else
 		return a;
     }
- 
+
     public static long pow(long n,long p,long m){
 	 long  result = 1;
 	  if(p==0)
@@ -259,7 +259,7 @@ class ANDMIN{
 	}
 	return result;
     }
-    
+
     public static long pow(long n,long p){
 	long  result = 1;
 	  if(p==0)
@@ -269,24 +269,24 @@ class ANDMIN{
 	while(p!=0)
 	{
 	    if(p%2==1)
-	        result *= n;	    
+	        result *= n;
 	    p >>=1;
-	    n*=n;	    
+	    n*=n;
 	}
 	return result;
     }
-    
+
 	static class InputReader {
- 
+
 		private final InputStream stream;
 		private final byte[] buf = new byte[8192];
 		private int curChar, snumChars;
 		private SpaceCharFilter filter;
- 
+
 		public InputReader(InputStream stream) {
 			this.stream = stream;
 		}
- 
+
 		public int snext() {
 			if (snumChars == -1)
 				throw new InputMismatchException();
@@ -302,7 +302,7 @@ class ANDMIN{
 			}
 			return buf[curChar++];
 		}
- 
+
 		public int nextInt() {
 			int c = snext();
 			while (isSpaceChar(c)) {
@@ -323,7 +323,7 @@ class ANDMIN{
 			} while (!isSpaceChar(c));
 			return res * sgn;
 		}
- 
+
 		public long nextLong() {
 			int c = snext();
 			while (isSpaceChar(c)) {
@@ -344,7 +344,7 @@ class ANDMIN{
 			} while (!isSpaceChar(c));
 			return res * sgn;
 		}
- 
+
 		public int[] nextIntArray(int n) {
 			int a[] = new int[n];
 			for (int i = 0; i < n; i++) {
@@ -352,7 +352,7 @@ class ANDMIN{
 			}
 			return a;
 		}
- 
+
 		public long[] nextLongArray(int n) {
 			long a[] = new long[n];
 			for (int i = 0; i < n; i++) {
@@ -360,7 +360,7 @@ class ANDMIN{
 			}
 			return a;
 		}
-                
+
 		public String readString() {
 			int c = snext();
 			while (isSpaceChar(c)) {
@@ -373,7 +373,7 @@ class ANDMIN{
 			} while (!isSpaceChar(c));
 			return res.toString();
 		}
- 
+
 		public String nextLine() {
 			int c = snext();
 			while (isSpaceChar(c))
@@ -385,40 +385,19 @@ class ANDMIN{
 			} while (!isEndOfLine(c));
 			return res.toString();
 		}
- 
+
 		public boolean isSpaceChar(int c) {
 			if (filter != null)
 				return filter.isSpaceChar(c);
 			return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
 		}
- 
+
 		private boolean isEndOfLine(int c) {
 			return c == '\n' || c == '\r' || c == -1;
 		}
- 
+
 		public interface SpaceCharFilter {
 			public boolean isSpaceChar(int ch);
 		}
 	}
-}    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
