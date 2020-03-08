@@ -1513,7 +1513,57 @@ def p_literal(p):
         | STRING_LIT
         | CHAR_LIT'''
     # p[0] = mytuple(["Literal"]+p[1:])
-    p[0] = p[1]
+
+    if p[1] == "true" or p[1] == "false":   # bool
+        temp_v = new_temp()
+        p[0] = Node()
+        # p[0].place_list = [temp_v]
+        p[0].type_list = ["boolean"]
+        p[0].extra["size"] = type_dict["boolean"]["size"]
+        if p[1] == "true":
+            p[0].code = [["=", temp_v, True], ["goto", temp_v]]
+            p[0].extra["true_list"] = [temp_v]
+            p[0].extra["false_list"] = []
+        else:
+            p[0].code = [["=", temp_v, False], ["goto", temp_v]]
+            p[0].extra["true_list"] = []
+            p[0].extra["false_list"] = [temp_v]
+    elif p[1] == "null":                    # null
+        temp_v = new_temp()
+        p[0] = Node()
+        # p[0].place_list = [temp_v]
+        p[0].code = [["=", temp_v, p[1]]]
+        p[0].type_list = ["null"]
+        p[0].extra["size"] = 4
+    elif type(p[1]) == int:                 # int
+        temp_v = new_temp()
+        p[0] = Node()
+        # p[0].place_list = [temp_v]
+        p[0].code = [["=", temp_v, p[1]]]
+        p[0].type_list = ["int"]
+        p[0].extra["size"] = 4
+    elif type(p[1]) == float:               # float
+        temp_v = new_temp()
+        p[0] = Node()
+        # p[0].place_list = [temp_v]
+        p[0].code = [["=", temp_v, p[1]]]
+        p[0].type_list = ["float"]
+        p[0].extra["size"] = 4
+    elif type(p[1]) == str and p[1][0]=='"':    # string
+        temp_v = new_temp()
+        p[0] = Node()
+        # p[0].place_list = [temp_v]
+        p[0].code = [["=", temp_v, "\"" + p[1][1:-1] + "\""]]
+        p[0].type_list = [["string", len(p[1][1:-1])]]
+        p[0].extra["size"] = sizeof["char"]*len(p[1][1:-1])
+    elif type(p[1]) == str and p[1][0]=='\'':    # char
+        temp_v = new_temp()
+        p[0] = Node()
+        # p[0].place_list = [temp_v]
+        p[0].code = [["=", temp_v, "\"" + p[1][1:-1] + "\""]]
+        p[0].type_list = ["char"]
+        p[0].extra["size"] = sizeof["char"]
+    p[0].extra["tuple"] = p[1]
 
 #</editor-fold>############################################
 
