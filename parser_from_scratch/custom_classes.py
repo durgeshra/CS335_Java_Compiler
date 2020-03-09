@@ -198,4 +198,4 @@ class Node:
         self.code = []          # For 3AC: A list of lists.
         self.type_list = []     # List of types (like int etc.). Usually it only has one element, but for example, in FormalParameterList we need a list of types.
         self.extra = {}         # Extra info in special cases like return type
-        # self.place_list = []  # For temporary variables ?? TODO (anay): Don't need this yet
+        self.place_list = []  # For temporary variables ?? TODO (anay): Don't need this yet
