@@ -318,7 +318,7 @@ def p_literal(p):
         temp_v = new_temp()
         p[0] = Node()
         p[0].place_list = [temp_v]
-        p[0].code = [["=", temp_v, p[1]]
+        p[0].code = [["=", temp_v, p[1]]]
         p[0].type_list = ["char"]
         p[0].extra["size"] = sizeof["char"]
     # p[0].extra["tuple"] = p[1]
