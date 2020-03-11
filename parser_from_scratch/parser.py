@@ -1777,12 +1777,13 @@ def p_DefaultValue(p):
                         | DEFAULT IDENT'''
     # p[0] = mytuple(["DefaultValue"]+p[1:])
 
-
+#*
 def p_Annotation(p):
     '''Annotation : NormalAnnotation
                   | MarkerAnnotation
                   | SingleElementAnnotation'''
     # p[0] = mytuple(["Annotation"]+p[1:])
+    p[0] = p[1]
 
 
 def p_NormalAnnotation(p):
@@ -1808,12 +1809,13 @@ def p_ElementValuePair(p):
                         | IDENT ASSIGN IDENT '''
     # p[0] = mytuple(["ElementValuePair"]+p[1:])
 
-
+#*
 def p_ElementValue(p):
     '''ElementValue : ConditionalExpression
                     | ElementValueArrayInitializer
                     | Annotation '''
     # p[0] = mytuple(["ElementValue"]+p[1:])
+    p[0] = p[1]
 
 
 
@@ -3156,12 +3158,13 @@ def p_VariableDeclaratorId(p):
     '''VariableDeclaratorId : IDENT Dims'''
     # p[0] = mytuple(["VariableDeclaratorId"]+p[1:])
 
-
+#*
 def p_VariableInitializer(p):
     '''VariableInitializer : Expression
                             | ArrayInitializer
     '''
     # p[0] = mytuple(["VariableInitializer"]+p[1:])
+    p[0] = p[1]
 
 
 def p_UnannType(p):
@@ -3175,12 +3178,13 @@ def p_UnannType(p):
 #     '''
 #     # p[0] = mytuple(["UnannPrimitiveType"]+p[1 :])
 
-
+#*
 def p_UnannReferenceType(p):
     '''UnannReferenceType :  UnannClassType
                         | UnannArrayType
     '''
     # p[0] = mytuple(["UnannReferenceType"]+p[1:])
+    p[0] = p[1]
 
 # def p_UnannClassOrInterfaceType(p):
 #     '''UnannClassType :  UnannClassType'''
@@ -3527,11 +3531,12 @@ def p_ExceptionType(p):
     '''
     # p[0] = mytuple(["ExceptionType"] + p[1:])
 
-
+#*
 def p_MethodBody(p):
     '''MethodBody : Block
     '''
     # p[0] = mytuple(["MethodBody"] + p[1:])
+    p[0] = p[1]
 
 # def p_InstanceInitializer(p):
 #     '''Block : Block
@@ -3682,11 +3687,12 @@ def p_EnumConstantModifierS(p):
     '''
     # p[0] = mytuple(["EnumConstantModifierS"] + p[1:])
 
-
+#*
 def p_EnumConstantModifier(p):
     '''EnumConstantModifier : Annotation
     '''
     # p[0] = mytuple(["EnumConstantModifier"] + p[1:])
+    p[0] = p[1]
 
 
 def p_EnumBodyDeclarations(p):
@@ -3837,10 +3843,11 @@ def p_TypeParameterModifierS(p):
     # p[0] = mytuple(["TypeParameterModifierS"]+p[1:])
 
 
-
+#*
 def p_TypeParameterModifier(p):
     '''TypeParameterModifier : Annotation '''
     # p[0] = mytuple(["TypeParameterModifier"]+p[1:])
+    p[0] = p[1]
 
 #
 
@@ -3888,11 +3895,12 @@ def p_COMMATypeArgumentS(p):
 
 #
 
-
+#*
 def p_TypeArgument(p):
     '''TypeArgument : ReferenceType
                     | Wildcard '''
     # p[0] = mytuple(["TypeArgument"]+p[1:])
+    p[0] = p[1]
 
 #
 
@@ -3941,13 +3949,14 @@ def p_BlockStatements(p):
 # | empty'''
 #     p[0]=mytuple(["BlockStatementsS"]+p[1 :])
 
-
+#*
 def p_BlockStatement(p):
     '''BlockStatement : LocalVariableDeclarationStatement
                     | ClassDeclaration
                     | Statement
                     '''
     # p[0] = mytuple(["BlockStatement"]+p[1:])
+    p[0] = p[1]
 
 
 def p_LocalVariableDeclarationStatement(p):
@@ -3991,7 +4000,7 @@ def p_Statement(p):
         '''
     # p[0] = mytuple(["Statement"]+p[1:])
 
-
+#*
 def p_StatementNoShortIf(p):
     '''StatementNoShortIf : StatementWithoutTrailingSubstatement
 | LabeledStatementNoShortIf
@@ -4000,8 +4009,9 @@ def p_StatementNoShortIf(p):
 | ForStatementNoShortIf
 '''
     # p[0] = mytuple(["StatementNoShortIf"]+p[1:])
+    p[0] = p[1]
 
-
+#*
 def p_StatementWithoutTrailingSubstatement(p):
     '''StatementWithoutTrailingSubstatement : Block
             | ExpressionStatement
@@ -4016,6 +4026,7 @@ def p_StatementWithoutTrailingSubstatement(p):
             | TryStatement
             '''
     # p[0] = mytuple(["StatementWithoutTrailingSubstatement"]+p[1:])
+    p[0] = p[1]
 
 # def p_EmptyStatement(p):
 #     '''EmptyStatement : SEMICOLON
@@ -4042,7 +4053,7 @@ def p_ExpressionStatement(p):
 '''
     # p[0] = mytuple(["ExpressionStatement"]+p[1:])
 
-
+#*
 def p_StatementExpression(p):
     '''StatementExpression : Assignment
 | PreIncrementExpression
@@ -4053,6 +4064,7 @@ def p_StatementExpression(p):
 | ClassInstanceCreationExpression
 '''
     # p[0] = mytuple(["StatementExpression"]+p[1:])
+    p[0] = p[1]
 
 
 def p_IfThenStatement(p):
