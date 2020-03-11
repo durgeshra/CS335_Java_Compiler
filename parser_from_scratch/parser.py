@@ -24,7 +24,8 @@ type_dict = {'boolean': {'size': 1, 'pid': -1, 'lvl': 0}, \
              'int': {'size': 4, 'pid': 'long', 'lvl': 4}, \
              'long': {'size': 8, 'pid': 'float', 'lvl': 3}, \
              'float': {'size': 4, 'pid': 'double', 'lvl': 2}, \
-             'double': {'size': 8, 'pid': -1, 'lvl': 1}}
+             'double': {'size': 8, 'pid': -1, 'lvl': 1}, \
+             'identifier': {'size': -1, 'pid': -1, 'lvl': -1}}  # dummy type in place of unknown identifier types
 
 def higher(a, b):
     if a not in type_dict.keys() or b not in type_dict.keys():
@@ -1612,31 +1613,42 @@ def p_NormalInterfaceDeclaration(p):
 #                          | STRICTFP'''
 #     # p[0] = mytuple(["InterfaceModifier"]+p[1 :])
 
-
+#*
 def p_ExtendsInterfaces(p):
     '''ExtendsInterfaces : EXTENDS InterfaceTypeList'''
     # p[0] = mytuple(["ExtendsInterfaces"]+p[1:])
+    p[0] = p[2]
 
-
+#*
 def p_InterfaceBody(p):
     '''InterfaceBody : LBRACE InterfaceMemberDeclarationS RBRACE '''
     # p[0] = mytuple(["InterfaceBody"]+p[1:])
+    p[0] = p[2]
 
-
+#*
 def p_InterfaceMemberDeclarationS(p):
     ''' InterfaceMemberDeclarationS : InterfaceMemberDeclarationS InterfaceMemberDeclaration
                                     | InterfaceMemberDeclarationS SEMICOLON
                                     | empty '''
     # p[0] = mytuple(["InterfaceMemberDeclarationS"]+p[1:])
+    if len(p) == 3 and p[2] == ";":
+        p[0] = p[1]
+    elif len(p) == 3:
+        p[0] = p[1]
+        p[0].id_list += p[2].id_list
+        p[0].type_list += p[2].type_list
+        p[0].place_list += p[2].place_list
+    else:
+        p[0] = Node()
 
-
+#*
 def p_InterfaceMemberDeclaration(p):
     '''InterfaceMemberDeclaration : ConstantDeclaration
                                  | InterfaceMethodDeclaration
                                  | ClassDeclaration
                                  | InterfaceDeclaration'''
     # p[0] = mytuple(["InterfaceMemberDeclaration"]+p[1:])
-
+    p[0] = p[1]
 
 def p_ConstantDeclaration(p):
     '''ConstantDeclaration : CommonModifierS UnannType VariableDeclaratorList SEMICOLON
@@ -1704,26 +1716,36 @@ def p_AnnotationTypeDeclaration(p):
 #                          | empty'''
 #     # p[0] = mytuple(["InterfaceModifierS"]+p[1 :])
 
-
+#*
 def p_AnnotationTypeBody(p):
     '''AnnotationTypeBody :  LBRACE AnnotationTypeMemberDeclarationS RBRACE'''
     # p[0] = mytuple(["AnnotationTypeBody"]+p[1:])
+    p[0] = p[2]
 
-
+#*
 def p_AnnotationTypeMemberDeclarationS(p):
     '''AnnotationTypeMemberDeclarationS : AnnotationTypeMemberDeclarationS AnnotationTypeMemberDeclaration
                         | AnnotationTypeMemberDeclarationS SEMICOLON
                          | empty'''
     # p[0] = mytuple(["AnnotationTypeMemberDeclarationS"]+p[1:])
+    if len(p) == 3 and p[2] == ";":
+        p[0] = p[1]
+    elif len(p) == 3:
+        p[0] = p[1]
+        p[0].id_list += p[2].id_list
+        p[0].type_list += p[2].type_list
+        p[0].place_list += p[2].place_list
+    else:
+        p[0] = Node()    
 
-
+#*
 def p_AnnotationTypeMemberDeclaration(p):
     '''AnnotationTypeMemberDeclaration : AnnotationTypeElementDeclaration
                                         | ConstantDeclaration
                                         | ClassDeclaration
                                         | InterfaceDeclaration'''
     # p[0] = mytuple(["AnnotationTypeMemberDeclaration"]+p[1:])
-
+    p[0] = p[1]
 
 def p_AnnotationTypeElementDeclaration(p):
     '''AnnotationTypeElementDeclaration :  CommonModifierS UnannType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
@@ -1771,11 +1793,17 @@ def p_AnnotationTypeElementDeclaration(p):
 #                                      | ABSTRACT'''
 #     # p[0] = mytuple(["AnnotationTypeElementModifier"]+p[1 :])
 
-
+#*
 def p_DefaultValue(p):
     '''DefaultValue : DEFAULT ElementValue
                         | DEFAULT IDENT'''
     # p[0] = mytuple(["DefaultValue"]+p[1:])
+    if type(p[2]) == str:
+        p[0] = Node()
+        p[0].id_list = [p[2]]
+        p[0].type_list = ["identifier"]
+    else:
+        p[0] = p[2]
 
 #*
 def p_Annotation(p):
@@ -1793,21 +1821,61 @@ def p_NormalAnnotation(p):
                         | ATRATE IDENT CommonName LPAREN  RPAREN '''
     # p[0] = mytuple(["NormalAnnotation"]+p[1:])
 
+#*
 def p_ElementValuePairList(p):
     '''ElementValuePairList : ElementValuePair COMMAElementValuePairS'''
     # p[0] = mytuple(["ElementValuePairList"]+p[1:])
+    p[0] = p[1]
+    p[0].id_list += p[2].id_list
+    p[0].type_list += p[2].type_list
+    p[0].place_list += p[2].place_list    
 
-
+#*
 def p_COMMAElementValuePairS(p):
     '''COMMAElementValuePairS : COMMAElementValuePairS COMMA ElementValuePair
                               | empty'''
     # p[0] = mytuple(["COMMAElementValuePairS"]+p[1:])
+    if len(p) == 4:
+        p[0] = p[1]
+        p[0].id_list += p[3].id_list
+        p[0].type_list += p[3].type_list
+        p[0].place_list += p[3].place_list
 
+    else:
+        p[0] = Node()
 
+#* DOUBT verify
 def p_ElementValuePair(p):
     '''ElementValuePair : IDENT ASSIGN ElementValue
                         | IDENT ASSIGN IDENT '''
     # p[0] = mytuple(["ElementValuePair"]+p[1:])
+
+    p[0] = Node()
+    p[0].id_list = [p[1]]
+    p[0].type_list = ["identifier"]
+
+    if type(p[3]) == str:
+        p[3] = Node()
+        p[3].id_list = [p[3]]
+        p[3].type_list = ["identifier"]
+
+    expr_type_list_key = p[0].type_list
+    expr_type_list_val = p[3].type_list
+    expr_place_list_key = p[0].place_list
+    expr_place_list_val = p[3].place_list
+
+    for i in range(len(expr_type_list_key)):
+        newtype = higher(expr_type_list_key[i], expr_type_list_val[i])
+
+        if newtype == -1 or (newtype == expr_type_list_val[i] and not (expr_type_list_key[i] == newtype or expr_type_list_key[i] == "identifier")):   # downcasting not allowed in Java
+            raise TypeError(str(p.lineno(1)) + ": Type mismatch for identifier " + str(expr_place_list_key[i]))
+        else:
+            new_temp_var = new_temp()
+            p[0].code += [["=", new_temp_var, "convert_to_"+newtype+"("+str(expr_place_list_val[i])+")"]]
+            p[0].code += [["=", expr_place_list_key[i], new_temp_var]]
+
+        p[0].type_list[i] = newtype
+
 
 #*
 def p_ElementValue(p):
@@ -2262,12 +2330,12 @@ def p_Assignment(p):
 
     expr_type_list_key = p[0].type_list
     expr_type_list_val = p[3].type_list
-    expr_place_list_key = p[1].place_list
+    expr_place_list_key = p[0].place_list
     expr_place_list_val = p[3].place_list
 
     for i in range(len(expr_type_list_key)):
         newtype = higher(expr_type_list_key[i], expr_type_list_val[i])
-        if newtype == -1:
+        if newtype == -1 or (newtype == expr_type_list_val[i] and not (expr_type_list_key[i] == newtype or expr_type_list_key[i] == "identifier")):   # downcasting not allowed in Java
             raise TypeError(str(p.lineno(1)) + ": Type mismatch for identifier " + str(expr_place_list_key[i]))
         else:
             new_temp_var = new_temp()
@@ -2277,6 +2345,8 @@ def p_Assignment(p):
             else:
                 # format: operator, lhs, rhs - 1st op, rhs - 2nd op
                 p[0].code += [[p[2][:-1], expr_place_list_key[i], expr_place_list_key[i], new_temp_var]]
+
+        p[0].type_list[i] = newtype
 
 
 #*
