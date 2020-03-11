@@ -1573,11 +1573,12 @@ def p_literal(p):
 # SECTION 9 : Interfaces
 ################################################
 
-
+#*
 def p_InterfaceDeclaration(p):
     '''InterfaceDeclaration : NormalInterfaceDeclaration
                            | AnnotationTypeDeclaration'''
     # p[0] = mytuple(["InterfaceDeclaration"]+p[1:])
+    p[0] = p[1]
 
 
 def p_NormalInterfaceDeclaration(p):
@@ -1900,13 +1901,14 @@ def p_COMMAVariableInitializerS(p):
 # Section 15 : Expressions
 ################################################
 
-
+#*
 def p_Primary(p):
     '''Primary : PrimaryNoNewArray
               | ArrayCreationExpression '''
     # p[0] = mytuple(["Primary"]+p[1:])
+    p[0] = p[1]
 
-
+#* DOUBT 'this' ka kya kare?
 def p_PrimaryNoNewArray(p):
     '''PrimaryNoNewArray : Literal
                         | ClassLiteral
@@ -1922,8 +1924,27 @@ def p_PrimaryNoNewArray(p):
                         | MethodReference'''
     # p[0] = mytuple(["PrimaryNoNewArray"]+p[1:])
     # Remember Literal is a token
-
-
+    if len(p) == 2 and type(p[1])!=str:
+        p[0] = p[1]
+    elif len(p) == 2:
+        p[0] = Node()
+    elif p[1] == "(":
+        if type(p[2]) == str:
+            p[0] = Node()
+            p[0].id_list = [p[2]]
+            p[0].type_list = ["identifier"]
+        else:
+            p[0] = p[2]
+    elif len(p) == 4:
+        p[0] = Node()
+        p[0].id_list = [p[1]]
+        p[0].type_list = ["identifier"]
+    elif len(p) == 5:
+        p[0] = p[2]
+        p[0].id_list.insert(0, p[1])
+        p[0].type_list.insert(0, "identifier")
+        
+#* DOUBT else waali condition
 def p_ClassLiteral(p):
     '''ClassLiteral : IDENT LBRACKRBRACKS PERIOD CLASS
                     | IDENT CommonName LBRACKRBRACKS PERIOD CLASS
@@ -1931,12 +1952,43 @@ def p_ClassLiteral(p):
                    | BOOLEAN LBRACKRBRACKS PERIOD CLASS
                    | VOID PERIOD CLASS '''
     # p[0] = mytuple(["ClassLiteral"]+p[1:])
+    p[0] = Node()
 
+    if len(p) == 4:
+        p[0].type_list = [["class", "void"]]
+    elif len(p) == 5:
+        if type(p[1]) == str and (p[1]=="true" or p[1]=="false"):
+            if p[2].extra["depth"]==0:
+                p[0].type_list = [["class", "bool"]]
+            else:
+                p[0].type_list = [["class", ["array", "bool", p[2].extra["depth"], []]]]
+        elif type(p[1]) == str:
+            if p[2].extra["depth"]==0:
+                p[0].type_list = [["class", "identifier"]]
+                p[0].id_list = [p[1]]
+            else:
+                p[0].type_list = [["class", ["array", "identifier", p[2].extra["depth"], []]]]            
+                p[0].id_list = [p[1]]
+    else:
+        p[0] = p[2]
+        # p[0].id_list.insert(0, p[1])
+        p[0].id_list = [p[0].id_list[-1]]   # storing the identifier that corresponds to the class type only. makes it easier to access using [0] or [-1], and also maintains one-one correspondence in type_list and id_list
+        if p[3].extra["depth"]==0:
+            p[0].type_list = [["class", "identifier"]]
+        else:
+            p[0].type_list = [["class", ["array", "identifier", p[3].extra["depth"], []]]]            
 
+#*
 def p_LBRACKRBRACKS(p):
     '''LBRACKRBRACKS : LBRACKRBRACKS LBRACK RBRACK
                     | empty'''
     # p[0] = mytuple(["LBRACKRBRACKS"]+p[1:])
+    if len(p)==4:
+        p[0] = p[1]
+        p[0].extra["depth"] += 1
+    else:
+        p[0] = Node()
+        p[0].extra["depth"] = 0
 
 
 def p_ClassInstanceCreationExpression(p):
@@ -2136,35 +2188,53 @@ def p_Expression(p):
         p[0].id_list = [p[1]]
         p[0].type_list = ["identifier"]       
 
-
+#* DOUBT
 def p_LambdaExpression(p):
     '''LambdaExpression : LambdaParameters ARROW LambdaBody'''
     # p[0] = mytuple(["LambdaExpression"]+p[1:])
+    p[0] = p[1]
+    p[0].id_list += p[3].id_list
+    p[0].type_list += p[3].type_list
+    p[0].place_list += p[3].place_list
 
-
+#*
 def p_LambdaParameters(p):
     '''LambdaParameters : IDENT
                        | LPAREN FormalParameterList RPAREN
                        | LPAREN  RPAREN
                        | LPAREN InferredFormalParameterList RPAREN'''
     # p[0] = mytuple(["LambdaParameters"]+p[1:])
+    if len(p) == 2:
+        p[0] = Node()
+        p[0].id_list = [p[1]]
+        p[0].type_list = ["identifier"]
+    elif len(p) == 4:
+        p[0] = p[2]
 
-
+#*
 def p_InferredFormalParameterList(p):
     '''InferredFormalParameterList : IDENT COMMAIDENTS'''
     # p[0] = mytuple(["InferredFormalParameterList"]+p[1:])
+    p[0] = p[2]
+    p[0].id_list.insert(0, p[1])
+    p[0].type_list.insert(0, "identifier")
 
-
+#*
 def p_COMMAIDENTS(p):
     '''COMMAIDENTS : COMMAIDENTS COMMA IDENT
                   | empty'''
     # p[0] = mytuple(["COMMAIDENTS"]+p[1:])
+    if len(p) == 4:
+        p[0] = p[1]
+        p[0].id_list.append(p[3])
+        p[0].type_list.append("identifier")
 
-
+#*
 def p_LambdaBody(p):
     '''LambdaBody : Expression
                  | Block'''
     # p[0] = mytuple(["LambdaBody"]+p[1:])
+    p[0] = p[1]
 
 #*
 def p_AssignmentExpression(p):
@@ -3653,15 +3723,15 @@ def p_PrimitiveType(p):
 
 #
 
-
+#*
 def p_NumericType(p):
     '''NumericType : IntegralType
                    | FloatingPointType'''
     # p[0] = mytuple(["NumericType"]+p[1:])
-
+    p[0] = p[1]
 #
 
-
+#*
 def p_IntegralType(p):
     '''IntegralType : BYTE
                     | SHORT
@@ -3669,23 +3739,25 @@ def p_IntegralType(p):
                     | LONG
                     | CHAR'''
     # p[0] = mytuple(["IntegralType"]+p[1:])
-
+    p[0] = Node()
+    p[0].type_list = [p[1]]
 #
 
-
+#*
 def p_FloatingPointType(p):
     '''FloatingPointType : FLOAT
                          | DOUBLE'''
     # p[0] = mytuple(["FloatingPointType"]+p[1:])
-
+    p[0] = Node()
+    p[0].type_list = [p[1]]
 #
 
-
+#*
 def p_ReferenceType(p):
     '''ReferenceType : ExceptionType
                      | ArrayType'''
     # p[0] = mytuple(["ReferenceType"]+p[1:])
-
+    p[0] = p[1]
 #
 
 # def p_ClassOrInterfaceType(p):

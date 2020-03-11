@@ -1,0 +1,4 @@
+p_LBRACKRBRACKS : stored depth in extra
+type:
+["class", class of what]
+["array", basic type, depth, length if known of each level] (length of last dimension [-1])
