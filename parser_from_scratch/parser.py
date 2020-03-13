@@ -1886,7 +1886,7 @@ def p_ElementValue(p):
     p[0] = p[1]
 
 
-
+#* DOUBT unfinished
 def p_ElementValueArrayInitializer(p):
     '''ElementValueArrayInitializer : LBRACE ElementValueList COMMA RBRACE
     | LBRACE ElementValueList  RBRACE
@@ -1895,28 +1895,60 @@ def p_ElementValueArrayInitializer(p):
     | LBRACE  COMMA RBRACE
     | LBRACE   RBRACE'''
     # p[0] = mytuple(["ElementValueArrayInitializer"]+p[1:])
+    p[0] = Node()
 
-
+#*
 def p_ElementValueList(p):
     '''ElementValueList : ElementValue  COMMAElementValueS
                     |  IDENT  COMMAElementValueS
                     | ElementValue'''
     # p[0] = mytuple(["ElementValueList"]+p[1:])
-
-
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        if type(p[1]) == str:
+            p[0] = p[2]
+            p[0].id_list.insert(0, p[1])
+            p[0].type_list.insert(0, "identifier")
+        else:
+            p[0] = p[1]
+            p[0].id_list += p[2].id_list
+            p[0].type_list += p[2].type_list
+            p[0].place_list += p[2].place_list
+ 
+#*
 def p_COMMAElementValueS(p):
     '''COMMAElementValueS : COMMAElementValueS COMMA ElementValue
                     | COMMAElementValueS COMMA IDENT
                     | COMMA ElementValue
                     | COMMA IDENT'''
     # p[0] = mytuple(["COMMAElementValueS"]+p[1:])
+    if len(p) == 4:
+        p[0] = p[1]
+    else:
+        p[0] = Node()
 
+    if type(p[len(p)-1]) == str:
+        p[0].id_list.append(p[len(p)-1])
+        p[0].type_list.append("identifier")
+    else:
+        p[0].id_list += p[len(p)-1].id_list
+        p[0].type_list += p[len(p)-1].type_list
+        p[0].place_list += p[len(p)-1].place_list
 
+#*
 def p_MarkerAnnotation(p):
     '''MarkerAnnotation : ATRATE IDENT
                 | ATRATE IDENT CommonName'''
     # p[0] = mytuple(["MarkerAnnotation"]+p[1:])
-
+    if len(p) == 3:
+        p[0] = Node()
+        p[0].id_list = [p[2]]
+        p[0].type_list = ["identifier"]
+    else:
+        p[0] = p[3]
+        p[0].id_list.append(p[2])
+        p[0].type_list.append("identifier")
 
 def p_SingleElementAnnotation(p):
     '''SingleElementAnnotation : ATRATE IDENT LPAREN ElementValue RPAREN
@@ -1952,17 +1984,31 @@ def p_ArrayInitializer(p):
 #     '''RBRACE : RBRACE'''
 #     # p[0] = mytuple(["RBRACE"]+p[1:])
 
-
+#*
 def p_VariableInitializerList(p):
     '''VariableInitializerList : VariableInitializer COMMAVariableInitializerS
                                 | VariableInitializer '''
     # p[0] = mytuple(["VariableInitializerList"]+p[1:])
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = p[1]
+        p[0].id_list += p[2].id_list
+        p[0].place_list += p[2].place_list
+        p[0].type_list += p[2].type_list
 
-
+#*
 def p_COMMAVariableInitializerS(p):
     '''COMMAVariableInitializerS : COMMAVariableInitializerS COMMA VariableInitializer
                                  | COMMA VariableInitializer'''
     # p[0] = mytuple(["COMMAVariableInitializerS"]+p[1:])
+    if len(p)==3:
+        p[0] = p[2]
+    else:
+        p[0] = p[1]
+        p[0].id_list += p[3].id_list
+        p[0].place_list += p[3].place_list
+        p[0].type_list += p[3].type_list
 
 #</editor-fold>############################################
 
