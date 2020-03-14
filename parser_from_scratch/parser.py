@@ -4042,15 +4042,21 @@ def p_WildcardBounds(p):
 # Section 14
 # #################################
 
-
+#*H
 def p_Block(p):
     '''Block : LBRACE RBRACE
     | LBRACE BlockStatements RBRACE
     | LBRACE SEMICOLON RBRACE
 '''
-    # p[0] = mytuple(["Block"]+p[1:])
+    if(len(p)==3):
+        p[0] = Node()
+    elif(type(p[2])==str): #for SEMICOLON
+        p[0] = Node()
+    else:
+        p[0] = p[2]
 
 
+#*H
 def p_BlockStatements(p):
     '''BlockStatements : BlockStatement BlockStatements
                         | SEMICOLON BlockStatements
@@ -4058,6 +4064,17 @@ def p_BlockStatements(p):
                         | BlockStatement
 '''
                         # TODO: This was removed: | SEMICOLON SEMICOLON
+    if(len(p)==2):
+        p[0] = p[1]
+    elif(p[1]==';'):
+        p[0] = p[2]
+    elif(p[2]==';'):
+        p[0] = p[1]
+    else:
+        p[0] = p[1]
+        p[0].id_list += p[2].id_list
+        p[0].type_list += p[2].type_list
+        p[0].place_list += p[2].place_list
     # p[0] = mytuple(["BlockStatements"]+p[1:])
 
 # def p_BlockStatementsS(p):
@@ -4065,7 +4082,7 @@ def p_BlockStatements(p):
 # | empty'''
 #     p[0]=mytuple(["BlockStatementsS"]+p[1 :])
 
-#*
+#*H
 def p_BlockStatement(p):
     '''BlockStatement : LocalVariableDeclarationStatement
                     | ClassDeclaration
@@ -4075,9 +4092,11 @@ def p_BlockStatement(p):
     p[0] = p[1]
 
 
+#*H
 def p_LocalVariableDeclarationStatement(p):
     '''LocalVariableDeclarationStatement : LocalVariableDeclaration SEMICOLON
 '''
+    p[0] = p[1]
     # p[0] = mytuple(["LocalVariableDeclarationStatement"]+p[1:])
 
 
@@ -4099,13 +4118,135 @@ def p_LocalVariableDeclaration(p):
                                 |  BOOLEAN IDENT
                                 |  IDENT IDENT
 '''
+
+    if(len(p)==3):
+        if( ( p[1]=="true" or p[1] == "false" ) and type(p[2])==str):
+            new_n1 = Node()
+            new_n1.type_list = ["boolean"]
+            new_n2 = Node()
+            new_n2.id_list = [p[2]]
+            new_n2.type_list = ["identifier"]
+            p[0] = new_n1
+            p[0].id_list += new_n2.id_list
+            p[0].type_list += new_n2.type_list
+            p[0].place_list += new_n2.place_list
+        elif(type(p[1])==str and type(p[2])==str):
+            new_n1 = Node()
+            new_n1.id_list = [p[1]]
+            new_n1.type_list = ["identifier"]
+            new_n2 = Node()
+            new_n2.id_list = [p[2]]
+            new_n2.type_list = ["identifier"]
+            p[0] = new_n1
+            p[0].id_list += new_n2.id_list
+            p[0].type_list += new_n2.type_list
+            p[0].place_list += new_n2.place_list
+        elif(type(p[2])==str):
+            new_node = Node()
+            new_node.id_list = [p[2]]
+            new_node.type_list = ["identifier"]
+            p[0] = p[1]
+            p[0].id_list += new_node.id_list
+            p[0].type_list += new_node.type_list
+            p[0].place_list += new_node.place_list
+        elif(p[1]=="true" or p[1] == "false"):
+            new_node = Node()
+            new_node.type_list = ["boolean"]
+            p[0] = new_node
+            p[0].id_list += p[2].id_list
+            p[0].type_list += p[2].type_list
+            p[0].place_list += p[2].place_list
+        elif(type(p[1])==str):
+            new_node = Node()
+            new_node.id_list = [p[1]]
+            new_node.type_list = ["identifier"]
+            p[0] = new_node
+            p[0].id_list += p[2].id_list
+            p[0].type_list += p[2].type_list
+            p[0].place_list += p[2].place_list
+        else:
+            p[0] = p[1]
+            p[0].id_list += p[2].id_list
+            p[0].type_list += p[2].type_list
+            p[0].place_list += p[2].place_list
+    else:
+        if(type(p[3])==str):
+            if( p[2]=="true" or p[2] == "false" ):
+                new_n1 = Node()
+                new_n1.type_list = ["boolean"]
+                new_n2 = Node()
+                new_n2.id_list = [p[3]]
+                new_n2.type_list = ["identifier"]
+                p[0] = p[1]
+                p[0].id_list += new_n1.id_list
+                p[0].type_list += new_n1.type_list
+                p[0].place_list += new_n1.place_list
+                p[0].id_list += new_n2.id_list
+                p[0].type_list += new_n2.type_list
+                p[0].place_list += new_n2.place_list
+            elif(type(p[2]) ==str):
+                new_n1 = Node()
+                new_n2.id_list = [p[2]]
+                new_n2.type_list = ["identifier"]
+                new_n2 = Node()
+                new_n2.id_list = [p[3]]
+                new_n2.type_list = ["identifier"]
+                p[0] = p[1]
+                p[0].id_list += new_n1.id_list
+                p[0].type_list += new_n1.type_list
+                p[0].place_list += new_n1.place_list
+                p[0].id_list += new_n2.id_list
+                p[0].type_list += new_n2.type_list
+                p[0].place_list += new_n2.place_list
+            else:
+                new_n2 = Node()
+                new_n2.id_list = [p[3]]
+                new_n2.type_list = ["identifier"]
+                p[0] = p[1]
+                p[0].id_list += p[2].id_list
+                p[0].type_list += p[2].type_list
+                p[0].place_list += p[2].place_list
+                p[0].id_list += new_n2.id_list
+                p[0].type_list += new_n2.type_list
+                p[0].place_list += new_n2.place_list
+        else:
+            if( p[2]=="true" or p[2] == "false" ):
+                new_n1 = Node()
+                new_n1.type_list = ["boolean"]
+                
+                p[0] = p[1]
+                p[0].id_list += new_n1.id_list
+                p[0].type_list += new_n1.type_list
+                p[0].place_list += new_n1.place_list
+                p[0].id_list += p[3].id_list
+                p[0].type_list += p[3].type_list
+                p[0].place_list += p[3].place_list
+            elif(type(p[2]) ==str):
+                new_n1 = Node()
+                new_n2.id_list = [p[2]]
+                new_n2.type_list = ["identifier"]
+                p[0] = p[1]
+                p[0].id_list += new_n1.id_list
+                p[0].type_list += new_n1.type_list
+                p[0].place_list += new_n1.place_list
+                p[0].id_list += p[3].id_list
+                p[0].type_list += p[3].type_list
+                p[0].place_list += p[3].place_list
+            else:
+                p[0] = p[1]
+                p[0].id_list += p[2].id_list
+                p[0].type_list += p[2].type_list
+                p[0].place_list += p[2].place_list
+                p[0].id_list += p[3].id_list
+                p[0].type_list += p[3].type_list
+                p[0].place_list += p[3].place_list
     # p[0] = mytuple(["LocalVariableDeclaration"]+p[1:])
 # def p_VariableModifierS(p):
 #     '''CommonModifierS : CommonModifier CommonModifierS
 # | empty'''
 #     p[0]=mytuple(["CommonModifierS"]+p[1 :])
 
-
+#*H
 def p_Statement(p):
     '''Statement : StatementWithoutTrailingSubstatement
         | LabeledStatement
@@ -4114,6 +4255,7 @@ def p_Statement(p):
         | WhileStatement
         | ForStatement
         '''
+    p[0] = p[1]
     # p[0] = mytuple(["Statement"]+p[1:])
 
 #*
