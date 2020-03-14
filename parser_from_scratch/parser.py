@@ -1736,7 +1736,7 @@ def p_AnnotationTypeMemberDeclarationS(p):
         p[0].type_list += p[2].type_list
         p[0].place_list += p[2].place_list
     else:
-        p[0] = Node()    
+        p[0] = Node()
 
 #*
 def p_AnnotationTypeMemberDeclaration(p):
@@ -1828,7 +1828,7 @@ def p_ElementValuePairList(p):
     p[0] = p[1]
     p[0].id_list += p[2].id_list
     p[0].type_list += p[2].type_list
-    p[0].place_list += p[2].place_list    
+    p[0].place_list += p[2].place_list
 
 #*
 def p_COMMAElementValuePairS(p):
@@ -1915,7 +1915,7 @@ def p_ElementValueList(p):
             p[0].id_list += p[2].id_list
             p[0].type_list += p[2].type_list
             p[0].place_list += p[2].place_list
- 
+
 #*
 def p_COMMAElementValueS(p):
     '''COMMAElementValueS : COMMAElementValueS COMMA ElementValue
@@ -2059,7 +2059,7 @@ def p_PrimaryNoNewArray(p):
         p[0] = p[2]
         p[0].id_list.insert(0, p[1])
         p[0].type_list.insert(0, "identifier")
-        
+
 #* DOUBT else waali condition
 def p_ClassLiteral(p):
     '''ClassLiteral : IDENT LBRACKRBRACKS PERIOD CLASS
@@ -2083,7 +2083,7 @@ def p_ClassLiteral(p):
                 p[0].type_list = [["class", "identifier"]]
                 p[0].id_list = [p[1]]
             else:
-                p[0].type_list = [["class", ["array", "identifier", p[2].extra["depth"], []]]]            
+                p[0].type_list = [["class", ["array", "identifier", p[2].extra["depth"], []]]]
                 p[0].id_list = [p[1]]
     else:
         p[0] = p[2]
@@ -2092,7 +2092,7 @@ def p_ClassLiteral(p):
         if p[3].extra["depth"]==0:
             p[0].type_list = [["class", "identifier"]]
         else:
-            p[0].type_list = [["class", ["array", "identifier", p[3].extra["depth"], []]]]            
+            p[0].type_list = [["class", ["array", "identifier", p[3].extra["depth"], []]]]
 
 #*
 def p_LBRACKRBRACKS(p):
@@ -2302,7 +2302,7 @@ def p_Expression(p):
     else:
         p[0] = Node()
         p[0].id_list = [p[1]]
-        p[0].type_list = ["identifier"]       
+        p[0].type_list = ["identifier"]
 
 #* DOUBT
 def p_LambdaExpression(p):
@@ -2407,7 +2407,7 @@ def p_LeftHandSide(p):
     elif len(p)==2:
         p[0] = Node()
         p[0].id_list = [p[1]]
-        p[0].type_list = ["identifier"]    
+        p[0].type_list = ["identifier"]
     else:
         p[0] = p[2]
         p[0].id_list += [p[1]]
@@ -3042,7 +3042,7 @@ def p_CommonName(p):
     else:
         p[0] = p[1]
         p[0].id_list += [p[3]]
-        p[0].type_list += ["identifier"]        
+        p[0].type_list += ["identifier"]
     # p[0] = mytuple(["CommonName"]+p[1:])
 
 
@@ -4213,7 +4213,7 @@ def p_LocalVariableDeclaration(p):
             if( p[2]=="true" or p[2] == "false" ):
                 new_n1 = Node()
                 new_n1.type_list = ["boolean"]
-                
+
                 p[0] = p[1]
                 p[0].id_list += new_n1.id_list
                 p[0].type_list += new_n1.type_list
@@ -4355,12 +4355,24 @@ def p_AssertStatement(p):
 | ASSERT Expression  COLON  Expression SEMICOLON
 '''
     # p[0] = mytuple(["AssertStatement"]+p[1:])
-
+    if higher(p[2].type_list[0], 'boolean') != 'boolean':
+        NameError(str(p.lineno(1)) + ": Losst conversion from " + p[2].type_list[0] + " to boolean.")
+    else:
+        #
+        # the type of expresion is boolean
+        tmp = 1
 
 def p_SwitchStatement(p):
     '''SwitchStatement : SWITCH LPAREN Expression RPAREN SwitchBlock
 '''
     # p[0] = mytuple(["SwitchStatement"]+p[1:])
+    if higher(p[3].type_list[0], 'int') != 'int':
+        NameError(str(p.lineno(1)) + ": Losst conversion from " + p[3].type_list[0] + " to int.")
+    else:
+        #
+        # the type of expresion is fine
+        # TODO (anay): add code to type_cast expression to int.
+        tmp = 1 ## type_cast
 
 
 def p_SwitchBlock(p):
@@ -4409,9 +4421,10 @@ def p_SwitchLabels(p):
 #     p[0]=mytuple(["SwitchLabelS"]+p[1 :])
 
 
+# DOUBT (anay): removed the following rule   `| CASE IDENT COLON`
+# incorrect grammar as per codechef.
 def p_SwitchLabel(p):
-    '''SwitchLabel : CASE ConstantExpression  COLON
-    | CASE IDENT COLON'''
+    '''SwitchLabel : CASE ConstantExpression COLON'''
     # p[0] = mytuple(["SwitchLabel"]+p[1:])
 
 # def p_EnumConstantName(p):
@@ -4422,86 +4435,165 @@ def p_SwitchLabel(p):
 
 def p_WhileStatement(p):
     '''WhileStatement : WHILE LPAREN Expression RPAREN Statement
-        | WHILE LPAREN Expression RPAREN SEMICOLON
-'''
+        | WHILE LPAREN Expression RPAREN SEMICOLON'''
     # p[0] = mytuple(["WhileStatement"]+p[1:])
-
+    if higher(p[3].type_list[0], 'boolean') != 'boolean':
+        NameError(str(p.lineno(1)) + ": Losst conversion from " + p[3].type_list[0] + " to boolean.")
+    else:
+        #
+        # the type of expresion is boolean
+        tmp = 1
 
 def p_WhileStatementNoShortIf(p):
     '''WhileStatementNoShortIf : WHILE LPAREN Expression RPAREN StatementNoShortIf
-        | WHILE LPAREN Expression RPAREN SEMICOLON
-'''
+        | WHILE LPAREN Expression RPAREN SEMICOLON'''
     # p[0] = mytuple(["WhileStatementNoShortIf"]+p[1:])
+    if higher(p[3].type_list[0], 'boolean') != 'boolean':
+        NameError(str(p.lineno(1)) + ": Losst conversion from " + p[3].type_list[0] + " to boolean.")
+    else:
+        #
+        # the type of expresion is boolean
+        tmp = 1
 
 
 def p_DoStatement(p):
     '''DoStatement : DO Statement WHILE LPAREN Expression RPAREN SEMICOLON
-        | DO SEMICOLON WHILE LPAREN Expression RPAREN SEMICOLON
-'''
+                   | DO SEMICOLON WHILE LPAREN Expression RPAREN SEMICOLON'''
     # p[0] = mytuple(["DoStatement"]+p[1:])
+    if higher(p[5].type_list[0], 'boolean') != 'boolean':
+        NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+    else:
+        #
+        # the type of expresion is boolean
+        tmp = 1
 
 
 def p_ForStatement(p):
     '''ForStatement : BasicForStatement
-| EnhancedForStatement
-'''
+                    | EnhancedForStatement'''
     # p[0] = mytuple(["ForStatement"]+p[1:])
 
 
 def p_ForStatementNoShortIf(p):
     '''ForStatementNoShortIf : BasicForStatementNoShortIf
-| EnhancedForStatementNoShortIf
-'''
+                             | EnhancedForStatementNoShortIf'''
     # p[0] = mytuple(["ForStatementNoShortIf"]+p[1:])
 
+# | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN Statement 10
+# | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON 10
+# | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON RPAREN Statement 9
+# | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON RPAREN SEMICOLON 9
+# | FOR LPAREN ForInit SEMICOLON SEMICOLON ForUpdate RPAREN Statement 9
+# | FOR LPAREN ForInit SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON 9
+# | FOR LPAREN SEMICOLON Expression SEMICOLON ForUpdate RPAREN Statement 9
+# | FOR LPAREN SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON 9
+# | FOR LPAREN ForInit SEMICOLON SEMICOLON  RPAREN Statement 8
+# | FOR LPAREN SEMICOLON Expression SEMICOLON RPAREN Statement 8
+# | FOR LPAREN SEMICOLON Expression SEMICOLON RPAREN SEMICOLON 8
+# | FOR LPAREN SEMICOLON SEMICOLON ForUpdate RPAREN Statement 8
+# | FOR LPAREN SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON 8
+# | FOR LPAREN ForInit SEMICOLON SEMICOLON  RPAREN SEMICOLON 8
+# | FOR LPAREN SEMICOLON SEMICOLON  RPAREN Statement 7
+# | FOR LPAREN SEMICOLON SEMICOLON  RPAREN SEMICOLON 7
 
 def p_BasicForStatement(p):
     '''BasicForStatement : FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN Statement
-    | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON RPAREN Statement
-    | FOR LPAREN ForInit SEMICOLON SEMICOLON ForUpdate RPAREN Statement
-    | FOR LPAREN ForInit SEMICOLON SEMICOLON  RPAREN Statement
-    | FOR LPAREN  SEMICOLON Expression SEMICOLON ForUpdate RPAREN Statement
-    | FOR LPAREN  SEMICOLON Expression SEMICOLON RPAREN Statement
-    | FOR LPAREN  SEMICOLON SEMICOLON ForUpdate RPAREN Statement
-    | FOR LPAREN  SEMICOLON SEMICOLON  RPAREN Statement
     | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
+    | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON RPAREN Statement
     | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON RPAREN SEMICOLON
+    | FOR LPAREN ForInit SEMICOLON SEMICOLON ForUpdate RPAREN Statement
     | FOR LPAREN ForInit SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON
+    | FOR LPAREN SEMICOLON Expression SEMICOLON ForUpdate RPAREN Statement
+    | FOR LPAREN SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
+    | FOR LPAREN ForInit SEMICOLON SEMICOLON  RPAREN Statement
+    | FOR LPAREN SEMICOLON Expression SEMICOLON RPAREN Statement
+    | FOR LPAREN SEMICOLON Expression SEMICOLON RPAREN SEMICOLON
+    | FOR LPAREN SEMICOLON SEMICOLON ForUpdate RPAREN Statement
+    | FOR LPAREN SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON
     | FOR LPAREN ForInit SEMICOLON SEMICOLON  RPAREN SEMICOLON
-    | FOR LPAREN  SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
-    | FOR LPAREN  SEMICOLON Expression SEMICOLON RPAREN SEMICOLON
-    | FOR LPAREN  SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON
-    | FOR LPAREN  SEMICOLON SEMICOLON  RPAREN SEMICOLON
+    | FOR LPAREN SEMICOLON SEMICOLON  RPAREN Statement
+    | FOR LPAREN SEMICOLON SEMICOLON  RPAREN SEMICOLON
 '''
     # p[0] = mytuple(["BasicForStatement"]+p[1:])
+    if len(p) ==  10:
+        if higher(p[5].type_list[0], 'boolean') != 'boolean':
+            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+        else:
+            tmp = 1
+    elif len(p) == 9:
+        if p[3] != ";" and p[5] != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
+            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+        elif p[3] == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
+            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+        else:
+            tmp = 1
+    elif len(p) == 8:
+        if p[3] == ";" and p[4] != ";" and higher(p[4].type_list[0], 'boolean') != 'boolean':
+            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[4].type_list[0] + " to boolean.")
+        else:
+            tmp = 1
+    elif len(p) == 7:
+        tmp = 1
 
+# | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN StatementNoShortIf 10
+# | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON 10
+# | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON RPAREN StatementNoShortIf 9
+# | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON RPAREN SEMICOLON 9
+# | FOR LPAREN ForInit SEMICOLON SEMICOLON ForUpdate RPAREN StatementNoShortIf 9
+# | FOR LPAREN ForInit SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON 9
+# | FOR LPAREN SEMICOLON Expression SEMICOLON ForUpdate RPAREN StatementNoShortIf 9
+# | FOR LPAREN SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON 9
+# | FOR LPAREN ForInit SEMICOLON SEMICOLON RPAREN StatementNoShortIf 8
+# | FOR LPAREN ForInit SEMICOLON SEMICOLON RPAREN SEMICOLON 8
+# | FOR LPAREN SEMICOLON Expression SEMICOLON RPAREN StatementNoShortIf 8
+# | FOR LPAREN SEMICOLON Expression SEMICOLON RPAREN SEMICOLON 8
+# | FOR LPAREN SEMICOLON SEMICOLON ForUpdate RPAREN StatementNoShortIf 8
+# | FOR LPAREN SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON 8
+# | FOR LPAREN SEMICOLON SEMICOLON RPAREN StatementNoShortIf 7
+# | FOR LPAREN SEMICOLON SEMICOLON RPAREN SEMICOLON 7
 
 def p_BasicForStatementNoShortIf(p):
     '''BasicForStatementNoShortIf : FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN StatementNoShortIf
-                                | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON  RPAREN StatementNoShortIf
-                                | FOR LPAREN ForInit SEMICOLON  SEMICOLON ForUpdate RPAREN StatementNoShortIf
-                                | FOR LPAREN ForInit SEMICOLON  SEMICOLON  RPAREN StatementNoShortIf
-                                | FOR LPAREN  SEMICOLON Expression SEMICOLON ForUpdate RPAREN StatementNoShortIf
-                                | FOR LPAREN  SEMICOLON Expression SEMICOLON  RPAREN StatementNoShortIf
-                                | FOR LPAREN  SEMICOLON  SEMICOLON ForUpdate RPAREN StatementNoShortIf
-                                | FOR LPAREN  SEMICOLON  SEMICOLON  RPAREN StatementNoShortIf
                                 | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
-                                | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON  RPAREN SEMICOLON
-                                | FOR LPAREN ForInit SEMICOLON  SEMICOLON ForUpdate RPAREN SEMICOLON
-                                | FOR LPAREN ForInit SEMICOLON  SEMICOLON  RPAREN SEMICOLON
-                                | FOR LPAREN  SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
-                                | FOR LPAREN  SEMICOLON Expression SEMICOLON  RPAREN SEMICOLON
-                                | FOR LPAREN  SEMICOLON  SEMICOLON ForUpdate RPAREN SEMICOLON
-                                | FOR LPAREN  SEMICOLON  SEMICOLON  RPAREN SEMICOLON
-
-'''
+                                | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON RPAREN StatementNoShortIf
+                                | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON RPAREN SEMICOLON
+                                | FOR LPAREN ForInit SEMICOLON SEMICOLON ForUpdate RPAREN StatementNoShortIf
+                                | FOR LPAREN ForInit SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON
+                                | FOR LPAREN SEMICOLON Expression SEMICOLON ForUpdate RPAREN StatementNoShortIf
+                                | FOR LPAREN SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
+                                | FOR LPAREN ForInit SEMICOLON SEMICOLON RPAREN StatementNoShortIf
+                                | FOR LPAREN ForInit SEMICOLON SEMICOLON RPAREN SEMICOLON
+                                | FOR LPAREN SEMICOLON Expression SEMICOLON RPAREN StatementNoShortIf
+                                | FOR LPAREN SEMICOLON Expression SEMICOLON RPAREN SEMICOLON
+                                | FOR LPAREN SEMICOLON SEMICOLON ForUpdate RPAREN StatementNoShortIf
+                                | FOR LPAREN SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON
+                                | FOR LPAREN SEMICOLON SEMICOLON RPAREN StatementNoShortIf
+                                | FOR LPAREN SEMICOLON SEMICOLON RPAREN SEMICOLON'''
     # p[0] = mytuple(["BasicForStatementNoShortIf"]+p[1:])
+    if len(p) ==  10:
+        if higher(p[5].type_list[0], 'boolean') != 'boolean':
+            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+        else:
+            tmp = 1
+    elif len(p) == 9:
+        if p[3] != ";" and p[5] != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
+            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+        elif p[3] == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
+            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+        else:
+            tmp = 1
+    elif len(p) == 8:
+        if p[3] == ";" and p[4] != ";" and higher(p[4].type_list[0], 'boolean') != 'boolean':
+            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[4].type_list[0] + " to boolean.")
+        else:
+            tmp = 1
+    elif len(p) == 7:
+        tmp = 1
 
 
 def p_ForInit(p):
     '''ForInit : StatementExpressionList
-| LocalVariableDeclaration
-'''
+               | LocalVariableDeclaration'''
     # p[0] = mytuple(["ForInit"]+p[1:])
 
 
@@ -4522,7 +4614,7 @@ def p_COMMAStatementExpressionS(p):
                     | empty'''
     # p[0] = mytuple(["COMMAStatementExpressionS"]+p[1:])
 
-
+# Skipped! (anay)
 def p_EnhancedForStatement(p):
     '''EnhancedForStatement : FOR LPAREN CommonModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN Statement
                             | FOR LPAREN CommonModifierS NumericType VariableDeclaratorId  COLON  Expression RPAREN Statement
@@ -4532,14 +4624,14 @@ def p_EnhancedForStatement(p):
                             | FOR LPAREN CommonModifierS NumericType IDENT  COLON  Expression RPAREN Statement
                             | FOR LPAREN CommonModifierS BOOLEAN IDENT  COLON  Expression RPAREN Statement
                             | FOR LPAREN CommonModifierS IDENT IDENT  COLON  Expression RPAREN Statement
-                            | FOR LPAREN  UnannType VariableDeclaratorId  COLON  Expression RPAREN Statement
-                            | FOR LPAREN  NumericType VariableDeclaratorId  COLON  Expression RPAREN Statement
-                            | FOR LPAREN  BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN Statement
-                            | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN Statement
-                            | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN Statement
-                            | FOR LPAREN  NumericType IDENT  COLON  Expression RPAREN Statement
-                            | FOR LPAREN  BOOLEAN IDENT  COLON  Expression RPAREN Statement
-                            | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN Statement
+                            | FOR LPAREN UnannType VariableDeclaratorId  COLON  Expression RPAREN Statement
+                            | FOR LPAREN NumericType VariableDeclaratorId  COLON  Expression RPAREN Statement
+                            | FOR LPAREN BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN Statement
+                            | FOR LPAREN IDENT VariableDeclaratorId  COLON  Expression RPAREN Statement
+                            | FOR LPAREN UnannType IDENT  COLON  Expression RPAREN Statement
+                            | FOR LPAREN NumericType IDENT  COLON  Expression RPAREN Statement
+                            | FOR LPAREN BOOLEAN IDENT  COLON  Expression RPAREN Statement
+                            | FOR LPAREN IDENT IDENT  COLON  Expression RPAREN Statement
                             | FOR LPAREN CommonModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN CommonModifierS NumericType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN CommonModifierS BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
@@ -4548,18 +4640,19 @@ def p_EnhancedForStatement(p):
                             | FOR LPAREN CommonModifierS NumericType IDENT  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN CommonModifierS BOOLEAN IDENT  COLON  Expression RPAREN SEMICOLON
                             | FOR LPAREN CommonModifierS IDENT IDENT  COLON  Expression RPAREN SEMICOLON
-                            | FOR LPAREN  UnannType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
-                            | FOR LPAREN  NumericType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
-                            | FOR LPAREN  BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
-                            | FOR LPAREN  IDENT VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
-                            | FOR LPAREN  UnannType IDENT  COLON  Expression RPAREN SEMICOLON
-                            | FOR LPAREN  NumericType IDENT  COLON  Expression RPAREN SEMICOLON
-                            | FOR LPAREN  BOOLEAN IDENT  COLON  Expression RPAREN SEMICOLON
-                            | FOR LPAREN  IDENT IDENT  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN UnannType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN NumericType VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN BOOLEAN VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN IDENT VariableDeclaratorId  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN UnannType IDENT  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN NumericType IDENT  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN BOOLEAN IDENT  COLON  Expression RPAREN SEMICOLON
+                            | FOR LPAREN IDENT IDENT  COLON  Expression RPAREN SEMICOLON
 '''
     # p[0] = mytuple(["EnhancedForStatement"]+p[1:])
 
 
+# Skipped! (anay)
 def p_EnhancedForStatementNoShortIf(p):
     '''EnhancedForStatementNoShortIf : FOR LPAREN CommonModifierS UnannType VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
                                     | FOR LPAREN CommonModifierS NumericType VariableDeclaratorId  COLON  Expression RPAREN StatementNoShortIf
@@ -4616,6 +4709,11 @@ def p_ReturnStatement(p):
                     |  RETURN  SEMICOLON
 '''
     # p[0] = mytuple(["ReturnStatement"]+p[1:])
+    if len(p) == 3:
+        p[0].extra["return_type"] = p[2].type_list[0]
+    else
+        p[0].extra["return_type"] = "void"
+
 
 
 def p_ThrowStatement(p):
@@ -4623,7 +4721,7 @@ def p_ThrowStatement(p):
 '''
     # p[0] = mytuple(["ThrowStatement"]+p[1:])
 
-
+# Skipped! (anay)
 def p_SynchronizedStatement(p):
     '''SynchronizedStatement : SYNCHRONIZED LPAREN Expression RPAREN Block
 '''
@@ -4632,35 +4730,32 @@ def p_SynchronizedStatement(p):
 
 def p_TryStatement(p):
     '''TryStatement : TRY Block Catches
-| TRY Block  Finally
-| TRY Block Catches Finally
-| TryWithResourcesStatement
-'''
+    | TRY Block  Finally
+    | TRY Block Catches Finally
+    | TryWithResourcesStatement'''
     # p[0] = mytuple(["TryStatement"]+p[1:])
 
 def p_Catches(p):
-    '''Catches : CatchClause CatchClauseS
-'''
+    '''Catches : CatchClause CatchClauseS'''
     # p[0] = mytuple(["Catches"]+p[1:])
 
 
 def p_CatchClauseS(p):
     '''CatchClauseS : CatchClauseS CatchClause
-| empty'''
+                    | empty'''
     # p[0] = mytuple(["CatchClauseS"]+p[1:])
 
 
 def p_CatchClause(p):
-    '''CatchClause : CATCH LPAREN CatchFormalParameter RPAREN Block
-'''
+    '''CatchClause : CATCH LPAREN CatchFormalParameter RPAREN Block'''
     # p[0] = mytuple(["CatchClause"]+p[1:])
 
 
 def p_CatchFormalParameter(p):
     '''CatchFormalParameter : CommonModifierS CatchType VariableDeclaratorId
                             | CommonModifierS CatchType IDENT
-                            |  CatchType VariableDeclaratorId
-                            |  CatchType IDENT
+                            | CatchType VariableDeclaratorId
+                            | CatchType IDENT
 '''
     # p[0] = mytuple(["CatchFormalParameter"]+p[1:])
 
@@ -4668,8 +4763,7 @@ def p_CatchFormalParameter(p):
 def p_CatchType(p):
     '''CatchType : UnannClassType ORClassTypeS
                 | IDENT PERIOD IDENT ORClassTypeS
-                | IDENT ORClassTypeS
-'''
+                | IDENT ORClassTypeS'''
     # p[0] = mytuple(["CatchType"]+p[1:])
 
 
@@ -4683,8 +4777,7 @@ def p_ORClassTypeS(p):
 
 
 def p_Finally(p):
-    '''Finally : FINALLY Block
-'''
+    '''Finally : FINALLY Block'''
     # p[0] = mytuple(["Finally"]+p[1:])
 
 
