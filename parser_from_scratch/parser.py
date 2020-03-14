@@ -4301,54 +4301,65 @@ def p_LabeledStatement(p):
 
 def p_LabeledStatementNoShortIf(p):
     '''LabeledStatementNoShortIf : IDENT  COLON  StatementNoShortIf
-                        | IDENT COLON SEMICOLON
-'''
+                        | IDENT COLON SEMICOLON'''
     # p[0] = mytuple(["LabeledStatementNoShortIf"]+p[1:])
 
 
 def p_ExpressionStatement(p):
-    '''ExpressionStatement : StatementExpression SEMICOLON
-'''
+    '''ExpressionStatement : StatementExpression SEMICOLON'''
     # p[0] = mytuple(["ExpressionStatement"]+p[1:])
 
 #*
 def p_StatementExpression(p):
     '''StatementExpression : Assignment
-| PreIncrementExpression
-| PreDecrementExpression
-| PostIncrementExpression
-| PostDecrementExpression
-| MethodInvocation
-| ClassInstanceCreationExpression
-'''
+                        | PreIncrementExpression
+                        | PreDecrementExpression
+                        | PostIncrementExpression
+                        | PostDecrementExpression
+                        | MethodInvocation
+                        | ClassInstanceCreationExpression'''
     # p[0] = mytuple(["StatementExpression"]+p[1:])
     p[0] = p[1]
 
 
 def p_IfThenStatement(p):
     '''IfThenStatement : IF LPAREN Expression RPAREN Statement
-        | IF LPAREN Expression RPAREN SEMICOLON
-'''
+        | IF LPAREN Expression RPAREN SEMICOLON'''
     # p[0] = mytuple(["IfThenStatement"]+p[1:])
+    if higher(p[3].type_list[0], 'boolean') != 'boolean':
+        NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[3].type_list[0] + " to boolean.")
+    else:
+        #
+        # the type of expresion is boolean
+        tmp = 1
 
 
 def p_IfThenElseStatement(p):
     '''IfThenElseStatement : IF LPAREN Expression RPAREN StatementNoShortIf ELSE Statement
             | IF LPAREN Expression RPAREN SEMICOLON ELSE Statement
             | IF LPAREN Expression RPAREN StatementNoShortIf ELSE SEMICOLON
-            | IF LPAREN Expression RPAREN SEMICOLON ELSE SEMICOLON
-'''
+            | IF LPAREN Expression RPAREN SEMICOLON ELSE SEMICOLON'''
     # p[0] = mytuple(["IfThenElseStatement"]+p[1:])
+    if higher(p[3].type_list[0], 'boolean') != 'boolean':
+        NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[3].type_list[0] + " to boolean.")
+    else:
+        #
+        # the type of expresion is boolean
+        tmp = 1
 
 
 def p_IfThenElseStatementNoShortIf(p):
     '''IfThenElseStatementNoShortIf : IF LPAREN Expression RPAREN StatementNoShortIf ELSE StatementNoShortIf
         | IF LPAREN Expression RPAREN SEMICOLON ELSE StatementNoShortIf
         | IF LPAREN Expression RPAREN StatementNoShortIf ELSE SEMICOLON
-        | IF LPAREN Expression RPAREN SEMICOLON ELSE SEMICOLON
-'''
+        | IF LPAREN Expression RPAREN SEMICOLON ELSE SEMICOLON'''
     # p[0] = mytuple(["IfThenElseStatementNoShortIf"]+p[1:])
-
+    if higher(p[3].type_list[0], 'boolean') != 'boolean':
+        NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[3].type_list[0] + " to boolean.")
+    else:
+        #
+        # the type of expresion is boolean
+        tmp = 1
 
 def p_AssertStatement(p):
     '''AssertStatement : ASSERT Expression SEMICOLON
@@ -4356,7 +4367,7 @@ def p_AssertStatement(p):
 '''
     # p[0] = mytuple(["AssertStatement"]+p[1:])
     if higher(p[2].type_list[0], 'boolean') != 'boolean':
-        NameError(str(p.lineno(1)) + ": Losst conversion from " + p[2].type_list[0] + " to boolean.")
+        NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[2].type_list[0] + " to boolean.")
     else:
         #
         # the type of expresion is boolean
@@ -4367,7 +4378,7 @@ def p_SwitchStatement(p):
 '''
     # p[0] = mytuple(["SwitchStatement"]+p[1:])
     if higher(p[3].type_list[0], 'int') != 'int':
-        NameError(str(p.lineno(1)) + ": Losst conversion from " + p[3].type_list[0] + " to int.")
+        NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[3].type_list[0] + " to int.")
     else:
         #
         # the type of expresion is fine
@@ -4438,7 +4449,7 @@ def p_WhileStatement(p):
         | WHILE LPAREN Expression RPAREN SEMICOLON'''
     # p[0] = mytuple(["WhileStatement"]+p[1:])
     if higher(p[3].type_list[0], 'boolean') != 'boolean':
-        NameError(str(p.lineno(1)) + ": Losst conversion from " + p[3].type_list[0] + " to boolean.")
+        NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[3].type_list[0] + " to boolean.")
     else:
         #
         # the type of expresion is boolean
@@ -4449,7 +4460,7 @@ def p_WhileStatementNoShortIf(p):
         | WHILE LPAREN Expression RPAREN SEMICOLON'''
     # p[0] = mytuple(["WhileStatementNoShortIf"]+p[1:])
     if higher(p[3].type_list[0], 'boolean') != 'boolean':
-        NameError(str(p.lineno(1)) + ": Losst conversion from " + p[3].type_list[0] + " to boolean.")
+        NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[3].type_list[0] + " to boolean.")
     else:
         #
         # the type of expresion is boolean
@@ -4461,7 +4472,7 @@ def p_DoStatement(p):
                    | DO SEMICOLON WHILE LPAREN Expression RPAREN SEMICOLON'''
     # p[0] = mytuple(["DoStatement"]+p[1:])
     if higher(p[5].type_list[0], 'boolean') != 'boolean':
-        NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+        NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
     else:
         #
         # the type of expresion is boolean
@@ -4517,19 +4528,19 @@ def p_BasicForStatement(p):
     # p[0] = mytuple(["BasicForStatement"]+p[1:])
     if len(p) ==  10:
         if higher(p[5].type_list[0], 'boolean') != 'boolean':
-            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+            NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         else:
             tmp = 1
     elif len(p) == 9:
         if p[3] != ";" and p[5] != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
-            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+            NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         elif p[3] == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
-            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+            NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         else:
             tmp = 1
     elif len(p) == 8:
         if p[3] == ";" and p[4] != ";" and higher(p[4].type_list[0], 'boolean') != 'boolean':
-            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[4].type_list[0] + " to boolean.")
+            NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[4].type_list[0] + " to boolean.")
         else:
             tmp = 1
     elif len(p) == 7:
@@ -4572,19 +4583,19 @@ def p_BasicForStatementNoShortIf(p):
     # p[0] = mytuple(["BasicForStatementNoShortIf"]+p[1:])
     if len(p) ==  10:
         if higher(p[5].type_list[0], 'boolean') != 'boolean':
-            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+            NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         else:
             tmp = 1
     elif len(p) == 9:
         if p[3] != ";" and p[5] != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
-            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+            NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         elif p[3] == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
-            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[5].type_list[0] + " to boolean.")
+            NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         else:
             tmp = 1
     elif len(p) == 8:
         if p[3] == ";" and p[4] != ";" and higher(p[4].type_list[0], 'boolean') != 'boolean':
-            NameError(str(p.lineno(1)) + ": Losst conversion from " + p[4].type_list[0] + " to boolean.")
+            NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[4].type_list[0] + " to boolean.")
         else:
             tmp = 1
     elif len(p) == 7:
