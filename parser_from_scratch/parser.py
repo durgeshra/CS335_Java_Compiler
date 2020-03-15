@@ -4396,7 +4396,9 @@ def p_LabeledStatement(p):
 '''
     # p[0] = mytuple(["LabeledStatement"]+p[1:])
 
-
+############# keep this in mind when writing p_label ka code 
+#         end_for_label = find_info(str(p[3]), p.lexer.lineno)["value"]
+#########
 def p_LabeledStatementNoShortIf(p):
     '''LabeledStatementNoShortIf : IDENT  COLON  StatementNoShortIf
                         | IDENT COLON SEMICOLON'''
@@ -4576,17 +4578,19 @@ def p_DoStatement(p):
         # the type of expresion is boolean
         tmp = 1
 
-
+#*
 def p_ForStatement(p):
     '''ForStatement : BasicForStatement
                     | EnhancedForStatement'''
     # p[0] = mytuple(["ForStatement"]+p[1:])
+    p[0] = p[1]
 
-
+#*
 def p_ForStatementNoShortIf(p):
     '''ForStatementNoShortIf : BasicForStatementNoShortIf
                              | EnhancedForStatementNoShortIf'''
     # p[0] = mytuple(["ForStatementNoShortIf"]+p[1:])
+    p[0] = p[1]
 
 # | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN Statement 10
 # | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON 10
@@ -4727,6 +4731,7 @@ def p_BasicForStatement(p):
 # | FOR LPAREN SEMICOLON SEMICOLON RPAREN StatementNoShortIf 7
 # | FOR LPAREN SEMICOLON SEMICOLON RPAREN SEMICOLON 7
 
+#*
 def p_BasicForStatementNoShortIf(p):
     '''BasicForStatementNoShortIf : FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN StatementNoShortIf
                                 | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
@@ -4748,22 +4753,80 @@ def p_BasicForStatementNoShortIf(p):
     if len(p) ==  10:
         if higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
-        else:
+        elif p[9]!=";":         # aakhri agar semicolon hai to the for loop is useless, let's ignore it completely
             tmp = 1
     elif len(p) == 9:
         if p[3].value != ";" and p[5].value != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         elif p[3] == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
-        else:
+        elif p[8]!=";":         # aakhri agar semicolon hai to the for loop is useless, let's ignore it completely
             tmp = 1
     elif len(p) == 8:
         if p[3].value == ";" and p[4].value != ";" and higher(p[4].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[4].type_list[0] + " to boolean.")
-        else:
+        elif p[7]!=";":         # aakhri agar semicolon hai to the for loop is useless, let's ignore it completely
             tmp = 1
-    elif len(p) == 7:
+    elif len(p) == 7 and p[6]!=";":
         tmp = 1
+
+    offset = 0
+    scopeNode = add_scope(p, "for")
+    p[0] = scopeNode
+
+    if p[3-offset] != ";":  # init
+        # p[0].id_list += p[3-offset].id_list
+        # p[0].type_list += p[3-offset].type_list
+        # p[0].place_list += p[3-offset].place_list
+        p[0].code += p[3-offset].code
+        # p[0].extra.update(p[3-offset].extra)
+    else:
+        offset += 1
+
+    if p[5-offset] != ";":  # check
+        # p[0].id_list += p[5-offset].id_list
+        # p[0].type_list += p[5-offset].type_list
+        # p[0].place_list += p[5-offset].place_list
+        p[0].code += p[5-offset].code
+        # p[0].extra.update(p[5-offset].extra)
+        end_for_label = find_info("__EndFor", p.lineno(0))["value"]
+        p[0].code += [["if not", p[5-offset].place_list[0], "then goto", end_for_label]]
+    else:
+        offset += 1
+
+    if p[7-offset] != ";":  # update
+        # p[0].id_list += p[7-offset].id_list
+        # p[0].type_list += p[7-offset].type_list
+        # p[0].place_list += p[7-offset].place_list
+        # p[0].code += p[7-offset].code
+        # p[0].extra.update(p[7-offset].extra)
+        mid_for_label = "_mid_" + find_info("__BeginFor", p.lineno(0))["value"]
+        scopes[current_scope].update("__MidFor", mid_for_label, "value")
+        p[0].extra["mid_for_label"] = mid_for_label
+        p[0].extra["post_stmt_code"] = p[7-offset].code
+    else:
+        offset += 1
+
+    if p[9-offset] != ";":
+        # p[0].id_list += p[9-offset].id_list
+        # p[0].type_list += p[9-offset].type_list
+        # p[0].place_list += p[9-offset].place_list
+        p[0].code += p[9-offset].code
+        # p[0].extra.update(p[9-offset].extra)
+    else:
+        offset += 1
+    
+    if "mid_for_label" in p[0].extra:
+        mid_for_label = p[0].extra["mid_for_label"]
+        p[0].code += [["label", mid_for_label]]
+        p[0].code += p[0].extra["post_stmt_code"]   # may have to shift this if block above the 9-offset waala if block
+
+    endScopeNode = end_scope(p, "for")
+    # p[0].id_list += endScopeNode.id_list
+    # p[0].type_list += endScopeNode.type_list
+    # p[0].place_list += endScopeNode.place_list
+    p[0].code += endScopeNode.code
+    # p[0].extra.update(endScopeNode.extra)
 
 #*
 def p_ForInit(p):
@@ -4881,11 +4944,23 @@ def p_EnhancedForStatementNoShortIf(p):
 '''
     # p[0] = mytuple(["EnhancedForStatementNoShortIf"]+p[1:])
 
-
+#* DOUBT IDENT waala verify karna hai
 def p_BreakStatement(p):
     '''BreakStatement : BREAK SEMICOLON
                     | BREAK IDENT SEMICOLON
 '''
+    p[0] = Node()
+    if (not in_scope("__BeginFor")) and (not in_scope("__BeginSwitch")):
+        raise SyntaxError(str(p.lineno(1)) + ": error: break outside switch or loop")
+    if len(p)==4 and (not in_scope(str(IDENT))):
+        raise SyntaxError(str(p.lineno(1)) + ": " + str(p[3]) + " label is not defined in the scope.")
+
+    if len(p) == 3:
+        end_for_label = find_info("__EndFor", p.lexer.lineno)["value"]
+    else:
+        end_for_label = find_info(str(p[3]), p.lexer.lineno)["value"]
+    p[0].code += [["goto", end_for_label]]
+
     # p[0] = mytuple(["BreakStatement"]+p[1:])
 
 
