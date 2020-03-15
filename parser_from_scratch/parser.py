@@ -4401,7 +4401,7 @@ def p_LabeledStatement(p):
         temp_l = new_label()
         scopes[current_scope].insert(p[1], "label")
         scopes[current_scope].update(p[1], temp_l, "value")
-        if p[3] == ";":
+        if p[3].value == ";":
             p[0] = Node()
         else:
             p[0] = p[3]
@@ -4419,7 +4419,7 @@ def p_LabeledStatementNoShortIf(p):
         temp_l = new_label()
         scopes[current_scope].insert(p[1], "label")
         scopes[current_scope].update(p[1], temp_l, "value")
-        if p[3] == ";":
+        if p[3].value == ";":
             p[0] = Node()
         else:
             p[0] = p[3]
@@ -4454,7 +4454,7 @@ def p_IfThenStatement(p):
     else:
         p[0] = Node()
         p[0].code += p[3].code
-        if p[5] != ";":
+        if p[5].value != ";":
             scopeNode = add_scope(p, "if")
             p[0].code += scopeNode.code
             p[0].code += p[5].code
@@ -4475,13 +4475,13 @@ def p_IfThenElseStatement(p):
     else:
         p[0] = Node()
         p[0].code += p[3].code
-        if p[5] != ";":
+        if p[5].value != ";":
             scopeNode = add_scope(p, "if")
             p[0].code += scopeNode.code
             p[0].code += p[5].code
             endScopeNode = end_scope(p, "if")
             p[0].code += endScopeNode.code
-        if p[7] != ";":
+        if p[7].value != ";":
             scopeNode = add_scope(p, "else")
             p[0].code += scopeNode.code
             p[0].code += p[7].code
@@ -4502,13 +4502,13 @@ def p_IfThenElseStatementNoShortIf(p):
     else:
         p[0] = Node()
         p[0].code += p[3].code
-        if p[5] != ";":
+        if p[5].value != ";":
             scopeNode = add_scope(p, "if")
             p[0].code += scopeNode.code
             p[0].code += p[5].code
             endScopeNode = end_scope(p, "if")
             p[0].code += endScopeNode.code
-        if p[7] != ";":
+        if p[7].value != ";":
             scopeNode = add_scope(p, "else")
             p[0].code += scopeNode.code
             p[0].code += p[7].code
