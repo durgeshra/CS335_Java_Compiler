@@ -122,7 +122,7 @@ def in_scope(ident, scope = None):
     return False
 
 # Updated (anay)
-def add_scope(p = None):
+def add_scope(p = None, scope_starter):
     global scope_stack
     scope_stack += [SymbolTable()]
     scope_stack[-1].set_parent(len(scope_stack)-2) # -1 means there is no parent
@@ -130,19 +130,20 @@ def add_scope(p = None):
 
     # scopes_ctr += 1
     # previous_scope = current_scope
-    # current_scope = scopes_ctr
+    current_scope = scope_stack[-1]
     # scope_stack += [current_scope]
 
-    # if p is not None:
-        # if p[-1] == "for":
-        #     p[0] = Node()
-        #     for_label = "_for_" + new_label()
-        #     end_for_label = "_end_" + for_label
-        #     scopes[current_scope].insert(for_label, "label")
-        #     scopes[current_scope].insert("__BeginFor", for_label, "value")
-        #     scopes[current_scope].insert("__MidFor", for_label, "value")
-        #     scopes[current_scope].insert("__EndFor", end_for_label, "value")
-        #     p[0].code += [["label", for_label]]
+    scopeNode = Node()
+
+    if p is not None:
+        if scope_starter == "for":
+            for_label = "_for_" + new_label()
+            end_for_label = "_end_" + for_label
+            scopes[current_scope].insert(for_label, "label")
+            scopes[current_scope].insert("__BeginFor", for_label, "value")
+            scopes[current_scope].insert("__MidFor", for_label, "value")
+            scopes[current_scope].insert("__EndFor", end_for_label, "value")
+            scopeNode.code += [["label", for_label]]
 
         # elif p[-2] == "func":
         #     if in_scope(p[-1]):
@@ -183,18 +184,21 @@ def add_scope(p = None):
 
         # # taken from p_add_scope
         # TODO (Durgesh): Add support for while
-    return
+    return scopeNode
 
 # Updated (anay)
-def end_scope(p = None):
+def end_scope(p = None, scope_starter):
     global scope_stack
-    # if p is not None:
-    #     if p[-3] == "for" or p[-4] == "for":
-    #         p[0] = Node()
-    #         for_label = find_info("__BeginFor", p.lexer.lineno, current_scope)["value"]
-    #         end_for_label = "_end_" + for_label
-    #         p[0].code += [["goto", for_label]]
-    #         p[0].code += [["label", end_for_label]]
+    endScopeNode = Node()
+    current_scope = scope_stack[-1]
+
+    if p is not None:
+        if scope_starter == "for":
+            endScopeNode = Node()
+            for_label = find_info("__BeginFor", p.lexer.lineno, current_scope)["value"]
+            end_for_label = "_end_" + for_label
+            endScopeNode.code += [["goto", for_label]]
+            endScopeNode.code += [["label", end_for_label]]
 
     #     elif p[-4] == "func":
     #         p[0] = Node()
@@ -214,6 +218,7 @@ def end_scope(p = None):
     # # taken from p_end_scope
     # TODO (Durgesh): Add support for while
     scope_stack.pop()
+    return endScopeNode
 
 # Updated (anay)
 def find_scope(ident, line):
@@ -4600,6 +4605,7 @@ def p_ForStatementNoShortIf(p):
 # | FOR LPAREN SEMICOLON SEMICOLON  RPAREN Statement 7
 # | FOR LPAREN SEMICOLON SEMICOLON  RPAREN SEMICOLON 7
 
+#*
 def p_BasicForStatement(p):
     '''BasicForStatement : FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN Statement
     | FOR LPAREN ForInit SEMICOLON Expression SEMICOLON ForUpdate RPAREN SEMICOLON
@@ -4640,7 +4646,7 @@ def p_BasicForStatement(p):
         tmp = 1
 
     offset = 0
-    scopeNode = add_scope(p)
+    scopeNode = add_scope(p, "for")
     p[0] = scopeNode
 
     if p[3-offset] != ";":  # init
@@ -4690,7 +4696,7 @@ def p_BasicForStatement(p):
         p[0].code += [["label", mid_for_label]]
         p[0].code += p[0].extra["post_stmt_code"]   # may have to shift this if block above the 9-offset waala if block
 
-    endScopeNode = end_scope()
+    endScopeNode = end_scope(p, "for")
     # p[0].id_list += endScopeNode.id_list
     # p[0].type_list += endScopeNode.type_list
     # p[0].place_list += endScopeNode.place_list
@@ -4717,7 +4723,7 @@ def p_BasicForStatement(p):
 # | FOR LPAREN SEMICOLON Expression SEMICOLON RPAREN StatementNoShortIf 8
 # | FOR LPAREN SEMICOLON Expression SEMICOLON RPAREN SEMICOLON 8
 # | FOR LPAREN SEMICOLON SEMICOLON ForUpdate RPAREN StatementNoShortIf 8
-# | FOR LPAREN SEMICOLO  RPAREN SEMICOLON 8
+# | FOR LPAREN SEMICOLON SEMICOLON ForUpdate RPAREN SEMICOLON 8
 # | FOR LPAREN SEMICOLON SEMICOLON RPAREN StatementNoShortIf 7
 # | FOR LPAREN SEMICOLON SEMICOLON RPAREN SEMICOLON 7
 
