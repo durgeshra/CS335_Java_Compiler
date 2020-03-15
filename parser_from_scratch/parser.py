@@ -1517,13 +1517,13 @@ def p_literal(p):
         | CHAR_LIT'''
     # # p[0] = mytuple(["Literal"]+p[1:])
 
-    if p[1] == "true" or p[1] == "false":   # bool
+    if p[1].value == "true" or p[1].value == "false":   # bool
         temp_v = new_temp()
         p[0] = Node()
         p[0].place_list = [temp_v]
         p[0].type_list = ["boolean"]
         p[0].extra["size"] = type_dict["boolean"]["size"]
-        if p[1] == "true":
+        if p[1].value == "true":
             p[0].code = [["=", temp_v, True], ["goto", temp_v]]
             p[0].extra["true_list"] = [temp_v]
             p[0].extra["false_list"] = []
@@ -1531,7 +1531,7 @@ def p_literal(p):
             p[0].code = [["=", temp_v, False], ["goto", temp_v]]
             p[0].extra["true_list"] = []
             p[0].extra["false_list"] = [temp_v]
-    elif p[1] == "null":                    # null
+    elif p[1].value == "null":                    # null
         temp_v = new_temp()
         p[0] = Node()
         p[0].place_list = [temp_v]
@@ -1632,7 +1632,7 @@ def p_InterfaceMemberDeclarationS(p):
                                     | InterfaceMemberDeclarationS SEMICOLON
                                     | empty '''
     # p[0] = mytuple(["InterfaceMemberDeclarationS"]+p[1:])
-    if len(p) == 3 and p[2] == ";":
+    if len(p) == 3 and p[2].value == ";":
         p[0] = p[1]
     elif len(p) == 3:
         p[0] = p[1]
@@ -1729,7 +1729,7 @@ def p_AnnotationTypeMemberDeclarationS(p):
                         | AnnotationTypeMemberDeclarationS SEMICOLON
                          | empty'''
     # p[0] = mytuple(["AnnotationTypeMemberDeclarationS"]+p[1:])
-    if len(p) == 3 and p[2] == ";":
+    if len(p) == 3 and p[2].value == ";":
         p[0] = p[1]
     elif len(p) == 3:
         p[0] = p[1]
@@ -2045,7 +2045,7 @@ def p_PrimaryNoNewArray(p):
         p[0] = p[1]
     elif len(p) == 2:
         p[0] = Node()
-    elif p[1] == "(":
+    elif p[1].value == "(":
         if type(p[2]) == str:
             p[0] = Node()
             p[0].id_list = [p[2]]
@@ -4689,7 +4689,7 @@ def p_BasicForStatement(p):
     elif len(p) == 9:
         if p[3].value != ";" and p[5].value != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
-        elif p[3] == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
+        elif p[3].value == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         elif p[8]!=";":         # aakhri agar semicolon hai to the for loop is useless, let's ignore it completely
             tmp = 1
@@ -4810,7 +4810,7 @@ def p_BasicForStatementNoShortIf(p):
     elif len(p) == 9:
         if p[3].value != ";" and p[5].value != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
-        elif p[3] == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
+        elif p[3].value == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         elif p[8]!=";":         # aakhri agar semicolon hai to the for loop is useless, let's ignore it completely
             tmp = 1
