@@ -3136,6 +3136,8 @@ def p_TypeParameters(p):
     # print("\n"*20)
     # p[0] = mytuple(["TypeParameters"]+p[1:])
 
+    p[0].extra["last_rule"] = "TypeParameters"
+
 
 def p_COMMMATypeParameterS(p):
     '''COMMMATypeParameterS : COMMMATypeParameterS COMMA TypeParameter
@@ -3274,7 +3276,10 @@ def p_VariableDeclarator(p):
 def p_VariableDeclaratorId(p):
     '''VariableDeclaratorId : IDENT Dims'''
     # p[0] = mytuple(["VariableDeclaratorId"]+p[1:])
+    # TODO (anay)!!!: include Dims in the variable type list!!!
+    p[0].extra["parameter_id_list"] = [p[1].value]
 
+    p[0].extra["last_rule"] = "VariableDeclaratorId"
 #*
 def p_VariableInitializer(p):
     '''VariableInitializer : Expression
@@ -3484,6 +3489,9 @@ def p_MethodHeader(p):
     '''
     # p[0] = mytuple(["MethodHeader"]+p[1:])
 
+    if p[1].extra["last_rule"] == "TypeParameters":
+        raise NameError(str(p.lineno(1)) + ": TypeParameters in MethodHeader have not been implemented yet.")
+
 # def p_Result(p):
 #     '''Result :  UnannType
 #     '''
@@ -3492,12 +3500,24 @@ def p_MethodHeader(p):
 
 def p_MethodDeclarator(p):
     '''MethodDeclarator : IDENT LPAREN FormalParameterList RPAREN
-                        | LPAREN FormalParameterList RPAREN Dims
+                        | IDENT LPAREN FormalParameterList RPAREN Dims
                         | IDENT LPAREN RPAREN Dims
                         | IDENT LPAREN RPAREN
     '''
     # p[0] = mytuple(["MethodDeclarator"]+p[1:])
+    if in_scope(p[1].value):
+        raise NameError(str(p.lineno(1)) + ": Method " + p[1].value + " already defined in the current scope.")
 
+    meth = MethodObj(p[1].value)
+    if len(p) > 4:
+        meth.type = p[3].extra["parameter_type_list"]
+        meth.param_list = p[3].extra["parameter_id_list"]
+        meth.is_opt = [True] * len(meth.param_list) # TODO (anay): update the is_opt list when incorporating ReceiverParameters
+
+    scope_stack[-1].insert_method(meth.name, meth)
+
+    # TODO (anay): Do we need to store anything else in p[0]?
+    p[0].extra["last_rule"] = "MethodDeclarator"
 
 def p_FormalParameterList(p):
     '''FormalParameterList :  ReceiverParameter
@@ -3506,6 +3526,14 @@ def p_FormalParameterList(p):
                             | FormalParameters
     '''
     # p[0] = mytuple(["FormalParameterList"]+p[1:])
+    p[0].extra["parameter_type_list"] = p[1].extra["parameter_type_list"]
+    p[0].extra["parameter_id_list"] = p[1].extra["parameter_id_list"]
+
+    if len(p) == 4:
+        p[0].extra["parameter_type_list"] += p[3].extra["parameter_type_list"]
+        p[0].extra["parameter_id_list"] += p[3].extra["parameter_id_list"]
+
+    p[0].extra["last_rule"] = "FormalParameterList"
 
 
 def p_COMMAFormalParameterS(p):
@@ -3513,7 +3541,17 @@ def p_COMMAFormalParameterS(p):
                             | COMMA FormalParameter
     '''
     # p[0] = mytuple(["COMMAFormalParameterS"]+p[1:])
+    p[0].extra["parameter_type_list"] = []
+    p[0].extra["parameter_id_list"] = []
 
+    if len(p) == 4:
+        p[0].extra["parameter_type_list"] += p[1].extra["parameter_type_list"]
+        p[0].extra["parameter_id_list"] += p[1].extra["parameter_id_list"]
+
+    p[0].extra["parameter_type_list"] += p[-1].extra["parameter_type_list"]
+    p[0].extra["parameter_id_list"] += p[-1].extra["parameter_id_list"]
+
+    p[0].extra["last_rule"] = "COMMAFormalParameterS"
 
 # def p_VariableModifier(p):
 #     '''CommonModifier : Annotation
@@ -3536,11 +3574,14 @@ def p_FormalParameters(p):
     '''
     # p[0] = mytuple(["FormalParameters"]+p[1:])
     p[0].extra["parameter_type_list"] = []
+    p[0].extra["parameter_id_list"] = []
 
     if p[1].extra["last_rule"] != "ReceiverParameter":
         p[0].extra["parameter_type_list"] += p[1].extra["parameter_type_list"]
+        p[0].extra["parameter_id_list"] += p[1].extra["parameter_id_list"]
 
     p[0].extra["parameter_type_list"] += p[-1].extra["parameter_type_list"]
+    p[0].extra["parameter_id_list"] += p[-1].extra["parameter_id_list"]
 
     p[0].extra["last_rule"] = "FormalParameters"
 
@@ -3560,8 +3601,7 @@ def p_FormalParameter(p):
                         | UnannType IDENT
                         | NumericType IDENT
                         | BOOLEAN IDENT
-                        | IDENT IDENT
-    '''
+                        | IDENT IDENT'''
     # p[0] = mytuple(["FormalParameter"] + p[1:])
     p[0].extra["parameter_type_list"] = []
 
@@ -3569,7 +3609,13 @@ def p_FormalParameter(p):
     if len(p) == 4:
         if hasattr(p[2], 'type'): #p[1] is an IDENT
             if find_info(p[2].value)[0] == "class":
+                # TODO (anay)!!!: include Dims in the variable type list for VariableDeclaratorId!!!
                 p[0].extra["parameter_type_list"] = [p[2].value]
+                if hasattr(p[3], 'type'):
+                    p[0].extra["parameter_id_list"] = [p[3].value]
+                else:
+                    # TODO (anay)!!!: include Dims in the variable type list!!!
+                    p[0].extra["parameter_id_list"] = [p[3].extra["parameter_id_list"]]
             else:
                 raise NameError(str(p.lineno(1)) + ": Class " + p[2].value + " not defined in the current scope.")
         else:
@@ -3578,6 +3624,11 @@ def p_FormalParameter(p):
         if hasattr(p[1], 'type'): #p[1] is an IDENT
             if find_info(p[1].value)[0] == "class":
                 p[0].extra["parameter_type_list"] = [p[1].value]
+                if hasattr(p[2], 'type'):
+                    p[0].extra["parameter_id_list"] = [p[2].value]
+                else:
+                    # TODO (anay)!!!: include Dims in the variable type list!!!
+                    p[0].extra["parameter_id_list"] = [p[2].extra["parameter_id_list"]]
             else:
                 raise NameError(str(p.lineno(1)) + ": Class " + p[1].value + " not defined in the current scope.")
         else:
@@ -3655,6 +3706,7 @@ def p_ReceiverParameter(p):
     p[0].extra["last_rule"] = "ReceiverParameter"
 
     p[0].extra["parameter_type_list"] = [] ## TODO (anay): ReceiverParameter hasn't been implemented yet
+    p[0].extra["parameter_id_list"] = [] ## TODO (anay): ReceiverParameter hasn't been implemented yet
 
 
 def p_Throws(p):
