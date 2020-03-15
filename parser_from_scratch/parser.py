@@ -157,20 +157,18 @@ def add_scope(p = None, scope_starter):
         #     scopes[current_scope].insert("__EndFuncLabel", end_func_label, "value")
         #     p[0].code += [["label", func_label], ["func_begin", p[-1]]]
 
-        # elif p[-1] == "else":
-        #     p[0] = Node()
-        #     temp_label = new_label()
-        #     p[0].extra["ElseLabel"] = temp_label
-        #     p[0].code += [["label", temp_label]]
+        elif scope_starter == "else":
+            temp_label = new_label()
+            scopeNode.extra["ElseLabel"] = temp_label
+            scopeNode.code += [["label", temp_label]]
 
-        # elif p[-2] == "if":
-        #     p[0] = Node()
-        #     temp_label = new_label()
-        #     end_if_label = "_end_if_" + temp_label
-        #     scopes[current_scope].insert("__EndIf", end_if_label, "value")
-        #     p[0].extra["IfLabel"] = temp_label
-        #     p[0].extra["EndIfLabel"] = end_if_label
-        #     p[0].code += [["label", temp_label]]
+        elif scope_starter == "if":
+            temp_label = new_label()
+            end_if_label = "_end_if_" + temp_label
+            scopes[current_scope].insert("__EndIf", end_if_label, "value")
+            scopeNode.extra["IfLabel"] = temp_label
+            scopeNode.extra["EndIfLabel"] = end_if_label
+            scopeNode.code += [["label", temp_label]]
 
         # elif p[-2] == "switch":
         #     temp_label = new_label()
@@ -194,7 +192,6 @@ def end_scope(p = None, scope_starter):
 
     if p is not None:
         if scope_starter == "for":
-            endScopeNode = Node()
             for_label = find_info("__BeginFor", p.lexer.lineno, current_scope)["value"]
             end_for_label = "_end_" + for_label
             endScopeNode.code += [["goto", for_label]]
@@ -205,10 +202,9 @@ def end_scope(p = None, scope_starter):
     #         end_func_label = find_info("__EndFuncLabel", p.lexer.lineno, current_scope)["value"]
     #         p[0].code += [["func_end", end_func_label]]
 
-    #     elif p[-4] == "if":
-    #         p[0] = Node()
-    #         end_if_label = find_info("__EndIf", p.lexer.lineno, current_scope)["value"]
-    #         p[0].code += [["goto", end_if_label]]
+        elif scope_starter == "if":
+            end_if_label = find_info("__EndIf", p.lexer.lineno, current_scope)["value"]
+            endScopeNode.code += [["goto", end_if_label]]
 
     #     elif p[-6] == "switch":
     #         p[0] = Node()
