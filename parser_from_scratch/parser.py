@@ -21,7 +21,7 @@ type_dict = {'boolean': {'size': 1, 'pid': -1, 'lvl': 0}, \
              'byte': {'size': 1, 'pid': 'short', 'lvl': 6}, \
              'short': {'size': 2, 'pid': 'int', 'lvl': 5}, \
              'char': {'size': 2, 'pid': 'int', 'lvl': 5}, \
-             'int': {'size': 4, 'pid': 'long', 'lvl': 4}, \
+             'int': {'size': 4, 'pidpid': 'long', 'lvl': 4}, \
              'long': {'size': 8, 'pid': 'float', 'lvl': 3}, \
              'float': {'size': 4, 'pid': 'double', 'lvl': 2}, \
              'double': {'size': 8, 'pid': -1, 'lvl': 1}, \
@@ -5002,9 +5002,9 @@ def p_BreakStatement(p):
                     | BREAK IDENT SEMICOLON
 '''
     p[0] = Node()
-    if (not in_scope("__BeginFor")) and (not in_scope("__BeginSwitch") and (not in_scope("__BeginWhile") and (not in_scope("__BeginDo")):
+    if (not in_scope("__BeginFor")) and (not in_scope("__BeginSwitch")) and (not in_scope("__BeginWhile")) and (not in_scope("__BeginDo")):
         raise SyntaxError(str(p.lineno(1)) + ": error: break outside switch or loop")
-    if len(p) == 4 and (not in_scope(str(IDENT))):
+    if len(p) == 4 and (not in_scope(p[2].value)):
         raise SyntaxError(str(p.lineno(1)) + ": " + str(p[3]) + " label is not defined in the scope.")
 
     if len(p) == 3:
@@ -5028,9 +5028,9 @@ def p_ContinueStatement(p):
                         | CONTINUE SEMICOLON
 '''
     p[0] = Node()
-    if (not in_scope("__BeginFor")) and (not in_scope("__BeginWhile") and (not in_scope("__BeginDo")):
+    if (not in_scope("__BeginFor")) and (not in_scope("__BeginWhile")) and (not in_scope("__BeginDo")):
         raise SyntaxError(str(p.lineno(1)) + ": error: break outside loop")
-    if len(p) == 4 and (not in_scope(str(IDENT))):
+    if len(p) == 4 and (not in_scope(p[2].value)):
         raise SyntaxError(str(p.lineno(1)) + ": " + str(p[3]) + " label is not defined in the scope.")
 
     if len(p) == 3:
