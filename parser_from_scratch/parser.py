@@ -2149,6 +2149,7 @@ def p_AnnotationS(p):
     '''AnnotationS : AnnotationS Annotation
                   | Annotation'''
     # p[0] = mytuple(["AnnotationS"]+p[1:])
+    p[0].extra["last_rule"] = "AnnotationS"
 
 def p_PERIODAnnotationSIDENTS(p):
     '''PERIODAnnotationSIDENTS : PERIODAnnotationSIDENTS PERIOD AnnotationS IDENT
@@ -2437,7 +2438,7 @@ def chk_var(name, excluded_type_list=[], operator="", line=-1):
         raise NameError(str(line) + ": bad operand type "+find_info(name, line)[1]+" for operator '"+operator+"'.")
 
 # Checked if types of p1 and p2 match the operator specification and returns the resultant type
-def get_combined_type(p1, p2, excluded_type_list=[], operator, line):
+def get_combined_type(p1, p2, excluded_type_list, operator, line):
     type1 = ""
     type2 = ""
 
@@ -2598,7 +2599,7 @@ def p_EqualityExpression(p):
         if get_type(p[1]) != get_type(p[3]):
             if get_type(p[1]) == "boolean" or get_type(p[3]) == "boolean":
                 raise NameError(str(p.lineno(1)) + ": Operands of types " + get_type(p[1]) + " and " + get_type(p[3]) + " cannot be compared.")
-            else if get_type(p[1]) not in type_list.keys() or get_type(p[3]) not in type_list.keys():
+            elif get_type(p[1]) not in type_list.keys() or get_type(p[3]) not in type_list.keys():
                 raise NameError(str(p.lineno(1)) + ": Operands of type " + get_type(p[1]) + " and " + get_type(p[3]) + " cannot be compared.")
         p[0].type_list = ["boolean"]
         # TODO (anay): updare get_type to handle classes.
@@ -2651,7 +2652,7 @@ def p_RelationalExpression(p):
 
         if get_type(p[1]) == "boolean" or get_type(p[3]) == "boolean":
             raise NameError(str(p.lineno(1)) + ": Operands of types " + get_type(p[1]) + " and " + get_type(p[3]) + " cannot be compared.")
-        else if get_type(p[1]) not in type_list.keys() or get_type(p[3]) not in type_list.keys():
+        elif get_type(p[1]) not in type_list.keys() or get_type(p[3]) not in type_list.keys():
             raise NameError(str(p.lineno(1)) + ": Operands of type " + get_type(p[1]) + " and " + get_type(p[3]) + " cannot be compared.")
         p[0].type_list = ["boolean"]
 
@@ -3135,6 +3136,8 @@ def p_TypeParameters(p):
     # print("\n"*20)
     # p[0] = mytuple(["TypeParameters"]+p[1:])
 
+    p[0].extra["last_rule"] = "TypeParameters"
+
 
 def p_COMMMATypeParameterS(p):
     '''COMMMATypeParameterS : COMMMATypeParameterS COMMA TypeParameter
@@ -3273,7 +3276,10 @@ def p_VariableDeclarator(p):
 def p_VariableDeclaratorId(p):
     '''VariableDeclaratorId : IDENT Dims'''
     # p[0] = mytuple(["VariableDeclaratorId"]+p[1:])
+    # TODO (anay)!!!: include Dims in the variable type list!!!
+    p[0].extra["parameter_id_list"] = [p[1].value]
 
+    p[0].extra["last_rule"] = "VariableDeclaratorId"
 #*
 def p_VariableInitializer(p):
     '''VariableInitializer : Expression
@@ -3483,6 +3489,9 @@ def p_MethodHeader(p):
     '''
     # p[0] = mytuple(["MethodHeader"]+p[1:])
 
+    if p[1].extra["last_rule"] == "TypeParameters":
+        raise NameError(str(p.lineno(1)) + ": TypeParameters in MethodHeader have not been implemented yet.")
+
 # def p_Result(p):
 #     '''Result :  UnannType
 #     '''
@@ -3491,12 +3500,24 @@ def p_MethodHeader(p):
 
 def p_MethodDeclarator(p):
     '''MethodDeclarator : IDENT LPAREN FormalParameterList RPAREN
-                        | LPAREN FormalParameterList RPAREN Dims
+                        | IDENT LPAREN FormalParameterList RPAREN Dims
                         | IDENT LPAREN RPAREN Dims
                         | IDENT LPAREN RPAREN
     '''
     # p[0] = mytuple(["MethodDeclarator"]+p[1:])
+    if in_scope(p[1].value):
+        raise NameError(str(p.lineno(1)) + ": Method " + p[1].value + " already defined in the current scope.")
 
+    meth = MethodObj(p[1].value)
+    if len(p) > 4:
+        meth.type = p[3].extra["parameter_type_list"]
+        meth.param_list = p[3].extra["parameter_id_list"]
+        meth.is_opt = [True] * len(meth.param_list) # TODO (anay): update the is_opt list when incorporating ReceiverParameters
+
+    scope_stack[-1].insert_method(meth.name, meth)
+
+    # TODO (anay): Do we need to store anything else in p[0]?
+    p[0].extra["last_rule"] = "MethodDeclarator"
 
 def p_FormalParameterList(p):
     '''FormalParameterList :  ReceiverParameter
@@ -3505,6 +3526,14 @@ def p_FormalParameterList(p):
                             | FormalParameters
     '''
     # p[0] = mytuple(["FormalParameterList"]+p[1:])
+    p[0].extra["parameter_type_list"] = p[1].extra["parameter_type_list"]
+    p[0].extra["parameter_id_list"] = p[1].extra["parameter_id_list"]
+
+    if len(p) == 4:
+        p[0].extra["parameter_type_list"] += p[3].extra["parameter_type_list"]
+        p[0].extra["parameter_id_list"] += p[3].extra["parameter_id_list"]
+
+    p[0].extra["last_rule"] = "FormalParameterList"
 
 
 def p_COMMAFormalParameterS(p):
@@ -3512,7 +3541,17 @@ def p_COMMAFormalParameterS(p):
                             | COMMA FormalParameter
     '''
     # p[0] = mytuple(["COMMAFormalParameterS"]+p[1:])
+    p[0].extra["parameter_type_list"] = []
+    p[0].extra["parameter_id_list"] = []
 
+    if len(p) == 4:
+        p[0].extra["parameter_type_list"] += p[1].extra["parameter_type_list"]
+        p[0].extra["parameter_id_list"] += p[1].extra["parameter_id_list"]
+
+    p[0].extra["parameter_type_list"] += p[-1].extra["parameter_type_list"]
+    p[0].extra["parameter_id_list"] += p[-1].extra["parameter_id_list"]
+
+    p[0].extra["last_rule"] = "COMMAFormalParameterS"
 
 # def p_VariableModifier(p):
 #     '''CommonModifier : Annotation
@@ -3534,7 +3573,17 @@ def p_FormalParameters(p):
                         | ReceiverParameter COMMA FormalParameter
     '''
     # p[0] = mytuple(["FormalParameters"]+p[1:])
+    p[0].extra["parameter_type_list"] = []
+    p[0].extra["parameter_id_list"] = []
 
+    if p[1].extra["last_rule"] != "ReceiverParameter":
+        p[0].extra["parameter_type_list"] += p[1].extra["parameter_type_list"]
+        p[0].extra["parameter_id_list"] += p[1].extra["parameter_id_list"]
+
+    p[0].extra["parameter_type_list"] += p[-1].extra["parameter_type_list"]
+    p[0].extra["parameter_id_list"] += p[-1].extra["parameter_id_list"]
+
+    p[0].extra["last_rule"] = "FormalParameters"
 
 def p_FormalParameter(p):
     '''FormalParameter : CommonModifier UnannType VariableDeclaratorId
@@ -3545,16 +3594,47 @@ def p_FormalParameter(p):
                         | CommonModifier NumericType IDENT
                         | CommonModifier BOOLEAN IDENT
                         | CommonModifier IDENT IDENT
-                        |  UnannType VariableDeclaratorId
-                        |  NumericType VariableDeclaratorId
-                        |  BOOLEAN VariableDeclaratorId
-                        |  IDENT VariableDeclaratorId
-                        |  UnannType IDENT
-                        |  NumericType IDENT
-                        |  BOOLEAN IDENT
-                        |  IDENT IDENT
-    '''
+                        | UnannType VariableDeclaratorId
+                        | NumericType VariableDeclaratorId
+                        | BOOLEAN VariableDeclaratorId
+                        | IDENT VariableDeclaratorId
+                        | UnannType IDENT
+                        | NumericType IDENT
+                        | BOOLEAN IDENT
+                        | IDENT IDENT'''
     # p[0] = mytuple(["FormalParameter"] + p[1:])
+    p[0].extra["parameter_type_list"] = []
+
+    #TODO (anay): we are ignoring CommonModifiers here.
+    if len(p) == 4:
+        if hasattr(p[2], 'type'): #p[1] is an IDENT
+            if find_info(p[2].value)[0] == "class":
+                # TODO (anay)!!!: include Dims in the variable type list for VariableDeclaratorId!!!
+                p[0].extra["parameter_type_list"] = [p[2].value]
+                if hasattr(p[3], 'type'):
+                    p[0].extra["parameter_id_list"] = [p[3].value]
+                else:
+                    # TODO (anay)!!!: include Dims in the variable type list!!!
+                    p[0].extra["parameter_id_list"] = [p[3].extra["parameter_id_list"]]
+            else:
+                raise NameError(str(p.lineno(1)) + ": Class " + p[2].value + " not defined in the current scope.")
+        else:
+            p[0].extra["parameter_type_list"] = [p[2].type_list[0]]
+    elif len(p) == 3:
+        if hasattr(p[1], 'type'): #p[1] is an IDENT
+            if find_info(p[1].value)[0] == "class":
+                p[0].extra["parameter_type_list"] = [p[1].value]
+                if hasattr(p[2], 'type'):
+                    p[0].extra["parameter_id_list"] = [p[2].value]
+                else:
+                    # TODO (anay)!!!: include Dims in the variable type list!!!
+                    p[0].extra["parameter_id_list"] = [p[2].extra["parameter_id_list"]]
+            else:
+                raise NameError(str(p.lineno(1)) + ": Class " + p[1].value + " not defined in the current scope.")
+        else:
+            p[0].extra["parameter_type_list"] = [p[1].type_list[0]]
+
+    p[0].extra["last_rule"] = "FormalParameter"
 
 
 # TODO: Dropped this rule..., p_LastFormalParameter was used only in p_FormalParameterList.
@@ -3563,15 +3643,14 @@ def p_LastFormalParameter(p):
                             | CommonModifierS NumericType AnnotationS ELLIPSIS VariableDeclaratorId
                             | CommonModifierS BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
                             | CommonModifierS IDENT AnnotationS ELLIPSIS VariableDeclaratorId
-                            | FormalParameter
-                            | CommonModifierS UnannType ELLIPSIS VariableDeclaratorId
-                            | CommonModifierS NumericType ELLIPSIS VariableDeclaratorId
-                            | CommonModifierS BOOLEAN ELLIPSIS VariableDeclaratorId
-                            | CommonModifierS IDENT ELLIPSIS VariableDeclaratorId
                             | CommonModifierS UnannType AnnotationS ELLIPSIS IDENT
                             | CommonModifierS NumericType AnnotationS ELLIPSIS IDENT
                             | CommonModifierS BOOLEAN AnnotationS ELLIPSIS IDENT
                             | CommonModifierS IDENT AnnotationS ELLIPSIS IDENT
+                            | CommonModifierS UnannType ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS NumericType ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS BOOLEAN ELLIPSIS VariableDeclaratorId
+                            | CommonModifierS IDENT ELLIPSIS VariableDeclaratorId
                             | CommonModifierS UnannType ELLIPSIS IDENT
                             | CommonModifierS NumericType ELLIPSIS IDENT
                             | CommonModifierS BOOLEAN ELLIPSIS IDENT
@@ -3580,20 +3659,30 @@ def p_LastFormalParameter(p):
                             |  NumericType AnnotationS ELLIPSIS VariableDeclaratorId
                             |  BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
                             |  IDENT AnnotationS ELLIPSIS VariableDeclaratorId
+                            |  UnannType AnnotationS ELLIPSIS IDENT
+                            |  BOOLEAN AnnotationS ELLIPSIS IDENT
+                            |  IDENT AnnotationS ELLIPSIS IDENT
                             |  UnannType ELLIPSIS VariableDeclaratorId
                             |  NumericType ELLIPSIS VariableDeclaratorId
                             |  BOOLEAN ELLIPSIS VariableDeclaratorId
                             |  IDENT ELLIPSIS VariableDeclaratorId
-                            |  UnannType AnnotationS ELLIPSIS IDENT
-                            |  BOOLEAN AnnotationS ELLIPSIS IDENT
-                            |  IDENT AnnotationS ELLIPSIS IDENT
                             |  UnannType ELLIPSIS IDENT
                             |  BOOLEAN ELLIPSIS IDENT
                             |  IDENT ELLIPSIS IDENT
-
+                            | FormalParameter
     '''
     # p[0] = mytuple(["LastFormalParameter"] + p[1:])
 
+    if len(p) == 6:
+        raise NameError(str(p.lineno(1)) + ": ELLIPSIS in paramater lists have not been implemented yet.")
+    elif len(p) == 5:
+        raise NameError(str(p.lineno(1)) + ": ELLIPSIS in paramater lists have not been implemented yet.")
+    elif len(p) == 4:
+        raise NameError(str(p.lineno(1)) + ": ELLIPSIS in paramater lists have not been implemented yet.")
+    elif len(p) == 2:
+        p[0] = p[1]
+
+    p[0].extra["last_rule"] = "LastFormalParameter"
 
 def p_ReceiverParameter(p):
     '''ReceiverParameter : AnnotationS UnannType IDENT PERIOD THIS
@@ -3614,6 +3703,10 @@ def p_ReceiverParameter(p):
                             | IDENT THIS
     '''
     # p[0] = mytuple(["ReceiverParameter"] + p[1:])
+    p[0].extra["last_rule"] = "ReceiverParameter"
+
+    p[0].extra["parameter_type_list"] = [] ## TODO (anay): ReceiverParameter hasn't been implemented yet
+    p[0].extra["parameter_id_list"] = [] ## TODO (anay): ReceiverParameter hasn't been implemented yet
 
 
 def p_Throws(p):
@@ -4066,7 +4159,7 @@ def p_BlockStatements(p):
                         # TODO: This was removed: | SEMICOLON SEMICOLON
     if(len(p)==2):
         p[0] = p[1]
-    elif(p[1]==';'):
+    elif(p[1].value ==';'):
         p[0] = p[2]
     elif(p[2]==';'):
         p[0] = p[1]
@@ -4532,14 +4625,14 @@ def p_BasicForStatement(p):
         elif p[9]!=";":         # aakhri agar semicolon hai to the for loop is useless, let's ignore it completely
             tmp = 1
     elif len(p) == 9:
-        if p[3] != ";" and p[5] != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
+        if p[3].value != ";" and p[5].value != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         elif p[3] == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         elif p[8]!=";":         # aakhri agar semicolon hai to the for loop is useless, let's ignore it completely
             tmp = 1
     elif len(p) == 8:
-        if p[3] == ";" and p[4] != ";" and higher(p[4].type_list[0], 'boolean') != 'boolean':
+        if p[3].value == ";" and p[4].value != ";" and higher(p[4].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[4].type_list[0] + " to boolean.")
         elif p[7]!=";":         # aakhri agar semicolon hai to the for loop is useless, let's ignore it completely
             tmp = 1
@@ -4652,14 +4745,14 @@ def p_BasicForStatementNoShortIf(p):
         else:
             tmp = 1
     elif len(p) == 9:
-        if p[3] != ";" and p[5] != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
+        if p[3].value != ";" and p[5].value != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         elif p[3] == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         else:
             tmp = 1
     elif len(p) == 8:
-        if p[3] == ";" and p[4] != ";" and higher(p[4].type_list[0], 'boolean') != 'boolean':
+        if p[3].value == ";" and p[4].value != ";" and higher(p[4].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[4].type_list[0] + " to boolean.")
         else:
             tmp = 1
@@ -4804,7 +4897,7 @@ def p_ReturnStatement(p):
     # p[0] = mytuple(["ReturnStatement"]+p[1:])
     if len(p) == 3:
         p[0].extra["return_type"] = p[2].type_list[0]
-    else
+    else:
         p[0].extra["return_type"] = "void"
 
 
@@ -5043,12 +5136,14 @@ def parse_string(code, debug=0, lineno=1, prefix='++'):
             HASH_MAP[tok.value] = "Keyword"
         else : # Comments or unknown
             continue
+        print(tok)
 
     lexer.lineno = lineno
     if(verbose_flag):
         print("Lexing Done")
         print("Parsing Start")
-    return parser.parse(prefix + code, lexer=lexer, debug=0)
+    return
+    # return parser.parse(prefix + code, lexer=lexer, debug=0)
 
 
 def parse_file(_file, debug=0):
