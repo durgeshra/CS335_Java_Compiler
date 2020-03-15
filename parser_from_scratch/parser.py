@@ -4950,7 +4950,7 @@ def p_BreakStatement(p):
                     | BREAK IDENT SEMICOLON
 '''
     p[0] = Node()
-    if (not in_scope("__BeginFor")) and (not in_scope("__BeginSwitch")):
+    if (not in_scope("__BeginFor")) and (not in_scope("__BeginSwitch") and (not in_scope("__BeginWhile") and (not in_scope("__BeginDo")):
         raise SyntaxError(str(p.lineno(1)) + ": error: break outside switch or loop")
     if len(p)==4 and (not in_scope(str(IDENT))):
         raise SyntaxError(str(p.lineno(1)) + ": " + str(p[3]) + " label is not defined in the scope.")
@@ -4958,8 +4958,12 @@ def p_BreakStatement(p):
     if len(p) == 3:
         if in_scope("__BeginFor"):
             end_for_label = find_info("__EndFor", p.lexer.lineno)["value"]
-        else:
+        elif in_scope("__BeginSwitch"):
             end_for_label = find_info("__EndSwitch", p.lexer.lineno)["value"]
+        elif in_scope("__BeginWhile"):
+            end_for_label = find_info("__EndWhile", p.lexer.lineno)["value"]
+        elif in_scope("__BeginDo"):
+            end_for_label = find_info("__EndDo", p.lexer.lineno)["value"]
     else:
         end_for_label = find_info(str(p[3]), p.lexer.lineno)["value"]
     p[0].code += [["goto", end_for_label]]
