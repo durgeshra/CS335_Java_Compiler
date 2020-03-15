@@ -4970,11 +4970,27 @@ def p_BreakStatement(p):
 
     # p[0] = mytuple(["BreakStatement"]+p[1:])
 
-
+#* DOUBT IDENT waala verify karna hai
 def p_ContinueStatement(p):
     '''ContinueStatement : CONTINUE IDENT SEMICOLON
                         | CONTINUE SEMICOLON
 '''
+    p[0] = Node()
+    if (not in_scope("__BeginFor")) and (not in_scope("__BeginWhile") and (not in_scope("__BeginDo")):
+        raise SyntaxError(str(p.lineno(1)) + ": error: break outside loop")
+    if len(p)==4 and (not in_scope(str(IDENT))):
+        raise SyntaxError(str(p.lineno(1)) + ": " + str(p[3]) + " label is not defined in the scope.")
+
+    if len(p) == 3:
+        if in_scope("__BeginFor"):
+            mid_for_label = find_info("__MidFor", p.lexer.lineno)["value"]
+        elif in_scope("__BeginWhile"):
+            mid_for_label = find_info("__MidWhile", p.lexer.lineno)["value"]
+        elif in_scope("__BeginDo"):
+            mid_for_label = find_info("__MidDo", p.lexer.lineno)["value"]
+    else:
+        mid_for_label = find_info(str(p[3]), p.lexer.lineno)["value"]
+    p[0].code += [["goto", mid_for_label]]
     # p[0] = mytuple(["ContinueStatement"]+p[1:])
 
 
