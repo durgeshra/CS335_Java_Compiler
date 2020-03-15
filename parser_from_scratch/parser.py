@@ -4841,33 +4841,55 @@ def p_TryWithResourcesStatement(p):
 '''
     # p[0] = mytuple(["TryWithResourcesStatement"]+p[1:])
 
-
+#* DOUBT do I make a new scope with LPAREN??
 def p_ResourceSpecification(p):
     '''ResourceSpecification : LPAREN ResourceList SEMICOLON RPAREN
                             | LPAREN ResourceList RPAREN
 '''
     # p[0] = mytuple(["ResourceSpecification"]+p[1:])
+    p[0] = p[2]
 
-
+#*
 def p_ResourceList(p):
     '''ResourceList : Resource SEMICOLONResourceS
                 | Resource
 '''
     # p[0] = mytuple(["ResourceList"]+p[1:])
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = p[1]
+        p[0].id_list += p[2].id_list
+        p[0].type_list += p[2].type_list
+        p[0].place_list += p[2].place_list
 
-
+#*
 def p_SEMICOLONResourceS(p):
     '''SEMICOLONResourceS : SEMICOLONResourceS SEMICOLON Resource
                     | SEMICOLON Resource'''
     # p[0] = mytuple(["SEMICOLONResourceS"]+p[1:])
+    if len(p) == 3:
+        p[0] = p[2]
+    else:
+        p[0] = p[1]
+        p[0].id_list += p[3].id_list
+        p[0].type_list += p[3]].type_list
+        p[0].place_list += p[3].place_list
 
 
+#*
 def p_CommonModifierS(p):
     '''CommonModifierS : CommonModifierS CommonModifier
                         | CommonModifier
     '''
     # p[0] = mytuple(["CommonModifierS"]+p[1:])
-
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = p[1]
+        p[0].id_list += p[2].id_list
+        p[0].type_list += p[2].type_list
+        p[0].place_list += p[2].place_list
 
 def p_CommonModifier(p):
     '''CommonModifier : Annotation
@@ -4885,6 +4907,7 @@ def p_CommonModifier(p):
     '''
     # TODO: Remove annotation
     # p[0] = mytuple(["CommonModifier"]+p[1:])
+
 
 
 def p_Resource(p):
