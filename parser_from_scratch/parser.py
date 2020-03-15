@@ -4389,25 +4389,48 @@ def p_StatementWithoutTrailingSubstatement(p):
 # '''
 #     p[0]=mytuple(["EmptyStatement"]+p[1 :])
 
-
+#*
 def p_LabeledStatement(p):
     '''LabeledStatement : IDENT  COLON  Statement
                     | IDENT COLON SEMICOLON
 '''
+    if in_scope(p[1]):
+        raise NameError(str(p.lineno(1)) + ": Label " + str(p[1]) + " already defined")
+    else:
+        global scopes, current_scope
+        temp_l = new_label()
+        scopes[current_scope].insert(p[1], "label")
+        scopes[current_scope].update(p[1], temp_l, "value")
+        if p[3] == ";":
+            p[0] = Node()
+        else:
+            p[0] = p[3]
+        p[0].code = [["label", temp_l]] + p[0].code
     # p[0] = mytuple(["LabeledStatement"]+p[1:])
 
-############# keep this in mind when writing p_label ka code 
-#         end_for_label = find_info(str(p[3]), p.lexer.lineno)["value"]
-#########
+#*
 def p_LabeledStatementNoShortIf(p):
     '''LabeledStatementNoShortIf : IDENT  COLON  StatementNoShortIf
                         | IDENT COLON SEMICOLON'''
+    if in_scope(p[1]):
+        raise NameError(str(p.lineno(1)) + ": Label " + str(p[1]) + " already defined")
+    else:
+        global scopes, current_scope
+        temp_l = new_label()
+        scopes[current_scope].insert(p[1], "label")
+        scopes[current_scope].update(p[1], temp_l, "value")
+        if p[3] == ";":
+            p[0] = Node()
+        else:
+            p[0] = p[3]
+        p[0].code = [["label", temp_l]] + p[0].code
     # p[0] = mytuple(["LabeledStatementNoShortIf"]+p[1:])
 
-
+#*
 def p_ExpressionStatement(p):
     '''ExpressionStatement : StatementExpression SEMICOLON'''
     # p[0] = mytuple(["ExpressionStatement"]+p[1:])
+    p[0] = p[1]
 
 #*
 def p_StatementExpression(p):
@@ -4421,7 +4444,7 @@ def p_StatementExpression(p):
     # p[0] = mytuple(["StatementExpression"]+p[1:])
     p[0] = p[1]
 
-
+#*
 def p_IfThenStatement(p):
     '''IfThenStatement : IF LPAREN Expression RPAREN Statement
         | IF LPAREN Expression RPAREN SEMICOLON'''
@@ -4429,11 +4452,18 @@ def p_IfThenStatement(p):
     if higher(p[3].type_list[0], 'boolean') != 'boolean':
         NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[3].type_list[0] + " to boolean.")
     else:
-        #
-        # the type of expresion is boolean
-        tmp = 1
+        p[0] = Node()
+        p[0].code += p[3].code
+        if p[5] != ";":
+            scopeNode = add_scope(p, "if")
+            p[0].code += scopeNode.code
+            p[0].code += p[5].code
+            endScopeNode = end_scope(p, "if")
+            p[0].code += endScopeNode.code
 
+        p[0].code += [["label", p[5].extra["EndIfLabel"]]]
 
+#*
 def p_IfThenElseStatement(p):
     '''IfThenElseStatement : IF LPAREN Expression RPAREN StatementNoShortIf ELSE Statement
             | IF LPAREN Expression RPAREN SEMICOLON ELSE Statement
@@ -4443,11 +4473,24 @@ def p_IfThenElseStatement(p):
     if higher(p[3].type_list[0], 'boolean') != 'boolean':
         NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[3].type_list[0] + " to boolean.")
     else:
-        #
-        # the type of expresion is boolean
-        tmp = 1
+        p[0] = Node()
+        p[0].code += p[3].code
+        if p[5] != ";":
+            scopeNode = add_scope(p, "if")
+            p[0].code += scopeNode.code
+            p[0].code += p[5].code
+            endScopeNode = end_scope(p, "if")
+            p[0].code += endScopeNode.code
+        if p[7] != ";":
+            scopeNode = add_scope(p, "else")
+            p[0].code += scopeNode.code
+            p[0].code += p[7].code
+            endScopeNode = end_scope(p, "else")
+            p[0].code += endScopeNode.code        # most probably no code will be added here
 
+        p[0].code += [["label", p[5].extra["EndIfLabel"]]]
 
+#*
 def p_IfThenElseStatementNoShortIf(p):
     '''IfThenElseStatementNoShortIf : IF LPAREN Expression RPAREN StatementNoShortIf ELSE StatementNoShortIf
         | IF LPAREN Expression RPAREN SEMICOLON ELSE StatementNoShortIf
@@ -4457,9 +4500,22 @@ def p_IfThenElseStatementNoShortIf(p):
     if higher(p[3].type_list[0], 'boolean') != 'boolean':
         NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[3].type_list[0] + " to boolean.")
     else:
-        #
-        # the type of expresion is boolean
-        tmp = 1
+        p[0] = Node()
+        p[0].code += p[3].code
+        if p[5] != ";":
+            scopeNode = add_scope(p, "if")
+            p[0].code += scopeNode.code
+            p[0].code += p[5].code
+            endScopeNode = end_scope(p, "if")
+            p[0].code += endScopeNode.code
+        if p[7] != ";":
+            scopeNode = add_scope(p, "else")
+            p[0].code += scopeNode.code
+            p[0].code += p[7].code
+            endScopeNode = end_scope(p, "else")
+            p[0].code += endScopeNode.code        # most probably no code will be added here
+
+        p[0].code += [["label", p[5].extra["EndIfLabel"]]]
 
 def p_AssertStatement(p):
     '''AssertStatement : ASSERT Expression SEMICOLON
