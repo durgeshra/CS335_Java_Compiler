@@ -4956,7 +4956,10 @@ def p_BreakStatement(p):
         raise SyntaxError(str(p.lineno(1)) + ": " + str(p[3]) + " label is not defined in the scope.")
 
     if len(p) == 3:
-        end_for_label = find_info("__EndFor", p.lexer.lineno)["value"]
+        if in_scope("__BeginFor"):
+            end_for_label = find_info("__EndFor", p.lexer.lineno)["value"]
+        else:
+            end_for_label = find_info("__EndSwitch", p.lexer.lineno)["value"]
     else:
         end_for_label = find_info(str(p[3]), p.lexer.lineno)["value"]
     p[0].code += [["goto", end_for_label]]
