@@ -1556,14 +1556,14 @@ def p_literal(p):
         p[0].code = [["=", temp_v, p[1]]]
         p[0].type_list = ["float"]
         p[0].extra["size"] = 4
-    elif type(p[1]) == str and p[1][0]=='"':    # string
+    elif type(p[1]) == str and p[1][0] == '"':    # string
         temp_v = new_temp()
         p[0] = Node()
         p[0].place_list = [temp_v]
         p[0].code = [["=", temp_v, "\"" + p[1][1:-1] + "\""]]
         p[0].type_list = [["string", len(p[1][1:-1])]]
         p[0].extra["size"] = sizeof["char"]*len(p[1][1:-1])
-    elif type(p[1]) == str and p[1][0]=='\'':    # char
+    elif type(p[1]) == str and p[1][0] == '\'':    # char
         temp_v = new_temp()
         p[0] = Node()
         p[0].place_list = [temp_v]
@@ -1690,10 +1690,10 @@ def p_ConstantDeclaration(p):
 def p_InterfaceMethodDeclaration(p):
     '''InterfaceMethodDeclaration : CommonModifierS MethodHeader MethodBody
                                 | DEFAULT MethodHeader MethodBody
-                                |  MethodHeader MethodBody
+                                | MethodHeader MethodBody
                                 | CommonModifierS MethodHeader SEMICOLON
                                 | DEFAULT MethodHeader SEMICOLON
-                                |  MethodHeader SEMICOLON'''
+                                | MethodHeader SEMICOLON'''
     # p[0] = mytuple(["InterfaceMethodDeclaration"]+p[1:])
 
 # def p_InterfaceMethodModifierS(p):
@@ -1756,35 +1756,35 @@ def p_AnnotationTypeElementDeclaration(p):
     '''AnnotationTypeElementDeclaration :  CommonModifierS UnannType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     | CommonModifierS NumericType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     | CommonModifierS BOOLEAN IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
-                                    |  CommonModifierS IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
-                                    |    CommonModifierS UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |    CommonModifierS NumericType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |    CommonModifierS BOOLEAN IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |  CommonModifierS IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |    CommonModifierS UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |    CommonModifierS NumericType IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |    CommonModifierS BOOLEAN IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |  CommonModifierS IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |    CommonModifierS UnannType IDENT LPAREN RPAREN SEMICOLON
-                                    |    CommonModifierS NumericType IDENT LPAREN RPAREN SEMICOLON
-                                    |    CommonModifierS BOOLEAN IDENT LPAREN RPAREN SEMICOLON
-                                    |  CommonModifierS IDENT IDENT LPAREN RPAREN SEMICOLON
+                                    | CommonModifierS IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                    |   CommonModifierS UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |   CommonModifierS NumericType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |   CommonModifierS BOOLEAN IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    | CommonModifierS IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |   CommonModifierS UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |   CommonModifierS NumericType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |   CommonModifierS BOOLEAN IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    | CommonModifierS IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |   CommonModifierS UnannType IDENT LPAREN RPAREN SEMICOLON
+                                    |   CommonModifierS NumericType IDENT LPAREN RPAREN SEMICOLON
+                                    |   CommonModifierS BOOLEAN IDENT LPAREN RPAREN SEMICOLON
+                                    | CommonModifierS IDENT IDENT LPAREN RPAREN SEMICOLON
                                     | UnannType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     | NumericType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     | BOOLEAN IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
-                                        |  IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
-                                    |    UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |    NumericType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |    BOOLEAN IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |  IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |    UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |    NumericType IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |    BOOLEAN IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |  IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |    UnannType IDENT LPAREN RPAREN SEMICOLON
-                                    |    NumericType IDENT LPAREN RPAREN SEMICOLON
-                                    |    BOOLEAN IDENT LPAREN RPAREN SEMICOLON
-                                    |  IDENT IDENT LPAREN RPAREN SEMICOLON'''
+                                        | IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                    |   UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |   NumericType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |   BOOLEAN IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    | IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    |   UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |   NumericType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |   BOOLEAN IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    | IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    |   UnannType IDENT LPAREN RPAREN SEMICOLON
+                                    |   NumericType IDENT LPAREN RPAREN SEMICOLON
+                                    |   BOOLEAN IDENT LPAREN RPAREN SEMICOLON
+                                    | IDENT IDENT LPAREN RPAREN SEMICOLON'''
     # p[0] = mytuple(["AnnotationTypeElementDeclaration"]+p[1:])
 
 # def p_AnnotationTypeElementModifierS(p):
@@ -1905,7 +1905,7 @@ def p_ElementValueArrayInitializer(p):
 #*
 def p_ElementValueList(p):
     '''ElementValueList : ElementValue  COMMAElementValueS
-                    |  IDENT  COMMAElementValueS
+                    | IDENT  COMMAElementValueS
                     | ElementValue'''
     # p[0] = mytuple(["ElementValueList"]+p[1:])
     if len(p) == 2:
@@ -2007,7 +2007,7 @@ def p_COMMAVariableInitializerS(p):
     '''COMMAVariableInitializerS : COMMAVariableInitializerS COMMA VariableInitializer
                                  | COMMA VariableInitializer'''
     # p[0] = mytuple(["COMMAVariableInitializerS"]+p[1:])
-    if len(p)==3:
+    if len(p) == 3:
         p[0] = p[2]
     else:
         p[0] = p[1]
@@ -2078,13 +2078,13 @@ def p_ClassLiteral(p):
     if len(p) == 4:
         p[0].type_list = [["class", "void"]]
     elif len(p) == 5:
-        if type(p[1]) == str and (p[1]=="true" or p[1]=="false"):
-            if p[2].extra["depth"]==0:
+        if type(p[1]) == str and (p[1] =="true" or p[1] =="false"):
+            if p[2].extra["depth"] ==0:
                 p[0].type_list = [["class", "bool"]]
             else:
                 p[0].type_list = [["class", ["array", "bool", p[2].extra["depth"], []]]]
         elif type(p[1]) == str:
-            if p[2].extra["depth"]==0:
+            if p[2].extra["depth"] ==0:
                 p[0].type_list = [["class", "identifier"]]
                 p[0].id_list = [p[1]]
             else:
@@ -2094,7 +2094,7 @@ def p_ClassLiteral(p):
         p[0] = p[2]
         # p[0].id_list.insert(0, p[1])
         p[0].id_list = [p[0].id_list[-1]]   # storing the identifier that corresponds to the class type only. makes it easier to access using [0] or [-1], and also maintains one-one correspondence in type_list and id_list
-        if p[3].extra["depth"]==0:
+        if p[3].extra["depth"] ==0:
             p[0].type_list = [["class", "identifier"]]
         else:
             p[0].type_list = [["class", ["array", "identifier", p[3].extra["depth"], []]]]
@@ -2104,7 +2104,7 @@ def p_LBRACKRBRACKS(p):
     '''LBRACKRBRACKS : LBRACKRBRACKS LBRACK RBRACK
                     | empty'''
     # p[0] = mytuple(["LBRACKRBRACKS"]+p[1:])
-    if len(p)==4:
+    if len(p) == 4:
         p[0] = p[1]
         p[0].extra["depth"] += 1
     else:
@@ -2142,11 +2142,11 @@ def p_UnqualifiedClassInstanceCreationExpression(p):
 def p_ClassOrInterfaceTypeToInstantiate(p):
     '''ClassOrInterfaceTypeToInstantiate : AnnotationS IDENT PERIODAnnotationSIDENTS TypeArgumentsOrDiamond
                                         | AnnotationS IDENT PERIODAnnotationSIDENTS
-                                         |  IDENT PERIODAnnotationSIDENTS
-                                         |  IDENT PERIODAnnotationSIDENTS TypeArgumentsOrDiamond
+                                         | IDENT PERIODAnnotationSIDENTS
+                                         | IDENT PERIODAnnotationSIDENTS TypeArgumentsOrDiamond
                                          | AnnotationS IDENT TypeArgumentsOrDiamond
                                          | AnnotationS IDENT
-                                         |  IDENT TypeArgumentsOrDiamond'''
+                                         | IDENT TypeArgumentsOrDiamond'''
     # p[0] = mytuple(["ClassOrInterfaceTypeToInstantiate"]+p[1:])
 
 
@@ -2392,7 +2392,7 @@ def p_Assignment(p):
         else:
             new_temp_var = new_temp()
             p[0].code += [["=", new_temp_var, "convert_to_"+newtype+"("+str(expr_place_list_val[i])+")"]]
-            if p[2]=="=":
+            if p[2] =="=":
                 p[0].code += [["=", expr_place_list_key[i], new_temp_var]]
             else:
                 # format: operator, lhs, rhs - 1st op, rhs - 2nd op
@@ -2410,7 +2410,7 @@ def p_LeftHandSide(p):
     # p[0] = mytuple(["LeftHandSide"]+p[1:])
     if len(p) == 2 and type(p[1])!=str:
         p[0]=p[1]
-    elif len(p)==2:
+    elif len(p) == 2:
         p[0] = Node()
         p[0].id_list = [p[1]]
         p[0].type_list = ["identifier"]
@@ -3041,7 +3041,7 @@ def p_TypeDeclaration(p):
 def p_CommonName(p):
     '''CommonName : PERIOD IDENT
                         | CommonName PERIOD IDENT'''
-    if len(p)==3:
+    if len(p) == 3:
         p[0] = Node()
         p[0].id_list = [p[2]]
         p[0].type_list = ["identifier"]
@@ -3660,20 +3660,20 @@ def p_LastFormalParameter(p):
                             | CommonModifierS NumericType ELLIPSIS IDENT
                             | CommonModifierS BOOLEAN ELLIPSIS IDENT
                             | CommonModifierS IDENT ELLIPSIS IDENT
-                            |  UnannType AnnotationS ELLIPSIS VariableDeclaratorId
-                            |  NumericType AnnotationS ELLIPSIS VariableDeclaratorId
-                            |  BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
-                            |  IDENT AnnotationS ELLIPSIS VariableDeclaratorId
-                            |  UnannType AnnotationS ELLIPSIS IDENT
-                            |  BOOLEAN AnnotationS ELLIPSIS IDENT
-                            |  IDENT AnnotationS ELLIPSIS IDENT
-                            |  UnannType ELLIPSIS VariableDeclaratorId
-                            |  NumericType ELLIPSIS VariableDeclaratorId
-                            |  BOOLEAN ELLIPSIS VariableDeclaratorId
-                            |  IDENT ELLIPSIS VariableDeclaratorId
-                            |  UnannType ELLIPSIS IDENT
-                            |  BOOLEAN ELLIPSIS IDENT
-                            |  IDENT ELLIPSIS IDENT
+                            | UnannType AnnotationS ELLIPSIS VariableDeclaratorId
+                            | NumericType AnnotationS ELLIPSIS VariableDeclaratorId
+                            | BOOLEAN AnnotationS ELLIPSIS VariableDeclaratorId
+                            | IDENT AnnotationS ELLIPSIS VariableDeclaratorId
+                            | UnannType AnnotationS ELLIPSIS IDENT
+                            | BOOLEAN AnnotationS ELLIPSIS IDENT
+                            | IDENT AnnotationS ELLIPSIS IDENT
+                            | UnannType ELLIPSIS VariableDeclaratorId
+                            | NumericType ELLIPSIS VariableDeclaratorId
+                            | BOOLEAN ELLIPSIS VariableDeclaratorId
+                            | IDENT ELLIPSIS VariableDeclaratorId
+                            | UnannType ELLIPSIS IDENT
+                            | BOOLEAN ELLIPSIS IDENT
+                            | IDENT ELLIPSIS IDENT
                             | FormalParameter
     '''
     # p[0] = mytuple(["LastFormalParameter"] + p[1:])
@@ -3773,8 +3773,8 @@ def p_StaticInitializer(p):
 def p_ConstructorDeclaration(p):
     '''ConstructorDeclaration : CommonModifierS ConstructorDeclarator ConstructorBody
                                 | CommonModifierS ConstructorDeclarator Throws ConstructorBody
-                                |  ConstructorDeclarator ConstructorBody
-                                |  ConstructorDeclarator Throws ConstructorBody
+                                | ConstructorDeclarator ConstructorBody
+                                | ConstructorDeclarator Throws ConstructorBody
     '''
     # p[0] = mytuple(["ConstructorDeclaration"] + p[1:])
 
@@ -3789,9 +3789,9 @@ def p_ConstructorDeclaration(p):
 
 def p_ConstructorDeclarator(p):
     '''ConstructorDeclarator : TypeParameters IDENT LPAREN FormalParameterList RPAREN
-                            |  IDENT LPAREN FormalParameterList RPAREN
+                            | IDENT LPAREN FormalParameterList RPAREN
                             | TypeParameters IDENT LPAREN  RPAREN
-                            |  IDENT LPAREN  RPAREN
+                            | IDENT LPAREN  RPAREN
     '''
     # p[0] = mytuple(["ConstructorDeclarator"] + p[1:])
 
@@ -3814,12 +3814,12 @@ def p_ConstructorBody(p):
 def p_ExplicitConstructorInvocation(p):
     '''ExplicitConstructorInvocation : TypeArguments THIS LPAREN ArgumentList RPAREN SEMICOLON
                                     | TypeArguments THIS LPAREN  RPAREN SEMICOLON
-                                    |  THIS LPAREN ArgumentList RPAREN SEMICOLON
-                                    |  THIS LPAREN  RPAREN SEMICOLON
+                                    | THIS LPAREN ArgumentList RPAREN SEMICOLON
+                                    | THIS LPAREN  RPAREN SEMICOLON
                                     | TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
                                     | TypeArguments SUPER LPAREN  RPAREN SEMICOLON
-                                    |  SUPER LPAREN ArgumentList RPAREN SEMICOLON
-                                    |  SUPER LPAREN  RPAREN SEMICOLON
+                                    | SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    | SUPER LPAREN  RPAREN SEMICOLON
                                     | IDENT PERIOD TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
                                     | IDENT PERIOD  SUPER LPAREN ArgumentList RPAREN SEMICOLON
                                     | IDENT PERIOD TypeArguments SUPER LPAREN  RPAREN SEMICOLON
@@ -3852,8 +3852,8 @@ def p_ExplicitConstructorInvocation(p):
 def p_EnumDeclaration(p):
     '''EnumDeclaration : CommonModifierS ENUM IDENT Superinterfaces EnumBody
                     | CommonModifierS ENUM IDENT EnumBody
-                    |  ENUM IDENT Superinterfaces EnumBody
-                    |  ENUM IDENT EnumBody
+                    | ENUM IDENT Superinterfaces EnumBody
+                    | ENUM IDENT EnumBody
     '''
     # p[0] = mytuple(["EnumDeclaration"] + p[1:])
 
@@ -4021,9 +4021,9 @@ def p_TypeVariable(p):
 def p_ArrayType(p):
     '''ArrayType :  PrimitiveType Dims
                  | BOOLEAN Dims
-                 |  ClassType Dims
-                 |  IDENT PERIOD IDENT Dims
-                 |  TypeVariable Dims
+                 | ClassType Dims
+                 | IDENT PERIOD IDENT Dims
+                 | TypeVariable Dims
                  | IDENT Dims'''
     # p[0] = mytuple(["ArrayType"]+p[1:])
 
@@ -4097,7 +4097,7 @@ def p_TypeArguments(p):
 
 def p_TypeArgumentList(p):
     '''TypeArgumentList : TypeArgument COMMATypeArgumentS
-                        |  IDENT COMMATypeArgumentS'''
+                        | IDENT COMMATypeArgumentS'''
     # p[0] = mytuple(["TypeArgumentList"]+p[1:])
 
 
@@ -4146,9 +4146,9 @@ def p_Block(p):
     | LBRACE BlockStatements RBRACE
     | LBRACE SEMICOLON RBRACE
 '''
-    if(len(p)==3):
+    if(len(p) == 3):
         p[0] = Node()
-    elif(type(p[2])==str): #for SEMICOLON
+    elif(type(p[2]) == str): #for SEMICOLON
         p[0] = Node()
     else:
         p[0] = p[2]
@@ -4162,11 +4162,11 @@ def p_BlockStatements(p):
                         | BlockStatement
 '''
                         # TODO: This was removed: | SEMICOLON SEMICOLON
-    if(len(p)==2):
+    if(len(p) == 2):
         p[0] = p[1]
-    elif(p[1].value ==';'):
+    elif(p[1].value == ';'):
         p[0] = p[2]
-    elif(p[2]==';'):
+    elif(p[2] == ';'):
         p[0] = p[1]
     else:
         p[0] = p[1]
@@ -4203,22 +4203,22 @@ def p_LocalVariableDeclaration(p):
                                 | CommonModifierS NumericType VariableDeclaratorList
                                 | CommonModifierS BOOLEAN VariableDeclaratorList
                                 | CommonModifierS IDENT VariableDeclaratorList
-                                |  UnannType VariableDeclaratorList
-                                |  NumericType VariableDeclaratorList
-                                |  BOOLEAN VariableDeclaratorList
-                                |  IDENT VariableDeclaratorList
+                                | UnannType VariableDeclaratorList
+                                | NumericType VariableDeclaratorList
+                                | BOOLEAN VariableDeclaratorList
+                                | IDENT VariableDeclaratorList
                                 | CommonModifierS UnannType IDENT
                                 | CommonModifierS NumericType IDENT
                                 | CommonModifierS BOOLEAN IDENT
                                 | CommonModifierS IDENT IDENT
-                                |  UnannType IDENT
-                                |  NumericType IDENT
-                                |  BOOLEAN IDENT
-                                |  IDENT IDENT
+                                | UnannType IDENT
+                                | NumericType IDENT
+                                | BOOLEAN IDENT
+                                | IDENT IDENT
 '''
 
-    if(len(p)==3):
-        if( ( p[1].value.lower()=="boolean" ) and type(p[2])==str):
+    if(len(p) == 3):
+        if( ( p[1].value.lower() == "boolean" ) and type(p[2]) == str):
             new_n1 = Node()
             new_n1.type_list = ["boolean"]
             new_n2 = Node()
@@ -4228,7 +4228,7 @@ def p_LocalVariableDeclaration(p):
             p[0].id_list += new_n2.id_list
             p[0].type_list += new_n2.type_list
             p[0].place_list += new_n2.place_list
-        elif(type(p[1])==str and type(p[2])==str):
+        elif(type(p[1]) == str and type(p[2]) == str):
             new_n1 = Node()
             new_n1.id_list = [p[1]]
             new_n1.type_list = ["identifier"]
@@ -4239,7 +4239,7 @@ def p_LocalVariableDeclaration(p):
             p[0].id_list += new_n2.id_list
             p[0].type_list += new_n2.type_list
             p[0].place_list += new_n2.place_list
-        elif(type(p[2])==str):
+        elif(type(p[2]) == str):
             new_node = Node()
             new_node.id_list = [p[2]]
             new_node.type_list = ["identifier"]
@@ -4247,14 +4247,14 @@ def p_LocalVariableDeclaration(p):
             p[0].id_list += new_node.id_list
             p[0].type_list += new_node.type_list
             p[0].place_list += new_node.place_list
-        elif(p[1].value.lower()=="boolean"):
+        elif(p[1].value.lower() == "boolean"):
             new_node = Node()
             new_node.type_list = ["boolean"]
             p[0] = new_node
             p[0].id_list += p[2].id_list
             p[0].type_list += p[2].type_list
             p[0].place_list += p[2].place_list
-        elif(type(p[1])==str):
+        elif(type(p[1]) == str):
             new_node = Node()
             new_node.id_list = [p[1]]
             new_node.type_list = ["identifier"]
@@ -4268,8 +4268,8 @@ def p_LocalVariableDeclaration(p):
             p[0].type_list += p[2].type_list
             p[0].place_list += p[2].place_list
     else:
-        if(type(p[3])==str):
-            if( p[2].value.lower()=="boolean" ):
+        if(type(p[3]) == str):
+            if( p[2].value.lower() == "boolean" ):
                 new_n1 = Node()
                 new_n1.type_list = ["boolean"]
                 new_n2 = Node()
@@ -4282,7 +4282,7 @@ def p_LocalVariableDeclaration(p):
                 p[0].id_list += new_n2.id_list
                 p[0].type_list += new_n2.type_list
                 p[0].place_list += new_n2.place_list
-            elif(type(p[2]) ==str):
+            elif(type(p[2]) == str):
                 new_n1 = Node()
                 new_n2.id_list = [p[2]]
                 new_n2.type_list = ["identifier"]
@@ -4308,7 +4308,7 @@ def p_LocalVariableDeclaration(p):
                 p[0].type_list += new_n2.type_list
                 p[0].place_list += new_n2.place_list
         else:
-            if( p[2].value.lower()=="boolean" ):
+            if( p[2].value.lower() == "boolean" ):
                 new_n1 = Node()
                 new_n1.type_list = ["boolean"]
 
@@ -4319,7 +4319,7 @@ def p_LocalVariableDeclaration(p):
                 p[0].id_list += p[3].id_list
                 p[0].type_list += p[3].type_list
                 p[0].place_list += p[3].place_list
-            elif(type(p[2]) ==str):
+            elif(type(p[2]) == str):
                 new_n1 = Node()
                 new_n2.id_list = [p[2]]
                 new_n2.type_list = ["identifier"]
@@ -4750,7 +4750,7 @@ def p_BasicForStatement(p):
         # p[0].extra.update(p[9-offset].extra)
     else:
         offset += 1
-    
+
     if "mid_for_label" in p[0].extra:
         mid_for_label = p[0].extra["mid_for_label"]
         p[0].code += [["label", mid_for_label]]
@@ -4871,7 +4871,7 @@ def p_BasicForStatementNoShortIf(p):
         # p[0].extra.update(p[9-offset].extra)
     else:
         offset += 1
-    
+
     if "mid_for_label" in p[0].extra:
         mid_for_label = p[0].extra["mid_for_label"]
         p[0].code += [["label", mid_for_label]]
@@ -5008,7 +5008,7 @@ def p_BreakStatement(p):
     p[0] = Node()
     if (not in_scope("__BeginFor")) and (not in_scope("__BeginSwitch") and (not in_scope("__BeginWhile") and (not in_scope("__BeginDo")):
         raise SyntaxError(str(p.lineno(1)) + ": error: break outside switch or loop")
-    if len(p)==4 and (not in_scope(str(IDENT))):
+    if len(p) == 4 and (not in_scope(str(IDENT))):
         raise SyntaxError(str(p.lineno(1)) + ": " + str(p[3]) + " label is not defined in the scope.")
 
     if len(p) == 3:
@@ -5034,7 +5034,7 @@ def p_ContinueStatement(p):
     p[0] = Node()
     if (not in_scope("__BeginFor")) and (not in_scope("__BeginWhile") and (not in_scope("__BeginDo")):
         raise SyntaxError(str(p.lineno(1)) + ": error: break outside loop")
-    if len(p)==4 and (not in_scope(str(IDENT))):
+    if len(p) == 4 and (not in_scope(str(IDENT))):
         raise SyntaxError(str(p.lineno(1)) + ": " + str(p[3]) + " label is not defined in the scope.")
 
     if len(p) == 3:
@@ -5052,7 +5052,7 @@ def p_ContinueStatement(p):
 
 def p_ReturnStatement(p):
     '''ReturnStatement : RETURN Expression SEMICOLON
-                    |  RETURN  SEMICOLON
+                    | RETURN  SEMICOLON
 '''
     # p[0] = mytuple(["ReturnStatement"]+p[1:])
     if len(p) == 3:
@@ -5213,14 +5213,14 @@ def p_Resource(p):
                 | CommonModifierS NumericType IDENT ASSIGN Expression
                 | CommonModifierS BOOLEAN IDENT ASSIGN Expression
                 | CommonModifierS IDENT IDENT ASSIGN Expression
-                |  UnannType VariableDeclaratorId ASSIGN Expression
-                |  NumericType VariableDeclaratorId ASSIGN Expression
-                |  BOOLEAN VariableDeclaratorId ASSIGN Expression
-                |  IDENT VariableDeclaratorId ASSIGN Expression
-                |  UnannType IDENT ASSIGN Expression
-                |  NumericType IDENT ASSIGN Expression
-                |  BOOLEAN IDENT ASSIGN Expression
-                |  IDENT IDENT ASSIGN Expression'''
+                | UnannType VariableDeclaratorId ASSIGN Expression
+                | NumericType VariableDeclaratorId ASSIGN Expression
+                | BOOLEAN VariableDeclaratorId ASSIGN Expression
+                | IDENT VariableDeclaratorId ASSIGN Expression
+                | UnannType IDENT ASSIGN Expression
+                | NumericType IDENT ASSIGN Expression
+                | BOOLEAN IDENT ASSIGN Expression
+                | IDENT IDENT ASSIGN Expression'''
     # p[0] = mytuple(["Resource"]+p[1:])
 
 
@@ -5353,11 +5353,11 @@ def reduce(ele):
     new_ele = []
 
     new_ele.append(ele[0])
-    if(type(ele) ==str):
+    if(type(ele) == str):
 	    return ele
-    elif(type(ele)==tuple and len(ele)==1):
+    elif(type(ele) ==tuple and len(ele) == 1):
         return ele
-    if(len(ele)==2):
+    if(len(ele) == 2):
         return reduce(ele[1])
     else:
         for data in ele[1:]:
@@ -5368,7 +5368,7 @@ def reduce(ele):
 def reduce_epsilon(ele):
     new_ele = []
     new_ele.append(ele[0])
-    if(type(ele)==str):
+    if(type(ele) == str):
         return ele
     else:
         for data in ele[1:]:
@@ -5399,14 +5399,14 @@ if args.input != None:
     input_file = args.input[0]
 
 if args.output != None:
-    if(type(args.output)==list):
+    if(type(args.output) ==list):
         output_file = args.output[0]
     else:
         output_file = args.output
 
 verbose_flag = False
 if args.verbose != None:
-    if(type(args.verbose)==list):
+    if(type(args.verbose) ==list):
         verbose_flag = args.verbose[0]
     else:
         verbose_flag = args.verbose
