@@ -4213,7 +4213,7 @@ def p_LocalVariableDeclaration(p):
 '''
 
     if(len(p)==3):
-        if( ( p[1]=="true" or p[1] == "false" ) and type(p[2])==str):
+        if( ( p[1].value.lower()=="boolean" ) and type(p[2])==str):
             new_n1 = Node()
             new_n1.type_list = ["boolean"]
             new_n2 = Node()
@@ -4242,7 +4242,7 @@ def p_LocalVariableDeclaration(p):
             p[0].id_list += new_node.id_list
             p[0].type_list += new_node.type_list
             p[0].place_list += new_node.place_list
-        elif(p[1]=="true" or p[1] == "false"):
+        elif(p[1].value.lower()=="boolean"):
             new_node = Node()
             new_node.type_list = ["boolean"]
             p[0] = new_node
@@ -4264,7 +4264,7 @@ def p_LocalVariableDeclaration(p):
             p[0].place_list += p[2].place_list
     else:
         if(type(p[3])==str):
-            if( p[2]=="true" or p[2] == "false" ):
+            if( p[2].value.lower()=="boolean" ):
                 new_n1 = Node()
                 new_n1.type_list = ["boolean"]
                 new_n2 = Node()
@@ -4303,7 +4303,7 @@ def p_LocalVariableDeclaration(p):
                 p[0].type_list += new_n2.type_list
                 p[0].place_list += new_n2.place_list
         else:
-            if( p[2]=="true" or p[2] == "false" ):
+            if( p[2].value.lower()=="boolean" ):
                 new_n1 = Node()
                 new_n1.type_list = ["boolean"]
 
