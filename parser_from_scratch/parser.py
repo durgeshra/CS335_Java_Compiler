@@ -26,7 +26,10 @@ type_dict = {'boolean': {'size': 1, 'pid': -1, 'lvl': 0}, \
              'float': {'size': 4, 'pid': 'double', 'lvl': 2}, \
              'double': {'size': 8, 'pid': -1, 'lvl': 1}, \
              'void': {'size': -1, 'pid': -1, 'lvl': -1}, \
-             'identifier': {'size': -1, 'pid': -1, 'lvl': -1}}# dummy type in place of unknown identifier types
+             'none': {'size': -1, 'pid': -1, 'lvl': -1}, \
+             'identifier': {'size': -1, 'pid': -1, 'lvl': -1}}
+# identifier: dummy type in place of unknown identifier types
+# none: return type of constructors
 
 def higher(a, b):
     if a not in type_dict.keys() or b not in type_dict.keys():
@@ -1615,6 +1618,7 @@ def p_literal(p):
 #</editor-fold>############################################
 
 #<editor-fold Section 9 : Interfaces #########################
+# TODO (durgesh)
 ################################################
 # SECTION 9 : Interfaces
 ################################################
@@ -1677,6 +1681,7 @@ def p_InterfaceMemberDeclaration(p):
     # p[0] = mytuple(["InterfaceMemberDeclaration"]+p[1:])
     p[0] = p[1]
 
+# TODO (durgesh)
 def p_ConstantDeclaration(p):
     '''ConstantDeclaration : CommonModifierS UnannType VariableDeclaratorList SEMICOLON
                             | CommonModifierS NumericType VariableDeclaratorList SEMICOLON
@@ -1780,6 +1785,7 @@ def p_AnnotationTypeElementDeclaration(p):
 
 
 #*
+# TODO (durgesh)
 def p_DefaultValue(p):
     '''DefaultValue : DEFAULT ElementValue
                         | DEFAULT IDENT'''
@@ -1808,6 +1814,7 @@ def p_NormalAnnotation(p):
     # p[0] = mytuple(["NormalAnnotation"]+p[1:])
 
 #*
+# TODO (durgesh)
 def p_ElementValuePairList(p):
     '''ElementValuePairList : ElementValuePair COMMAElementValuePairS'''
     # p[0] = mytuple(["ElementValuePairList"]+p[1:])
@@ -1817,6 +1824,7 @@ def p_ElementValuePairList(p):
     p[0].place_list += p[2].place_list
 
 #*
+# TODO (durgesh)
 def p_COMMAElementValuePairS(p):
     '''COMMAElementValuePairS : COMMAElementValuePairS COMMA ElementValuePair
                               | empty'''
@@ -1864,6 +1872,7 @@ def p_ElementValuePair(p):
 
 
 #*
+# TODO (durgesh)
 def p_ElementValue(p):
     '''ElementValue : ConditionalExpression
                     | ElementValueArrayInitializer
@@ -1950,7 +1959,7 @@ def p_SingleElementAnnotation(p):
 # Section 10 : Arrays
 ################################################
 
-
+# TODO (harsh)
 def p_ArrayInitializer(p):
     '''ArrayInitializer : LBRACE VariableInitializerList COMMA RBRACE
     | LBRACE VariableInitializerList RBRACE
@@ -2094,21 +2103,21 @@ def p_ClassInstanceCreationExpression(p):
 
 def p_UnqualifiedClassInstanceCreationExpression(p):
     '''UnqualifiedClassInstanceCreationExpression : NEW TypeArguments ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN ClassBody
-    | NEW TypeArguments ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN ClassBody
-    | NEW TypeArguments ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN
-    | NEW TypeArguments ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN
-    | NEW ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN ClassBody
-    | NEW ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN ClassBody
-    | NEW ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN
-    | NEW ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN
-    | NEW TypeArguments IDENT LPAREN ArgumentList RPAREN ClassBody
-    | NEW TypeArguments IDENT LPAREN  RPAREN ClassBody
-    | NEW TypeArguments IDENT LPAREN ArgumentList RPAREN
-    | NEW TypeArguments IDENT LPAREN  RPAREN
-    | NEW IDENT LPAREN ArgumentList RPAREN ClassBody
-    | NEW IDENT LPAREN  RPAREN ClassBody
-    | NEW IDENT LPAREN ArgumentList RPAREN
-    | NEW IDENT LPAREN  RPAREN'''
+                                                | NEW TypeArguments ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN ClassBody
+                                                | NEW TypeArguments ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN
+                                                | NEW TypeArguments ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN
+                                                | NEW ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN ClassBody
+                                                | NEW ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN ClassBody
+                                                | NEW ClassOrInterfaceTypeToInstantiate LPAREN ArgumentList RPAREN
+                                                | NEW ClassOrInterfaceTypeToInstantiate LPAREN  RPAREN
+                                                | NEW TypeArguments IDENT LPAREN ArgumentList RPAREN ClassBody
+                                                | NEW TypeArguments IDENT LPAREN  RPAREN ClassBody
+                                                | NEW TypeArguments IDENT LPAREN ArgumentList RPAREN
+                                                | NEW TypeArguments IDENT LPAREN  RPAREN
+                                                | NEW IDENT LPAREN ArgumentList RPAREN ClassBody
+                                                | NEW IDENT LPAREN  RPAREN ClassBody
+                                                | NEW IDENT LPAREN ArgumentList RPAREN
+                                                | NEW IDENT LPAREN  RPAREN'''
     # p[0] = mytuple(["UnqualifiedClassInstanceCreationExpression"]+p[1:])
 
 def p_ClassOrInterfaceTypeToInstantiate(p):
@@ -2142,7 +2151,7 @@ def p_PERIODAnnotationSIDENTS(p):
 def p_TypeArgumentsOrDiamond(p):
     '''TypeArgumentsOrDiamond : TypeArguments
                              | LSS GTR'''
-    # print("I am TypeArgumentsOrDiamond!!!!")
+    # print("I am TypeArgumentsOrDiamond!")
     # print("\n"*20)
     # p[0] = mytuple(["TypeArgumentsOrDiamond"]+p[1:])
 
@@ -2773,11 +2782,11 @@ def p_UnaryExpressionNotPlusMinus(p):
         p[0] = p[1]
     elif p[1].value == "~":
         p[0] = p[2]
-        if p[3].type_list[0] in ["float", "double", "boolean"]:
+        if p[2].type_list[0] in ["float", "double", "boolean"]:
             raise NameError("Bad operand type float for unary operator '~'.")
     elif p[1].value == "!":
         p[0] = p[2]
-        if p[3].type_list[0] not in ["boolean"]:
+        if p[2].type_list[0] not in ["boolean"]:
             raise NameError("Bad operand type float for unary operator '!'.")
     else:
         assert False
@@ -2817,7 +2826,6 @@ def p_PostIncrementExpression(p):
     p[0].extra["last_rule"] = "PostIncrementExpression"
 
 
-
 # updated (anay)
 def p_PostDecrementExpression(p):
     '''PostDecrementExpression : PostfixExpression DEC
@@ -2840,6 +2848,7 @@ def p_PostDecrementExpression(p):
     p[0].extra["last_rule"] = "PostDecrementExpression"
 
 # updated (anay)
+# TODO (durgesh)
 def p_CastExpression(p):
     '''CastExpression : LPAREN PrimitiveType RPAREN UnaryExpression
                      | LPAREN PrimitiveType RPAREN IDENT
@@ -2977,11 +2986,23 @@ def p_StaticImportOnDemandDeclaration(p):
                                     | IMPORT STATIC IDENT CommonName PERIOD MUL SEMICOLON'''
     # p[0] = mytuple(["StaticImportOnDemandDeclaration"]+p[1:])
 
-
+# skipped (anay)
 def p_TypeDeclaration(p):
     '''TypeDeclaration : ClassDeclaration
                       | InterfaceDeclaration'''
     # p[0] = mytuple(["TypeDeclaration"]+p[1:])
+    if p[1].extra["last_rule"] ==  "ClassDeclaration":
+        if "class_obj" in p[0].extra.keys():
+            scope_stack[-1].insert_class(class_obj.name, class_obj)
+
+        if "enum_obj" in p[0].extra.keys():
+            tmp = 1
+            # TODO (anay): Skipped for now
+            # scope_stack[-1].insert_class(enum_obj.name, enum_obj)
+    else:
+        tmp = 1
+        # TODO (anay): InterfaceDeclaration skipped for now
+
 
 #</editor-fold>############################################
 
@@ -3008,25 +3029,16 @@ def p_CommonName(p):
 ####################################
 ########## SECTION #8 ##############
 ####################################
-
+# updated (anay)
 def p_ClassDeclaration(p):
     '''ClassDeclaration : NormalClassDeclaration
                         | EnumDeclaration'''
     # p[0] = mytuple(["ClassDeclaration"]+p[1:])
-
     p[0] = p[1]
-    if "class_obj" in p[0].extra.keys():
-        class_obj = p[0].extra["class_obj"]
-        scope_stack[-1].insert_class(class_obj.name, class_obj)
-
-    if "enum_obj" in p[0].extra.keys():
-        tmp = 1
-        # TODO (anay): Skipped for now
-        # enum_obj = p[0].extra["enum_obj"]
-        # scope_stack[-1].insert_class(enum_obj.name, enum_obj)
 
     p[0].extra["last_rule"] = "ClassDeclaration"
 
+# updated (anay)
 def p_SuperClass(p):
     '''SuperClass : EXTENDS ClassType
                     | EXTENDS TypeVariable
@@ -3043,12 +3055,13 @@ def p_SuperClass(p):
         p[0].extra["extends_class"] = p[2].type_list[0]
     else:
         class_str = zip_name([p[1], p[3]])
-        ## the following function errors if IDENT PERIOD IDENT is invalid
+        ## the following function errors if IDENT PERIOD IDENT is invalid (in the current scope)
         find_info_string_of_classes(class_str, p.lineno(1))
         p[0].extra["extends_class"] = [class_str]
 
     p[0].extra["last_rule"] = "SuperClass"
 
+# updated (anay)
 def p_NormalClassDeclaration(p):
     '''NormalClassDeclaration : CommonModifierS CLASS IDENT TypeParameters SuperClass Superinterfaces ClassBody
                             | CommonModifierS CLASS IDENT TypeParameters Superinterfaces ClassBody
@@ -3089,12 +3102,11 @@ def p_NormalClassDeclaration(p):
 
     p[0].extra["last_rule"] = "NormalClassDeclaration"
 
-
 # skipped
 def p_TypeParameters(p):
     '''TypeParameters : LSS TypeParameterList GTR
     '''
-    # print("I am TypeParameters!!!!")
+    # print("I am TypeParameters!")
     # print("\n"*20)
     # p[0] = mytuple(["TypeParameters"]+p[1:])
 
@@ -3140,7 +3152,7 @@ def p_InterfaceTypeList(p):
     # p[0] = mytuple(["InterfaceTypeList"]+p[1:])
     raise NameError(str(p.lineno(1)) + ": InterfaceTypeList not implemented.")
 
-
+# updated (anay) check
 def p_ClassBodyDeclarationS(p):
     '''ClassBodyDeclarationS : ClassBodyDeclarationS ClassBodyDeclaration
                             | ClassBodyDeclarationS SEMICOLON
@@ -3155,7 +3167,6 @@ def p_ClassBodyDeclarationS(p):
     elif hassattr(p[2], 'type'):
         p[0] = p[1]
     else:
-        # TODO (anay) !!! fill in this
         p[0] = p[1]
         class_obj = p[0].extra["class_obj"]
 
@@ -3167,9 +3178,24 @@ def p_ClassBodyDeclarationS(p):
             class_obj.insert_class(subclass_obj.name, subclass_obj)
         if "var_obj" in p[2].extra.keys(): ## from FieldDeclaration
             var_obj = p[2].extra["var_obj"]
-            class_obj.insert_var(var_obj[0], var_obj[1])
+            for id in var_obj[1]:
+                class_obj.insert_var(var_obj[0], id)
 
-        # TODO (anay)!!! not handled: InterfaceDeclaration, Block, StaticInitializer
+        ## From block statements
+        if "meth_obj_list" in p[2].extra.keys():
+            for meth_obj in p[2].extra["meth_obj_list"]:
+                class_obj.insert_method(meth_obj.name, meth_obj)
+        if "class_obj_list" in p[2].extra.keys():
+            for subclass_obj in p[2].extra["class_obj_list"]:
+                class_obj.insert_class(subclass_obj.name, subclass_obj)
+        if "var_obj_list" in p[2].extra.keys():
+            for var_obj in p[2].extra["var_obj_list"]:
+                for id in var_obj[1]:
+                    class_obj.insert_var(var_obj[0], id)
+
+        # TODO (anay)!!! check not handled: InterfaceDeclaration (skipped),
+        #                             Block,
+        #                             StaticInitializer (from Block)
 
         p[0].extra["class_obj"] = class_obj
 
@@ -3194,7 +3220,6 @@ def p_ClassBodyDeclaration(p):
     p[0] = p[1]
     p[0].extra["last_rule"] = "ClassBodyDeclaration"
 
-
 # updated (anay)
 def p_ClassMemberDeclaration(p):
     '''ClassMemberDeclaration : FieldDeclaration
@@ -3204,9 +3229,10 @@ def p_ClassMemberDeclaration(p):
     '''
     # p[0] = mytuple(["ClassMemberDeclaration"]+p[1:])
     p[0] = p[1]
-
     p[0].extra["last_rule"] = "ClassMemberDeclaration"
 
+# TODO (anay): Ignoring common modifiers for now (we would need to store some more information witht the variables for that)
+# updated (anay) check
 def p_FieldDeclaration(p):
     '''FieldDeclaration : CommonModifierS UnannType VariableDeclaratorList SEMICOLON
                         | CommonModifierS NumericType VariableDeclaratorList SEMICOLON
@@ -3223,12 +3249,27 @@ def p_FieldDeclaration(p):
                         | UnannType IDENT SEMICOLON
                         | NumericType IDENT SEMICOLON
                         | BOOLEAN IDENT SEMICOLON
-                        | IDENT IDENT SEMICOLON
-                        '''
+                        | IDENT IDENT SEMICOLON'''
     # p[0] = mytuple(["FieldDeclaration"]+p[1:])
+    if hasattr(p[1], "extra") and p[1].extra["last_rule"] == "CommonModifierS":
+        p.pop(1)
 
+    p[0].extra["var_obj"] = []
 
+    if hasattr(p[1], 'type'):
+        type = p[1].value
+    else:
+        type = p[1].type_list[-1]
 
+    if hasattr(p[2], 'type'):
+        p[0].extra["var_obj"] += [type, p[2].value]
+    else:
+        for id in p[2].extra["variable_id_list"]:
+            p[0].extra["var_obj"] += [type, id]
+
+    # TODO (anay)!!! have to add these variabless to current scope if they don't go to class declaration
+
+# updated (anay) check
 def p_COMMAVariableDeclaratorS(p):
     '''COMMAVariableDeclaratorS : COMMAVariableDeclaratorS COMMA VariableDeclarator
                                 | COMMAVariableDeclaratorS COMMA IDENT
@@ -3236,8 +3277,24 @@ def p_COMMAVariableDeclaratorS(p):
                                 | COMMA VariableDeclarator
     '''
     # p[0] = mytuple(["COMMAVariableDeclaratorS"]+p[1:])
+    if len(p) == 3:
+        p[0] = Node()
+    else:
+        p[0] = p[1]
+    p.pop(1)
 
+    p[0].extra["variable_id_list"] = []
 
+    if hasattr(p[2], 'type'):
+        if in_scope(p[2].value, len(scope_stack)-1):
+            raise NameError(str(p.lineno(1)) + ": Variable " + p[2].value + " already defined in the current scope.")
+        p[0].extra["variable_id_list"] += [p[2].value]
+    else:
+        p[0].extra["variable_id_list"] += p[2].extra["variable_id_list"]
+
+    p[0].extra["last_rule"] = "COMMAVariableDeclaratorS"
+
+# updated (anay) check
 def p_VariableDeclaratorList(p):
     '''VariableDeclaratorList : VariableDeclarator COMMAVariableDeclaratorS
                     | IDENT COMMAVariableDeclaratorS
@@ -3245,29 +3302,59 @@ def p_VariableDeclaratorList(p):
     '''
     # p[0] = mytuple(["VariableDeclaratorList"]+p[1:])
 
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0].extra["variable_id_list"] = p[3].extra["variable_id_list"]
+
+        if hasattr(p[2], 'type'):
+            if in_scope(p[2].value, len(scope_stack)-1):
+                raise NameError(str(p.lineno(1)) + ": Variable " + p[2].value + " already defined in the current scope.")
+            p[0].extra["variable_id_list"] += [p[2].value]
+        else:
+            p[0].extra["variable_id_list"] += p[2].extra["variable_id_list"]
+
+    p[0].extra["last_rule"] = "VariableDeclaratorList"
+
+# updated (anay) check
 def p_VariableDeclarator(p):
     '''VariableDeclarator : VariableDeclaratorId ASSIGN VariableInitializer
                         | IDENT ASSIGN VariableInitializer
                         | VariableDeclaratorId
     '''
     # p[0] = mytuple(["VariableDeclarator"]+p[1:])
+    if len(p) == 2:
+        p[0] = p[1]
+    elif hasattr(p[1], 'type'):
+        p[0] = Node()
+        if in_scope(p[1].value, len(scope_stack)-1):
+            raise NameError(str(p.lineno(1)) + ": Variable " + p[1].value + " already defined in the current scope.")
+        p[0].extra["variable_id_list"] = [p[1].value]
+    else:
+        p[0] = p[1]
+        # we would need look at the VariableInitializer for 3AC
 
-# TODO (anay)!!!: include Dims in the variable type list!!!
+    p[0].extra["last_rule"] = "VariableDeclarator"
+
+# updated (anay) check
+# TODO (anay)!!!: include Dims in the variable type list
 def p_VariableDeclaratorId(p):
     '''VariableDeclaratorId : IDENT Dims'''
     # p[0] = mytuple(["VariableDeclaratorId"]+p[1:])
     p[0] = Node()
-    p[0].extra["parameter_id_list"] = [p[1].value]
-
+    # we are not checking if variable is already in current scope as this might be a part of a parameter list
+    p[0].extra["parameter_id_list"] = [p[1].value] # same lists but used in different places (aka rules)
+    p[0].extra["variable_id_list"] = [p[1].value] # same lists but used in different places (aka rules)
     p[0].extra["last_rule"] = "VariableDeclaratorId"
+
 #*
+# updated (anay)
 def p_VariableInitializer(p):
     '''VariableInitializer : Expression
                             | ArrayInitializer
     '''
     # p[0] = mytuple(["VariableInitializer"]+p[1:])
     p[0] = p[1]
-
     p[0].extra["last_rule"] = "VariableInitializer"
 
 # Updated (anay)
@@ -3282,7 +3369,7 @@ def p_UnannType(p):
     else:
         p[0] = Node()
         class_str = zip_name([p[1], p[3]])
-        ## the following function errors if IDENT PERIOD IDENT is invalid
+        ## the following function errors if IDENT PERIOD IDENT is invalid (in the current scope)
         find_info_string_of_classes(class_str, p.lineno(1))
         p[0].type_list = [class_str]
 
@@ -3315,7 +3402,7 @@ def p_UnannClassType(p):
     p[0].extra["last_rule"] = "UnannClassType"
 
 
-# TODO (anay) !!! Implement this with array code!!!
+# TODO (anay) !!! Implement this with array code
 def p_UnannArrayType(p):
     '''UnannArrayType :  NumericType Dims
                         | BOOLEAN Dims
@@ -3347,7 +3434,7 @@ def p_MethodDeclaration(p):
 
 # TODO: Major hacks here!!! We removed Throws non-terminal
 # Updated (anay)
-# TODO (anay) !!! Handle throws !!!
+# TODO (anay) !!! Handle throws
 # TODO (anay) ^ Don't need them right now (might need them in 3AC)
 # TODO (anay): we might have incorrect CFG here for THROWS
 def p_MethodHeader(p):
@@ -3475,15 +3562,17 @@ def p_MethodHeader(p):
 
     p[0].extra["last_rule"] = "MethodHeader"
 
+# TODO (anay): dropping the following rules -- they seem incorrect
+# | IDENT LPAREN FormalParameterList RPAREN Dims
+# | IDENT LPAREN RPAREN Dims
+
 # Updated (anay)
 def p_MethodDeclarator(p):
     '''MethodDeclarator : IDENT LPAREN FormalParameterList RPAREN
-                        | IDENT LPAREN FormalParameterList RPAREN Dims
-                        | IDENT LPAREN RPAREN Dims
                         | IDENT LPAREN RPAREN
     '''
     # p[0] = mytuple(["MethodDeclarator"]+p[1:])
-    if in_scope(p[1].value):
+    if in_scope(p[1].value, len(scope_stack)-1):
         raise NameError(str(p.lineno(1)) + ": Method " + p[1].value + " already defined in the current scope.")
 
     meth = MethodObj(p[1].value)
@@ -3491,8 +3580,6 @@ def p_MethodDeclarator(p):
         meth.type = p[3].extra["parameter_type_list"]
         meth.param_list = p[3].extra["parameter_id_list"]
         meth.is_opt = [True] * len(meth.param_list) # TODO (anay): update the is_opt list when incorporating ReceiverParameters
-
-    # TODO (anay) !!! Handle Dims!!!
 
     p[0].extra["meth_obj"] = meth
     # scope_stack[-1].insert_method(meth.name, meth) # we would add the method in the class not the scope
@@ -3580,12 +3667,12 @@ def p_FormalParameter(p):
     if len(p) == 4:
         if hasattr(p[2], 'type'): #p[1] is an IDENT
             if find_info(p[2].value)[0] == "class":
-                # TODO (anay)!!!: include Dims in the variable type list for VariableDeclaratorId!!!
+                # TODO (anay)!!!: include Dims in the variable type list for VariableDeclaratorId
                 p[0].extra["parameter_type_list"] = [p[2].value]
                 if hasattr(p[3], 'type'):
                     p[0].extra["parameter_id_list"] = [p[3].value]
                 else:
-                    # TODO (anay)!!!: include Dims in the variable type list!!!
+                    # TODO (anay)!!!: include Dims in the variable type list
                     p[0].extra["parameter_id_list"] = [p[3].extra["parameter_id_list"]]
             else:
                 raise NameError(str(p.lineno(1)) + ": Class " + p[2].value + " not defined in the current scope.")
@@ -3598,7 +3685,7 @@ def p_FormalParameter(p):
                 if hasattr(p[2], 'type'):
                     p[0].extra["parameter_id_list"] = [p[2].value]
                 else:
-                    # TODO (anay)!!!: include Dims in the variable type list!!!
+                    # TODO (anay)!!!: include Dims in the variable type list
                     p[0].extra["parameter_id_list"] = [p[2].extra["parameter_id_list"]]
             else:
                 raise NameError(str(p.lineno(1)) + ": Class " + p[1].value + " not defined in the current scope.")
@@ -3655,6 +3742,7 @@ def p_LastFormalParameter(p):
 
     p[0].extra["last_rule"] = "LastFormalParameter"
 
+## TODO (anay): ReceiverParameter hasn't been implemented yet
 def p_ReceiverParameter(p):
     '''ReceiverParameter : AnnotationS UnannType IDENT PERIOD THIS
                             | AnnotationS NumericType IDENT PERIOD THIS
@@ -3677,11 +3765,11 @@ def p_ReceiverParameter(p):
     p[0].extra["last_rule"] = "ReceiverParameter"
 
     p[0].extra["parameter_type_list"] = [] ## TODO (anay): ReceiverParameter hasn't been implemented yet
-    p[0].extra["parameter_id_list"] = [] ## TODO (anay): ReceiverParameter hasn't been implemented yet
+    p[0].extra["parameter_id_list"] = []
 
- # # # #                                  # # # #
-######## Next four not needed (probably) ########
-# # # #                                  # # # #
+ # # # #                                         # # # #
+######## (anay) Next four not needed (probably) ########
+# # # #                                         # # # #
 
 def p_Throws(p):
     '''Throws :  THROWS ExceptionTypeList
@@ -3722,7 +3810,10 @@ def p_StaticInitializer(p):
     '''StaticInitializer : STATIC Block
     '''
     # p[0] = mytuple(["StaticInitializer"] + p[1:])
+    p[0] = p[2]
+    p[0].extra["last_rule"] = "StaticInitializer"
 
+# updated (anay) check
 def p_ConstructorDeclaration(p):
     '''ConstructorDeclaration : CommonModifierS ConstructorDeclarator ConstructorBody
                                 | CommonModifierS ConstructorDeclarator Throws ConstructorBody
@@ -3741,6 +3832,7 @@ def p_ConstructorDeclaration(p):
 
     p[0].extra["last_rule"] = "ConstructorDeclaration"
 
+# Updated (anay)
 def p_ConstructorDeclarator(p):
     '''ConstructorDeclarator : TypeParameters IDENT LPAREN FormalParameterList RPAREN
                             | TypeParameters IDENT LPAREN  RPAREN
@@ -3751,14 +3843,16 @@ def p_ConstructorDeclarator(p):
     if hasattr(p[1], 'extra') and p[1].extra["last_rule"] == "TypeParameters":
         raise NameError(str(p.lineno(1)) + ": TypeParameters not implemented in ConstructorDeclarator.")
 
-    if in_scope(p[1].value):
+    if in_scope(p[1].value, len(scope_stack)-1):
         raise NameError(str(p.lineno(1)) + ": Method " + p[1].value + " already defined in the current scope.")
 
     meth = MethodObj(p[1].value)
-    if len(p) > 4:
-        meth.type = p[3].extra["parameter_type_list"]
+    if len(p) > 4: # rule 3
         meth.param_list = p[3].extra["parameter_id_list"]
         meth.is_opt = [True] * len(meth.param_list) # TODO (anay): update the is_opt list when incorporating ReceiverParameters
+        meth.type = p[3].extra["parameter_type_list"]
+        meth.return_type = "none"
+        meth.modifiers = []
 
     p[0].extra["meth_obj"] = meth
     p[0].extra["constructor_name"] = meth.name # useful to verify the constructor name is the same as the class name
@@ -3767,16 +3861,21 @@ def p_ConstructorDeclarator(p):
     # TODO (anay): Do we need to store anything else in p[0]?
     p[0].extra["last_rule"] = "ConstructorDeclarator"
 
+# Updated (anay)
 def p_ConstructorBody(p):
     '''ConstructorBody : LBRACE ExplicitConstructorInvocation BlockStatements  RBRACE
                         | LBRACE ExplicitConstructorInvocation SEMICOLON  RBRACE
                         | LBRACE ExplicitConstructorInvocation  RBRACE
                         | LBRACE BlockStatements  RBRACE
                         | LBRACE SEMICOLON  RBRACE
-                        | LBRACE RBRACE
-    '''
+                        | LBRACE RBRACE'''
     # p[0] = mytuple(["ConstructorBody"] + p[1:])
+    if p[1].extra["last_rule"] == "ExplicitConstructorInvocation":
+        raise NameError(str(p.lineno(1)) + ": ExplicitConstructorInvocation in ConstructorBody has not been implemented yet.")
 
+    ## nothing to add to the symbol table here.
+
+# skipped
 def p_ExplicitConstructorInvocation(p):
     '''ExplicitConstructorInvocation : TypeArguments THIS LPAREN ArgumentList RPAREN SEMICOLON
                                     | TypeArguments THIS LPAREN  RPAREN SEMICOLON
@@ -3797,13 +3896,10 @@ def p_ExplicitConstructorInvocation(p):
                                     | Primary PERIOD TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
                                     | Primary PERIOD TypeArguments SUPER LPAREN RPAREN SEMICOLON
                                     | Primary PERIOD  SUPER LPAREN ArgumentList RPAREN SEMICOLON
-                                    | Primary PERIOD  SUPER LPAREN  RPAREN SEMICOLON
-    '''
+                                    | Primary PERIOD  SUPER LPAREN  RPAREN SEMICOLON'''
     # p[0] = mytuple(["ExplicitConstructorInvocation"] + p[1:])
-
-
-
-
+    p[0] = Node()
+    p[0].extra["last_rule"] = "ExplicitConstructorInvocation"
 
 
 
@@ -3811,6 +3907,7 @@ def p_ExplicitConstructorInvocation(p):
 ######## Enum starts below ########
 # # # #                    # # # #
 
+# skipped
 def p_EnumDeclaration(p):
     '''EnumDeclaration : CommonModifierS ENUM IDENT Superinterfaces EnumBody
                     | CommonModifierS ENUM IDENT EnumBody
@@ -3819,6 +3916,7 @@ def p_EnumDeclaration(p):
     '''
     # p[0] = mytuple(["EnumDeclaration"] + p[1:])
 
+# skipped
 def p_EnumBody(p):
     '''EnumBody : LBRACE EnumConstantList COMMA EnumBodyDeclarations  RBRACE
                 | LBRACE EnumConstantList COMMA   RBRACE
@@ -3831,17 +3929,20 @@ def p_EnumBody(p):
     '''
     # p[0] = mytuple(["EnumBody"] + p[1:])
 
+# skipped
 def p_COMMAEnumConstantS(p):
     '''COMMAEnumConstantS : COMMAEnumConstantS COMMA EnumConstant
                           | empty
     '''
     # p[0] = mytuple(["COMMAEnumConstantS"] + p[1:])
 
+# skipped
 def p_EnumConstantList(p):
     '''EnumConstantList : EnumConstant COMMAEnumConstantS
     '''
     # p[0] = mytuple(["EnumConstantList"] + p[1:])
 
+# skipped
 def p_EnumConstant(p):
     '''EnumConstant : EnumConstantModifierS IDENT LPAREN RPAREN ClassBody
     | EnumConstantModifierS IDENT LPAREN ArgumentList  RPAREN ClassBody
@@ -3852,18 +3953,21 @@ def p_EnumConstant(p):
     '''
     # p[0] = mytuple(["EnumConstant"] + p[1:])
 
+# skipped
 def p_EnumConstantModifierS(p):
     '''EnumConstantModifierS : EnumConstantModifierS EnumConstantModifier
                             | empty
     '''
     # p[0] = mytuple(["EnumConstantModifierS"] + p[1:])
 
+# skipped
 def p_EnumConstantModifier(p):
     '''EnumConstantModifier : Annotation
     '''
     # p[0] = mytuple(["EnumConstantModifier"] + p[1:])
     p[0] = p[1]
 
+# skipped
 def p_EnumBodyDeclarations(p):
     '''EnumBodyDeclarations : SEMICOLON ClassBodyDeclarationS
     '''
@@ -3902,7 +4006,7 @@ def p_IntegralType(p):
                     | CHAR'''
     # p[0] = mytuple(["IntegralType"]+p[1:])
     p[0] = Node()
-    p[0].type_list = [p[1]]
+    p[0].type_list = [p[1].value]
 #
 
 #*
@@ -4079,7 +4183,7 @@ def p_Block(p):
     else:
         p[0] = p[2]
 
-
+# updated (anay)
 #*H
 def p_BlockStatements(p):
     '''BlockStatements : BlockStatement BlockStatements
@@ -4092,15 +4196,19 @@ def p_BlockStatements(p):
         p[0] = p[1]
     elif(p[1].value == ';'):
         p[0] = p[2]
-    elif(p[2] == ';'):
+    elif(p[2].value == ';'):
         p[0] = p[1]
     else:
         p[0] = p[1]
         p[0].id_list += p[2].id_list
         p[0].type_list += p[2].type_list
         p[0].place_list += p[2].place_list
+        p[0].extra["meth_obj_list"] += p[2].extra["meth_obj_list"]
+        p[0].extra["class_obj_list"] += p[2].extra["class_obj_list"]
+        p[0].extra["var_obj_list"] += p[2].extra["var_obj_list"]
     # p[0] = mytuple(["BlockStatements"]+p[1:])
 
+# updated (anay)
 #*H
 def p_BlockStatement(p):
     '''BlockStatement : LocalVariableDeclarationStatement
@@ -4110,6 +4218,18 @@ def p_BlockStatement(p):
     # p[0] = mytuple(["BlockStatement"]+p[1:])
     p[0] = p[1]
 
+    p[0].extra["meth_obj_list"] = []
+    p[0].extra["class_obj_list"] = []
+    p[0].extra["var_obj_list"] = []
+
+    if "meth_obj" in p[1].extra.keys(): ## from ConstructorDeclaration, MethodDeclaration
+        p[0].extra["meth_obj_list"] += [p[2].extra["meth_obj"]]
+    if "class_obj" in p[2].extra.keys(): ## from ClassDeclaration
+        p[0].extra["class_obj_list"] += [p[2].extra["class_obj"]]
+    if "var_obj" in p[2].extra.keys(): ## from FieldDeclaration
+        p[0].extra["var_obj_list"] += p[2].extra["var_obj"]
+
+    p[0].extra["last_rule"] = "BlockStatement"
 
 #*H
 def p_LocalVariableDeclarationStatement(p):
