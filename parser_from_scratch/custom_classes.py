@@ -144,12 +144,16 @@ class ClassObj():
         self.var_dict = dict()         # dict of variables in current class: key:name val:type
         self.method_dict = dict()           # dict of variables in current class: key:name val:MethodObj
         self.class_dict = dict()            # dict of variables in current class: key:name val:ClassObj
+        self.extends_class = ""
+        self.modifiers = []
 
     def __init__(self, name_):
         self.name = name_
         self.var_dict = dict()         # dict of variables in current scope: key:name val:type
         self.method_dict = dict()           # dict of variables in current scope: key:name val:MethodObj
         self.class_dict = dict()            # dict of variables in current scope: key:name val:ClassObj
+        self.extends_class = ""
+        self.modifiers = []
 
     def look_up_var(self, name):
         return (name in self.var_dict)
@@ -183,6 +187,7 @@ class ClassObj():
             raise KeyError("Method " + str(name) + " already exist!!")
     def insert_class(self, name, class_):
         if not self.look_up_class(name):
+            assert(name == class_.name)
             self.class_dict[name] = class_
         else:
             raise KeyError("Class " + str(name) + " already exist!!")

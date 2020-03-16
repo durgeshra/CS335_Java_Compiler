@@ -128,6 +128,12 @@ temp_array = [] #used to store the temporary varibles used to define an array   
 ###############   Helper functions  #################
 #####################################################
 
+def zip_name(ps):
+    str=ps[0].value
+    for p in ps[1:]:
+        str+="."+p.value
+    return str
+
 def is_number(s):
     if s == True or s == False:
         return False
@@ -1661,6 +1667,7 @@ def p_InterfaceMemberDeclarationS(p):
     else:
         p[0] = Node()
 
+# skipped (anay)
 #*
 def p_InterfaceMemberDeclaration(p):
     '''InterfaceMemberDeclaration : ConstantDeclaration
@@ -1689,6 +1696,7 @@ def p_ConstantDeclaration(p):
                             | IDENT IDENT SEMICOLON'''
     # p[0] = mytuple(["ConstantDeclaration"]+p[1:])
 
+# skipped
 def p_InterfaceMethodDeclaration(p):
     '''InterfaceMethodDeclaration : CommonModifierS MethodHeader MethodBody
                                 | DEFAULT MethodHeader MethodBody
@@ -1698,6 +1706,7 @@ def p_InterfaceMethodDeclaration(p):
                                 | MethodHeader SEMICOLON'''
     # p[0] = mytuple(["InterfaceMethodDeclaration"]+p[1:])
 
+# skipped
 def p_AnnotationTypeDeclaration(p):
     '''AnnotationTypeDeclaration : CommonModifierS ATRATE INTERFACE IDENT AnnotationTypeBody
                             | ATRATE INTERFACE IDENT AnnotationTypeBody'''
@@ -1739,33 +1748,33 @@ def p_AnnotationTypeElementDeclaration(p):
                                     | CommonModifierS NumericType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     | CommonModifierS BOOLEAN IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     | CommonModifierS IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
-                                    |   CommonModifierS UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |   CommonModifierS NumericType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |   CommonModifierS BOOLEAN IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    | CommonModifierS UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    | CommonModifierS NumericType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    | CommonModifierS BOOLEAN IDENT LPAREN RPAREN  DefaultValue SEMICOLON
                                     | CommonModifierS IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |   CommonModifierS UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |   CommonModifierS NumericType IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |   CommonModifierS BOOLEAN IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    | CommonModifierS UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    | CommonModifierS NumericType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    | CommonModifierS BOOLEAN IDENT LPAREN RPAREN Dims  SEMICOLON
                                     | CommonModifierS IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |   CommonModifierS UnannType IDENT LPAREN RPAREN SEMICOLON
-                                    |   CommonModifierS NumericType IDENT LPAREN RPAREN SEMICOLON
-                                    |   CommonModifierS BOOLEAN IDENT LPAREN RPAREN SEMICOLON
+                                    | CommonModifierS UnannType IDENT LPAREN RPAREN SEMICOLON
+                                    | CommonModifierS NumericType IDENT LPAREN RPAREN SEMICOLON
+                                    | CommonModifierS BOOLEAN IDENT LPAREN RPAREN SEMICOLON
                                     | CommonModifierS IDENT IDENT LPAREN RPAREN SEMICOLON
                                     | UnannType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     | NumericType IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
                                     | BOOLEAN IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
-                                        | IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
-                                    |   UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |   NumericType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |   BOOLEAN IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    | IDENT IDENT LPAREN RPAREN Dims DefaultValue SEMICOLON
+                                    | UnannType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    | NumericType IDENT LPAREN RPAREN  DefaultValue SEMICOLON
+                                    | BOOLEAN IDENT LPAREN RPAREN  DefaultValue SEMICOLON
                                     | IDENT IDENT LPAREN RPAREN  DefaultValue SEMICOLON
-                                    |   UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |   NumericType IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |   BOOLEAN IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    | UnannType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    | NumericType IDENT LPAREN RPAREN Dims  SEMICOLON
+                                    | BOOLEAN IDENT LPAREN RPAREN Dims  SEMICOLON
                                     | IDENT IDENT LPAREN RPAREN Dims  SEMICOLON
-                                    |   UnannType IDENT LPAREN RPAREN SEMICOLON
-                                    |   NumericType IDENT LPAREN RPAREN SEMICOLON
-                                    |   BOOLEAN IDENT LPAREN RPAREN SEMICOLON
+                                    | UnannType IDENT LPAREN RPAREN SEMICOLON
+                                    | NumericType IDENT LPAREN RPAREN SEMICOLON
+                                    | BOOLEAN IDENT LPAREN RPAREN SEMICOLON
                                     | IDENT IDENT LPAREN RPAREN SEMICOLON'''
     # p[0] = mytuple(["AnnotationTypeElementDeclaration"]+p[1:])
 
@@ -2984,7 +2993,7 @@ def p_TypeDeclaration(p):
 #*
 def p_CommonName(p):
     '''CommonName : PERIOD IDENT
-                        | CommonName PERIOD IDENT'''
+                  | CommonName PERIOD IDENT'''
     if len(p) == 3:
         p[0] = Node()
         p[0].id_list = [p[2]]
@@ -3005,6 +3014,18 @@ def p_ClassDeclaration(p):
                         | EnumDeclaration'''
     # p[0] = mytuple(["ClassDeclaration"]+p[1:])
 
+    p[0] = p[1]
+    if "class_obj" in p[0].extra.keys():
+        class_obj = p[0].extra["class_obj"]
+        scope_stack[-1].insert_class(class_obj.name, class_obj)
+
+    if "enum_obj" in p[0].extra.keys():
+        tmp = 1
+        # TODO (anay): Skipped for now
+        # enum_obj = p[0].extra["enum_obj"]
+        # scope_stack[-1].insert_class(enum_obj.name, enum_obj)
+
+    p[0].extra["last_rule"] = "ClassDeclaration"
 
 def p_SuperClass(p):
     '''SuperClass : EXTENDS ClassType
@@ -3014,13 +3035,27 @@ def p_SuperClass(p):
     '''
     # p[0] = mytuple(["SuperClass"] + p[1:])
 
+    p[0] = Node()
+
+    if len(p) == 3:
+        if p[2].extra["last_rule"] == "TypeVariable":
+            raise NameError(str(p.lineno(1)) + ": TypeVariables in SuperClass have not been implemented yet.")
+        p[0].extra["extends_class"] = p[2].type_list[0]
+    else:
+        class_str = zip_name([p[1], p[3]])
+        ## the following function errors if IDENT PERIOD IDENT is invalid
+        find_info_string_of_classes(class_str, p.lineno(1))
+        p[0].extra["extends_class"] = [class_str]
+
+    p[0].extra["last_rule"] = "SuperClass"
+
 def p_NormalClassDeclaration(p):
     '''NormalClassDeclaration : CommonModifierS CLASS IDENT TypeParameters SuperClass Superinterfaces ClassBody
                             | CommonModifierS CLASS IDENT TypeParameters Superinterfaces ClassBody
-                            | CommonModifierS CLASS IDENT TypeParameters SuperClass  ClassBody
-                            | CommonModifierS CLASS IDENT TypeParameters ClassBody
                             | CommonModifierS CLASS IDENT SuperClass Superinterfaces ClassBody
+                            | CommonModifierS CLASS IDENT TypeParameters ClassBody
                             | CommonModifierS CLASS IDENT Superinterfaces ClassBody
+                            | CommonModifierS CLASS IDENT TypeParameters SuperClass  ClassBody
                             | CommonModifierS CLASS IDENT SuperClass  ClassBody
                             | CommonModifierS CLASS IDENT ClassBody
                             | CLASS IDENT TypeParameters SuperClass Superinterfaces ClassBody
@@ -3033,6 +3068,29 @@ def p_NormalClassDeclaration(p):
                             | CLASS IDENT ClassBody'''
     # p[0] = mytuple(["NormalClassDeclaration"]+p[1:])
 
+    p[0] = p[-1]
+    class_obj = p[0].extra["class_obj"]
+
+    if p[0].extra["last_rule"] == "CommonModifierS":
+        class_obj.modifiers = p[1].extra["CommonModifierS"]
+    p.pop(1)
+
+    if p[3].extra["last_rule"] == "TypeParameters":
+        raise NameError(str(p.lineno(1)) + ": TypeParameters not implemented in NormalClassDeclaration.")
+    if len(p) > 4 and (p[3].extra["last_rule"] == "Superinterfaces" or p[4].extra["last_rule"] == "Superinterfaces"):
+        raise NameError(str(p.lineno(1)) + ": Superinterfaces not implemented in NormalClassDeclaration.")
+    class_obj.name = p[2].value
+
+    if len(p) == 5:
+        class_obj.extends_class = p[3].extra["extends_class"]
+
+    if "constructor_name" in p[0].extra.keys() and p[0].extra["constructor_name"] != class_obj.name:
+        raise NameError(str(p.lineno(1)) + ": Constructor (named: " + p[0].extra["constructor_name"] + ") does not match the class name: " + class_obj.name)
+
+    p[0].extra["last_rule"] = "NormalClassDeclaration"
+
+
+# skipped
 def p_TypeParameters(p):
     '''TypeParameters : LSS TypeParameterList GTR
     '''
@@ -3040,35 +3098,39 @@ def p_TypeParameters(p):
     # print("\n"*20)
     # p[0] = mytuple(["TypeParameters"]+p[1:])
 
+    p[0] = Node()
+
     p[0].extra["last_rule"] = "TypeParameters"
 
-
+# skipped
 def p_COMMMATypeParameterS(p):
     '''COMMMATypeParameterS : COMMMATypeParameterS COMMA TypeParameter
                             | empty
     '''
     # p[0] = mytuple(["COMMMATypeParameterS"]+p[1:])
 
-
+# skipped
 def p_TypeParameterList(p):
     '''TypeParameterList : TypeParameter COMMMATypeParameterS
     '''
     # p[0] = mytuple(["TypeParameterList"]+p[1:])
 
-
+# skipped
 def p_Superinterfaces(p):
     '''Superinterfaces : IMPLEMENTS InterfaceTypeList
     '''
     # p[0] = mytuple(["Superinterfaces"]+p[1:])
+    raise NameError(str(p.lineno(1)) + ": Superinterfaces not implemented.")
 
-
+# skipped
 def p_COMMAInterfaceTypeS(p):
     '''COMMAInterfaceTypeS : COMMA InterfaceTypeList
                             | empty
     '''
     # p[0] = mytuple(["COMMAInterfaceTypeS"]+p[1:])
+    raise NameError(str(p.lineno(1)) + ": COMMAInterfaceTypeS not implemented.")
 
-
+# skipped
 def p_InterfaceTypeList(p):
     '''InterfaceTypeList : ClassType COMMAInterfaceTypeS
                     | TypeVariable COMMAInterfaceTypeS
@@ -3076,22 +3138,52 @@ def p_InterfaceTypeList(p):
                     | IDENT COMMAInterfaceTypeS
     '''
     # p[0] = mytuple(["InterfaceTypeList"]+p[1:])
+    raise NameError(str(p.lineno(1)) + ": InterfaceTypeList not implemented.")
 
 
 def p_ClassBodyDeclarationS(p):
     '''ClassBodyDeclarationS : ClassBodyDeclarationS ClassBodyDeclaration
                             | ClassBodyDeclarationS SEMICOLON
-                             | empty
+                            | empty
     '''
     # p[0] = mytuple(["ClassBodyDeclarationS"]+p[1:])
+    p[0] = Node()
 
+    if len(p) == 2:
+        class_obj = ClassObj()
+        p[0].extra["class_obj"] = class_obj
+    elif hassattr(p[2], 'type'):
+        p[0] = p[1]
+    else:
+        # TODO (anay) !!! fill in this
+        p[0] = p[1]
+        class_obj = p[0].extra["class_obj"]
 
+        if "meth_obj" in p[2].extra.keys(): ## from ConstructorDeclaration, MethodDeclaration
+            meth_obj = p[2].extra["meth_obj"]
+            class_obj.insert_method(meth_obj.name, meth_obj)
+        if "class_obj" in p[2].extra.keys(): ## from ClassDeclaration
+            subclass_obj = p[2].extra["class_obj"]
+            class_obj.insert_class(subclass_obj.name, subclass_obj)
+        if "var_obj" in p[2].extra.keys(): ## from FieldDeclaration
+            var_obj = p[2].extra["var_obj"]
+            class_obj.insert_var(var_obj[0], var_obj[1])
+
+        # TODO (anay)!!! not handled: InterfaceDeclaration, Block, StaticInitializer
+
+        p[0].extra["class_obj"] = class_obj
+
+    p[0].extra["last_rule"] = "ClassBodyDeclarationS"
+
+# updated (anay)
 def p_ClassBody(p):
     '''ClassBody : LBRACE ClassBodyDeclarationS RBRACE
     '''
     # p[0] = mytuple(["ClassBody"]+p[1:])
+    p[0] = p[2]
+    p[0].extra["last_rule"] = "ClassBody"
 
-
+# updated (anay)
 def p_ClassBodyDeclaration(p):
     '''ClassBodyDeclaration : ClassMemberDeclaration
                             | Block
@@ -3099,8 +3191,11 @@ def p_ClassBodyDeclaration(p):
                             | ConstructorDeclaration
     '''
     # p[0] = mytuple(["ClassBodyDeclaration"]+p[1:])
+    p[0] = p[1]
+    p[0].extra["last_rule"] = "ClassBodyDeclaration"
 
 
+# updated (anay)
 def p_ClassMemberDeclaration(p):
     '''ClassMemberDeclaration : FieldDeclaration
                             | MethodDeclaration
@@ -3108,7 +3203,9 @@ def p_ClassMemberDeclaration(p):
                             | InterfaceDeclaration
     '''
     # p[0] = mytuple(["ClassMemberDeclaration"]+p[1:])
+    p[0] = p[1]
 
+    p[0].extra["last_rule"] = "ClassMemberDeclaration"
 
 def p_FieldDeclaration(p):
     '''FieldDeclaration : CommonModifierS UnannType VariableDeclaratorList SEMICOLON
@@ -3134,7 +3231,7 @@ def p_FieldDeclaration(p):
 
 def p_COMMAVariableDeclaratorS(p):
     '''COMMAVariableDeclaratorS : COMMAVariableDeclaratorS COMMA VariableDeclarator
-                            | COMMAVariableDeclaratorS COMMA IDENT
+                                | COMMAVariableDeclaratorS COMMA IDENT
                                 | COMMA IDENT
                                 | COMMA VariableDeclarator
     '''
@@ -3155,10 +3252,11 @@ def p_VariableDeclarator(p):
     '''
     # p[0] = mytuple(["VariableDeclarator"]+p[1:])
 
+# TODO (anay)!!!: include Dims in the variable type list!!!
 def p_VariableDeclaratorId(p):
     '''VariableDeclaratorId : IDENT Dims'''
     # p[0] = mytuple(["VariableDeclaratorId"]+p[1:])
-    # TODO (anay)!!!: include Dims in the variable type list!!!
+    p[0] = Node()
     p[0].extra["parameter_id_list"] = [p[1].value]
 
     p[0].extra["last_rule"] = "VariableDeclaratorId"
@@ -3172,13 +3270,7 @@ def p_VariableInitializer(p):
 
     p[0].extra["last_rule"] = "VariableInitializer"
 
-
-def zip_name(ps):
-    str=ps[0].value
-    for p in ps[1:]:
-        str+="."+p.value
-    return str
-
+# Updated (anay)
 def p_UnannType(p):
     '''UnannType : UnannReferenceType
                 | IDENT PERIOD IDENT
@@ -3188,6 +3280,7 @@ def p_UnannType(p):
     if len(p) == 2:
         p[0] = p[1]
     else:
+        p[0] = Node()
         class_str = zip_name([p[1], p[3]])
         ## the following function errors if IDENT PERIOD IDENT is invalid
         find_info_string_of_classes(class_str, p.lineno(1))
@@ -3195,7 +3288,7 @@ def p_UnannType(p):
 
     p[0].extra["last_rule"] = "UnannType"
 
-#*
+# Updated (anay)
 def p_UnannReferenceType(p):
     '''UnannReferenceType :  UnannClassType
                         | UnannArrayType
@@ -3205,9 +3298,7 @@ def p_UnannReferenceType(p):
 
     p[0].extra["last_rule"] = "UnannReferenceType"
 
-
-
-
+# Updated (anay)
 def p_UnannClassType(p):
     '''UnannClassType : IDENT TypeArguments
                       | UnannClassType PERIOD IDENT
@@ -3219,12 +3310,12 @@ def p_UnannClassType(p):
                       | IDENT PERIOD AnnotationS IDENT TypeArguments'''
     # p[0] = mytuple(["UnannClassType"]+p[1:])
 
-    raise NameError(str(p.lineno(1)) + ": One or more of TypeArguments and AnnotationS not implemented in UnannClassType.")
+    raise NameError(str(p.lineno(1)) + ": One or more of [TypeArguments, AnnotationS] not implemented in UnannClassType.")
 
     p[0].extra["last_rule"] = "UnannClassType"
 
 
-
+# TODO (anay) !!! Implement this with array code!!!
 def p_UnannArrayType(p):
     '''UnannArrayType :  NumericType Dims
                         | BOOLEAN Dims
@@ -3233,27 +3324,32 @@ def p_UnannArrayType(p):
                         | IDENT Dims
     '''
     # p[0] = mytuple(["UnannArrayType"]+p[1:])
-    # TODO (anay) !!! Implement this with array code!!!
 
-
+# Updated (anay)
 def p_MethodDeclaration(p):
     '''MethodDeclaration : CommonModifierS MethodHeader MethodBody
-                         | MethodHeader MethodBody
                         | CommonModifierS MethodHeader SEMICOLON
+                        | MethodHeader MethodBody
                         | MethodHeader SEMICOLON
     '''
     # p[0] = mytuple(["MethodDeclaration"]+p[1:])
 
-    # TODO (anay): handle CommonModifierS here
+
     if len(p) == 4:
         p[2].extra["meth_obj"].modifiers = p[1].extra["CommonModifierS"]
     else:
-        p[2].extra["meth_obj"].modifiers = []
+        p[1].extra["meth_obj"].modifiers = []
+
+    p[0] = p[-2]
 
     p[0].extra["last_rule"] = "MethodDeclaration"
 
 
 # TODO: Major hacks here!!! We removed Throws non-terminal
+# Updated (anay)
+# TODO (anay) !!! Handle throws !!!
+# TODO (anay) ^ Don't need them right now (might need them in 3AC)
+# TODO (anay): we might have incorrect CFG here for THROWS
 def p_MethodHeader(p):
     '''MethodHeader : TypeParameters AnnotationS UnannType MethodDeclarator THROWS IDENT
                     | TypeParameters AnnotationS UnannType MethodDeclarator THROWS IDENT PERIOD IDENT
@@ -3367,6 +3463,8 @@ def p_MethodHeader(p):
     if p[1].extra["last_rule"] == "TypeParameters":
         raise NameError(str(p.lineno(1)) + ": TypeParameters in MethodHeader have not been implemented yet.")
 
+    p[0] = p[2]
+
     if hasattr(p[1], 'type'):
         p[0].extra["return_type"] = p[1].value
         p[0].extra["meth_obj"].return_type = p[0].extra["return_type"]
@@ -3374,14 +3472,10 @@ def p_MethodHeader(p):
         p[0].extra["return_type"] = p[1].type_list[0]
         p[0].extra["meth_obj"].return_type = p[0].extra["return_type"]
 
-    # TODO (anay) !!! Handle throws !!!
-    # TODO (anay) ^ Don't need them right now (might need them in 3AC)
-    # TODO (anay): we might have incorrect CFG here for THROWS
 
     p[0].extra["last_rule"] = "MethodHeader"
 
-
-
+# Updated (anay)
 def p_MethodDeclarator(p):
     '''MethodDeclarator : IDENT LPAREN FormalParameterList RPAREN
                         | IDENT LPAREN FormalParameterList RPAREN Dims
@@ -3398,12 +3492,15 @@ def p_MethodDeclarator(p):
         meth.param_list = p[3].extra["parameter_id_list"]
         meth.is_opt = [True] * len(meth.param_list) # TODO (anay): update the is_opt list when incorporating ReceiverParameters
 
+    # TODO (anay) !!! Handle Dims!!!
+
     p[0].extra["meth_obj"] = meth
-    scope_stack[-1].insert_method(meth.name, meth)
+    # scope_stack[-1].insert_method(meth.name, meth) # we would add the method in the class not the scope
 
     # TODO (anay): Do we need to store anything else in p[0]?
     p[0].extra["last_rule"] = "MethodDeclarator"
 
+# Updated (anay)
 def p_FormalParameterList(p):
     '''FormalParameterList :  ReceiverParameter
                             | FormalParameters COMMA LastFormalParameter
@@ -3420,7 +3517,7 @@ def p_FormalParameterList(p):
 
     p[0].extra["last_rule"] = "FormalParameterList"
 
-
+# Updated (anay)
 def p_COMMAFormalParameterS(p):
     '''COMMAFormalParameterS : COMMAFormalParameterS COMMA FormalParameter
                             | COMMA FormalParameter
@@ -3438,7 +3535,7 @@ def p_COMMAFormalParameterS(p):
 
     p[0].extra["last_rule"] = "COMMAFormalParameterS"
 
-
+# Updated (anay)
 def p_FormalParameters(p):
     '''FormalParameters : FormalParameter COMMAFormalParameterS
                         | ReceiverParameter COMMAFormalParameterS
@@ -3458,6 +3555,7 @@ def p_FormalParameters(p):
 
     p[0].extra["last_rule"] = "FormalParameters"
 
+# Updated (anay)
 def p_FormalParameter(p):
     '''FormalParameter : CommonModifier UnannType VariableDeclaratorId
                         | CommonModifier NumericType VariableDeclaratorId
@@ -3509,7 +3607,7 @@ def p_FormalParameter(p):
 
     p[0].extra["last_rule"] = "FormalParameter"
 
-
+# Updated (anay)
 # TODO: Dropped this rule..., p_LastFormalParameter was used only in p_FormalParameterList.
 def p_LastFormalParameter(p):
     '''LastFormalParameter : CommonModifierS UnannType AnnotationS ELLIPSIS VariableDeclaratorId
@@ -3581,13 +3679,15 @@ def p_ReceiverParameter(p):
     p[0].extra["parameter_type_list"] = [] ## TODO (anay): ReceiverParameter hasn't been implemented yet
     p[0].extra["parameter_id_list"] = [] ## TODO (anay): ReceiverParameter hasn't been implemented yet
 
+ # # # #                                  # # # #
+######## Next four not needed (probably) ########
+# # # #                                  # # # #
 
 def p_Throws(p):
     '''Throws :  THROWS ExceptionTypeList
                 | THROWS IDENT
     '''
     # p[0] = mytuple(["Throws"] + p[1:])
-
 
 def p_COMMAExceptionTypeS(p):
     '''COMMAExceptionTypeS : COMMAExceptionTypeS COMMA ExceptionType
@@ -3597,14 +3697,12 @@ def p_COMMAExceptionTypeS(p):
     '''
     # p[0] = mytuple(["COMMAExceptionTypeS"] + p[1:])
 
-
 def p_ExceptionTypeList(p):
     '''ExceptionTypeList : ExceptionType COMMAExceptionTypeS
                     | IDENT COMMAExceptionTypeS
                     | ExceptionType
     '''
     # p[0] = mytuple(["ExceptionTypeList"] + p[1:])
-
 
 def p_ExceptionType(p):
     ''' ExceptionType :  ClassType
@@ -3620,8 +3718,6 @@ def p_MethodBody(p):
     # p[0] = mytuple(["MethodBody"] + p[1:])
     p[0] = p[1]
 
-
-
 def p_StaticInitializer(p):
     '''StaticInitializer : STATIC Block
     '''
@@ -3634,22 +3730,50 @@ def p_ConstructorDeclaration(p):
                                 | ConstructorDeclarator Throws ConstructorBody
     '''
     # p[0] = mytuple(["ConstructorDeclaration"] + p[1:])
+    if len(p) == 4:
+        p[2].extra["meth_obj"].modifiers = p[1].extra["CommonModifierS"]
+        p[2].extra["meth_obj"].return_type = "void"
+        p[0] = p[2]
+    else:
+        p[1].extra["meth_obj"].modifiers = []
+        p[2].extra["meth_obj"].return_type = "void"
+        p[0] = p[1]
+
+    p[0].extra["last_rule"] = "ConstructorDeclaration"
 
 def p_ConstructorDeclarator(p):
     '''ConstructorDeclarator : TypeParameters IDENT LPAREN FormalParameterList RPAREN
-                            | IDENT LPAREN FormalParameterList RPAREN
                             | TypeParameters IDENT LPAREN  RPAREN
-                            | IDENT LPAREN  RPAREN
+                            | IDENT LPAREN FormalParameterList RPAREN
+                            | IDENT LPAREN RPAREN
     '''
     # p[0] = mytuple(["ConstructorDeclarator"] + p[1:])
+    if hasattr(p[1], 'extra') and p[1].extra["last_rule"] == "TypeParameters":
+        raise NameError(str(p.lineno(1)) + ": TypeParameters not implemented in ConstructorDeclarator.")
+
+    if in_scope(p[1].value):
+        raise NameError(str(p.lineno(1)) + ": Method " + p[1].value + " already defined in the current scope.")
+
+    meth = MethodObj(p[1].value)
+    if len(p) > 4:
+        meth.type = p[3].extra["parameter_type_list"]
+        meth.param_list = p[3].extra["parameter_id_list"]
+        meth.is_opt = [True] * len(meth.param_list) # TODO (anay): update the is_opt list when incorporating ReceiverParameters
+
+    p[0].extra["meth_obj"] = meth
+    p[0].extra["constructor_name"] = meth.name # useful to verify the constructor name is the same as the class name
+    # scope_stack[-1].insert_method(meth.name, meth) #  we would add the method in the class not the scope
+
+    # TODO (anay): Do we need to store anything else in p[0]?
+    p[0].extra["last_rule"] = "ConstructorDeclarator"
 
 def p_ConstructorBody(p):
-    '''ConstructorBody : LBRACE  ExplicitConstructorInvocation BlockStatements  RBRACE
-                        | LBRACE  ExplicitConstructorInvocation SEMICOLON  RBRACE
-                        | LBRACE  ExplicitConstructorInvocation  RBRACE
-                        | LBRACE  BlockStatements  RBRACE
-                        | LBRACE  SEMICOLON  RBRACE
-                        | LBRACE  RBRACE
+    '''ConstructorBody : LBRACE ExplicitConstructorInvocation BlockStatements  RBRACE
+                        | LBRACE ExplicitConstructorInvocation SEMICOLON  RBRACE
+                        | LBRACE ExplicitConstructorInvocation  RBRACE
+                        | LBRACE BlockStatements  RBRACE
+                        | LBRACE SEMICOLON  RBRACE
+                        | LBRACE RBRACE
     '''
     # p[0] = mytuple(["ConstructorBody"] + p[1:])
 
@@ -3657,15 +3781,15 @@ def p_ExplicitConstructorInvocation(p):
     '''ExplicitConstructorInvocation : TypeArguments THIS LPAREN ArgumentList RPAREN SEMICOLON
                                     | TypeArguments THIS LPAREN  RPAREN SEMICOLON
                                     | THIS LPAREN ArgumentList RPAREN SEMICOLON
-                                    | THIS LPAREN  RPAREN SEMICOLON
+                                    | THIS LPAREN RPAREN SEMICOLON
                                     | TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
                                     | TypeArguments SUPER LPAREN  RPAREN SEMICOLON
                                     | SUPER LPAREN ArgumentList RPAREN SEMICOLON
-                                    | SUPER LPAREN  RPAREN SEMICOLON
+                                    | SUPER LPAREN RPAREN SEMICOLON
                                     | IDENT PERIOD TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
-                                    | IDENT PERIOD  SUPER LPAREN ArgumentList RPAREN SEMICOLON
+                                    | IDENT PERIOD SUPER LPAREN ArgumentList RPAREN SEMICOLON
                                     | IDENT PERIOD TypeArguments SUPER LPAREN  RPAREN SEMICOLON
-                                    | IDENT PERIOD  SUPER LPAREN  RPAREN SEMICOLON
+                                    | IDENT PERIOD SUPER LPAREN  RPAREN SEMICOLON
                                     | IDENT CommonName PERIOD TypeArguments SUPER LPAREN ArgumentList RPAREN SEMICOLON
                                     | IDENT CommonName PERIOD  SUPER LPAREN ArgumentList RPAREN SEMICOLON
                                     | IDENT CommonName PERIOD TypeArguments SUPER LPAREN  RPAREN SEMICOLON
@@ -3677,6 +3801,16 @@ def p_ExplicitConstructorInvocation(p):
     '''
     # p[0] = mytuple(["ExplicitConstructorInvocation"] + p[1:])
 
+
+
+
+
+
+
+ # # # #                    # # # #
+######## Enum starts below ########
+# # # #                    # # # #
+
 def p_EnumDeclaration(p):
     '''EnumDeclaration : CommonModifierS ENUM IDENT Superinterfaces EnumBody
                     | CommonModifierS ENUM IDENT EnumBody
@@ -3684,7 +3818,6 @@ def p_EnumDeclaration(p):
                     | ENUM IDENT EnumBody
     '''
     # p[0] = mytuple(["EnumDeclaration"] + p[1:])
-
 
 def p_EnumBody(p):
     '''EnumBody : LBRACE EnumConstantList COMMA EnumBodyDeclarations  RBRACE
@@ -3698,19 +3831,16 @@ def p_EnumBody(p):
     '''
     # p[0] = mytuple(["EnumBody"] + p[1:])
 
-
 def p_COMMAEnumConstantS(p):
     '''COMMAEnumConstantS : COMMAEnumConstantS COMMA EnumConstant
                           | empty
     '''
     # p[0] = mytuple(["COMMAEnumConstantS"] + p[1:])
 
-
 def p_EnumConstantList(p):
     '''EnumConstantList : EnumConstant COMMAEnumConstantS
     '''
     # p[0] = mytuple(["EnumConstantList"] + p[1:])
-
 
 def p_EnumConstant(p):
     '''EnumConstant : EnumConstantModifierS IDENT LPAREN RPAREN ClassBody
@@ -3722,20 +3852,17 @@ def p_EnumConstant(p):
     '''
     # p[0] = mytuple(["EnumConstant"] + p[1:])
 
-
 def p_EnumConstantModifierS(p):
     '''EnumConstantModifierS : EnumConstantModifierS EnumConstantModifier
                             | empty
     '''
     # p[0] = mytuple(["EnumConstantModifierS"] + p[1:])
 
-#*
 def p_EnumConstantModifier(p):
     '''EnumConstantModifier : Annotation
     '''
     # p[0] = mytuple(["EnumConstantModifier"] + p[1:])
     p[0] = p[1]
-
 
 def p_EnumBodyDeclarations(p):
     '''EnumBodyDeclarations : SEMICOLON ClassBodyDeclarationS
@@ -3798,14 +3925,14 @@ def p_ReferenceType(p):
 
 
 def p_ClassType(p):
-    '''ClassType : TypeVariable TypeArguments
-                 | IDENT TypeArguments
+    '''ClassType : ClassType PERIOD IDENT
+                 | ClassType PERIOD TypeVariable
                  | ClassType PERIOD TypeVariable TypeArguments
                  | ClassType PERIOD IDENT TypeArguments
+                 | TypeVariable TypeArguments
+                 | IDENT TypeArguments
                  | IDENT PERIOD TypeVariable TypeArguments
                  | IDENT PERIOD IDENT TypeArguments
-                 | ClassType PERIOD TypeVariable
-                 | ClassType PERIOD IDENT
                  | IDENT PERIOD TypeVariable'''
     # p[0] = mytuple(["ClassType"]+p[1:])
 
@@ -4951,24 +5078,29 @@ def p_CommonModifierS(p):
         p[0].id_list += p[2].id_list
         p[0].type_list += p[2].type_list
         p[0].place_list += p[2].place_list
+        p[0].extra["CommonModifierS"] += p[2].extra["CommonModifierS"]
 
 def p_CommonModifier(p):
     '''CommonModifier : Annotation
                     | PUBLIC
                     | PROTECTED
                     | PRIVATE
-                     | STATIC
-                     | FINAL
-                     | TRANSIENT
-                     | VOLATILE
-                     | ABSTRACT
-                     | SYNCHRONIZED
+                    | STATIC
+                    | FINAL
+                    | TRANSIENT
+                    | VOLATILE
+                    | ABSTRACT
+                    | SYNCHRONIZED
                     | NATIVE
                     | STRICTFP
     '''
     # TODO: Remove annotation
     # p[0] = mytuple(["CommonModifier"]+p[1:])
-
+    p[0] =  Node()
+    if hasattr(p[1], 'type'):
+        p[0].extra["CommonModifierS"] = p[1].value
+    else:
+        p[0].extra["CommonModifierS"] = []
 
 
 def p_Resource(p):
