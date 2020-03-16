@@ -25,7 +25,8 @@ type_dict = {'boolean': {'size': 1, 'pid': -1, 'lvl': 0}, \
              'long': {'size': 8, 'pid': 'float', 'lvl': 3}, \
              'float': {'size': 4, 'pid': 'double', 'lvl': 2}, \
              'double': {'size': 8, 'pid': -1, 'lvl': 1}, \
-             'identifier': {'size': -1, 'pid': -1, 'lvl': -1}}  # dummy type in place of unknown identifier types
+             'void': {'size': -1, 'pid': -1, 'lvl': -1}, \
+             'identifier': {'size': -1, 'pid': -1, 'lvl': -1}}# dummy type in place of unknown identifier types
 
 def higher(a, b):
     if a not in type_dict.keys() or b not in type_dict.keys():
@@ -65,6 +66,43 @@ def widen():
 
 #-------------------SYMBOL TABLE STUFF-----------------------------
 scope_stack = [SymbolTable()]
+
+# If we ever have a class IDENT PERIOD IDENT PERIOD IDENT, say, animal PERIOD dog PERIOD pug
+# We store its type as "animal.dog.pug".
+# If we have to check this is a valid type in the current scope, we have to break the string
+# about the PERIODS, i.e.,
+# 1. Find the first class, then
+# 2. find the second subclass, and then
+# 3. recursively find further sub-classes.
+# Also see `find_info_string_of_classes` below.
+
+
+def find_info_string_of_classes(class_str, line):
+    global scope_stack
+    ident = class_str.split('.')[0]
+    rest_str = class_str.split('.')[1:]
+
+    stack_size = len(scope_stack)
+    for scope in range(stack_size-1,-1,-1):
+        if scope_stack[scope].look_up(ident):
+            info_ = scope_stack[scope].get_info(ident)
+
+            if info_[0] != "class":
+                raise NameError(str(line) + ": " + ident + " is not a valid class name.")
+            cur_class_obj = info_[1]
+
+            while len(rest_str) != 0:
+                subclass = rest_str.split('.')[0]
+                rest_str = rest_str.split('.')[1:]
+                if cur_class_obj.look_up_class(subclass):
+                    cur_class_obj = cur_class_obj.get_class(subclass)
+                else:
+                    raise NameError(str(line) + ": " + subclass + " is not a valid (sub)-class name.")
+
+            return cur_class_obj
+
+    raise NameError(str(line) + ": Class (list) " + class_str + " is not in any scope")
+
 
 # Removed stuff from PyGo
 # scopes_ctr = 0    #TODO (anay): I don't think we need this, it is basically equal to len(scope_stack).
@@ -1599,25 +1637,6 @@ def p_NormalInterfaceDeclaration(p):
     '''
     # p[0] = mytuple(["NormalInterfaceDeclaration"]+p[1:])
 
-
-# def p_InterfaceModifierS(p):
-#     '''InterfaceModifierS : Annotation InterfaceModifierS
-#                           | PUBLIC InterfaceModifierS
-#                           | PROTECTED InterfaceModifierS
-#                           | PRIVATE InterfaceModifierS
-#                           | ABSTRACT InterfaceModifierS
-#                           | STATIC InterfaceModifierS
-#                           | STRICTFP InterfaceModifierS
-#                           | empty'''
-#     # p[0] = mytuple(["InterfaceModifierS"]+p[1 :])
-
-# def p_InterfaceModifier(p):
-#     '''InterfaceModifier :
-#                          | ABSTRACT
-#                          | STATIC
-#                          | STRICTFP'''
-#     # p[0] = mytuple(["InterfaceModifier"]+p[1 :])
-
 #*
 def p_ExtendsInterfaces(p):
     '''ExtendsInterfaces : EXTENDS InterfaceTypeList'''
@@ -1674,19 +1693,6 @@ def p_ConstantDeclaration(p):
                             | IDENT IDENT SEMICOLON'''
     # p[0] = mytuple(["ConstantDeclaration"]+p[1:])
 
-# def p_ConstantModifierS(p):
-#     '''ConstantModifierS : ConstantModifier ConstantModifierS
-#                         | empty '''
-#     # p[0] = mytuple(["ConstantModifierS"]+p[1 :])
-
-# def p_ConstantModifier(p):
-#     '''ConstantModifier : Annotation
-#                        | PUBLIC
-#                        | STATIC
-#                        | FINAL'''
-#     # p[0] = mytuple(["ConstantModifier"]+p[1 :])
-
-
 def p_InterfaceMethodDeclaration(p):
     '''InterfaceMethodDeclaration : CommonModifierS MethodHeader MethodBody
                                 | DEFAULT MethodHeader MethodBody
@@ -1696,30 +1702,10 @@ def p_InterfaceMethodDeclaration(p):
                                 | MethodHeader SEMICOLON'''
     # p[0] = mytuple(["InterfaceMethodDeclaration"]+p[1:])
 
-# def p_InterfaceMethodModifierS(p):
-#     '''InterfaceMethodModifierS : InterfaceMethodModifier InterfaceMethodModifierS
-#                                | empty'''
-#     # p[0] = mytuple(["InterfaceMethodModifierS"]+p[1 :])
-
-# def p_InterfaceMethodModifier(p):
-#     '''InterfaceMethodModifier :  Annotation
-#                                 | PUBLIC
-#                                 | ABSTRACT
-#                                 | DEFAULT
-#                                 | STATIC
-#                                 | STRICTFP'''
-#     # p[0] = mytuple(["InterfaceMethodModifier"]+p[1 :])
-
-
 def p_AnnotationTypeDeclaration(p):
     '''AnnotationTypeDeclaration : CommonModifierS ATRATE INTERFACE IDENT AnnotationTypeBody
                             | ATRATE INTERFACE IDENT AnnotationTypeBody'''
     # p[0] = mytuple(["AnnotationTypeDeclaration"]+p[1:])
-
-# def p_InterfaceModifierS(p):
-#     '''InterfaceModifierS : InterfaceModifier InterfaceModifierS
-#                          | empty'''
-#     # p[0] = mytuple(["InterfaceModifierS"]+p[1 :])
 
 #*
 def p_AnnotationTypeBody(p):
@@ -1787,16 +1773,6 @@ def p_AnnotationTypeElementDeclaration(p):
                                     | IDENT IDENT LPAREN RPAREN SEMICOLON'''
     # p[0] = mytuple(["AnnotationTypeElementDeclaration"]+p[1:])
 
-# def p_AnnotationTypeElementModifierS(p):
-#     '''AnnotationTypeElementModifierS : AnnotationTypeElementModifier AnnotationTypeElementModifierS
-#                                       | empty'''
-#     # p[0] = mytuple(["AnnotationTypeElementModifierS"]+p[1 :])
-
-# def p_AnnotationTypeElementModifier(p):
-#     '''AnnotationTypeElementModifier : Annotation
-#                                      | PUBLIC
-#                                      | ABSTRACT'''
-#     # p[0] = mytuple(["AnnotationTypeElementModifier"]+p[1 :])
 
 #*
 def p_DefaultValue(p):
@@ -1979,15 +1955,6 @@ def p_ArrayInitializer(p):
     # print(p[1:])
     # p[0] = mytuple(["ArrayInitializer"]+p[1:])
 
-
-# def p_lbrace(p):
-#     '''LBRACE : LBRACE'''
-#     # p[0] = mytuple(["LBRACE"]+p[1:])
-
-
-# def p_rbrace(p):
-#     '''RBRACE : RBRACE'''
-#     # p[0] = mytuple(["RBRACE"]+p[1:])
 
 #*
 def p_VariableInitializerList(p):
@@ -2285,12 +2252,6 @@ def p_DimExprs(p):
     '''DimExprs : DimExprs DimExpr
                 | DimExpr'''
     # p[0] = mytuple(["DimExprs"]+p[1:])
-
-# def p_DimExprS(p):
-#     '''DimExprS : DimExprS DimExpr
-#                | DimExpr'''
-#     # p[0] = mytuple(["DimExprS"]+p[1 :])
-
 
 def p_DimExpr(p):
     '''DimExpr : AnnotationS LBRACK Expression RBRACK
@@ -2861,7 +2822,8 @@ def p_PostDecrementExpression(p):
     p[0] = p[1]
 
     if len(p) == 3:
-        if p[0].type_list[0] in type_list and p[0].type_list[0] != 'boolean':
+        if p[0].type_list[0] in
+         and p[0].type_list[0] != 'boolean':
             # write some 3ac code.
             temp=0
             # p[0].code += [[type_v + "_" + p[2][1], p[0].place_list[0], p[0].place_list[0], "1"]]
@@ -3023,20 +2985,6 @@ def p_TypeDeclaration(p):
 ########## Section 6 : ##############
 ####################################
 
-# def p_TypeName(p):
-#     '''CommonName : IDENT
-#                 | CommonName PERIOD IDENT '''
-#     # p[0] = mytuple(["type_name"]+p[1 :])
-
-# def p_TypeName(p):
-#     '''TypeName : CommonName'''
-#     # p[0] = mytuple(["type_name"]+p[1 :])
-
-# def p_PackageOrTypeName(p):
-#     '''CommonName : IDENT
-#                         | CommonName PERIOD IDENT '''
-#     # p[0] = mytuple(["CommonName"]+p[1 :])
-
 #*
 def p_CommonName(p):
     '''CommonName : PERIOD IDENT
@@ -3051,20 +2999,6 @@ def p_CommonName(p):
         p[0].type_list += ["identifier"]
     # p[0] = mytuple(["CommonName"]+p[1:])
 
-
-# def p_MethodName(p):
-#     '''MethodName : IDENT'''
-#     # p[0] = mytuple(["MethodName"]+p[1 :])
-
-# def p_PackageName(p):
-#     '''PackageName : IDENT
-#                     | PackageName PERIOD IDENT'''
-#     # p[0] = mytuple(["PackageName"]+p[1 :])
-
-# def p_AmbiguousName(p):
-#     '''CommonName : IDENT
-#                     | CommonName PERIOD IDENT'''
-#     # p[0] = mytuple(["CommonName"]+p[1 :])
 
 ####################################
 ########## SECTION #8 ##############
@@ -3084,11 +3018,6 @@ def p_SuperClass(p):
     '''
     # p[0] = mytuple(["SuperClass"] + p[1:])
 
-# def p_Superinterfaces(p):
-#     '''Superinterfaces : IMPLEMENTS InterfaceTypeList
-#     '''
-#     # p[0] = mytuple(["Superinterfaces"] + p[1:])
-
 def p_NormalClassDeclaration(p):
     '''NormalClassDeclaration : CommonModifierS CLASS IDENT TypeParameters SuperClass Superinterfaces ClassBody
                             | CommonModifierS CLASS IDENT TypeParameters Superinterfaces ClassBody
@@ -3107,32 +3036,6 @@ def p_NormalClassDeclaration(p):
                             | CLASS IDENT SuperClass  ClassBody
                             | CLASS IDENT ClassBody'''
     # p[0] = mytuple(["NormalClassDeclaration"]+p[1:])
-
-# def p_ClassModifier(p):
-#     '''ClassModifier : Annotation
-#                     | PUBLIC
-#                     | PROTECTED
-#                     | PRIVATE
-#                     | ABSTRACT
-#                     | STATIC
-#                     | FINAL
-#                     | STRICTFP
-#     '''
-#     # p[0] = mytuple(["ClassModifier"]+p[1 :])
-
-# def p_ClassModifier(p):
-#     '''ClassModifier : Annotation
-#                     | Annotation
-#                     | PUBLIC
-#                     | PROTECTED
-#                     | PRIVATE
-#                     | FINAL
-#                     | ABSTRACT
-#                     | STATIC
-#                     | STRICTFP
-#     '''
-#     # p[0] = mytuple(["ClassModifier"]+p[1 :])
-
 
 def p_TypeParameters(p):
     '''TypeParameters : LSS TypeParameterList GTR
@@ -3155,11 +3058,6 @@ def p_TypeParameterList(p):
     '''TypeParameterList : TypeParameter COMMMATypeParameterS
     '''
     # p[0] = mytuple(["TypeParameterList"]+p[1:])
-
-# def p_Superclass(p):
-#     '''Superclass : EXTENDS ClassType
-#     '''
-#     # p[0] = mytuple(["Superclass"]+p[1 :])
 
 
 def p_Superinterfaces(p):
@@ -3215,12 +3113,6 @@ def p_ClassMemberDeclaration(p):
     '''
     # p[0] = mytuple(["ClassMemberDeclaration"]+p[1:])
 
-# def p_FieldModifierS(p):
-#     '''CommonModifierS : CommonModifier CommonModifierS
-#                         | CommonModifier
-#     '''
-#     # p[0] = mytuple(["CommonModifierS"]+p[1 :])
-
 
 def p_FieldDeclaration(p):
     '''FieldDeclaration : CommonModifierS UnannType VariableDeclaratorList SEMICOLON
@@ -3242,17 +3134,6 @@ def p_FieldDeclaration(p):
                         '''
     # p[0] = mytuple(["FieldDeclaration"]+p[1:])
 
-# def p_FieldModifier(p):
-#     '''CommonModifier : Annotation
-#                     | PUBLIC
-#                     | PROTECTED
-#                     | PRIVATE
-#                      | STATIC
-#                      | FINAL
-#                      | TRANSIENT
-#                      | VOLATILE
-#     '''
-#     # p[0] = mytuple(["CommonModifier"]+p[1 :])
 
 
 def p_COMMAVariableDeclaratorS(p):
@@ -3293,6 +3174,14 @@ def p_VariableInitializer(p):
     # p[0] = mytuple(["VariableInitializer"]+p[1:])
     p[0] = p[1]
 
+    p[0].extra["last_rule"] = "VariableInitializer"
+
+
+def zip_name(ps):
+    str=ps[0].value
+    for p in ps[1:]:
+        str+="."+p.value
+    return str
 
 def p_UnannType(p):
     '''UnannType : UnannReferenceType
@@ -3300,10 +3189,15 @@ def p_UnannType(p):
     '''
     # p[0] = mytuple(["UnannType"]+p[1:])
 
-# def p_UnannPrimitiveType(p):
-#     '''UnannPrimitiveType :  NumericType
-#     '''
-#     # p[0] = mytuple(["UnannPrimitiveType"]+p[1 :])
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        class_str = zip_name([p[1], p[3]])
+        ## the following function errors if IDENT PERIOD IDENT is invalid
+        find_info_string_of_classes(class_str, p.lineno(1))
+        p[0].type_list = [class_str]
+
+    p[0].extra["last_rule"] = "UnannType"
 
 #*
 def p_UnannReferenceType(p):
@@ -3313,37 +3207,26 @@ def p_UnannReferenceType(p):
     # p[0] = mytuple(["UnannReferenceType"]+p[1:])
     p[0] = p[1]
 
-# def p_UnannClassOrInterfaceType(p):
-#     '''UnannClassType :  UnannClassType'''
-#     # p[0] = mytuple(["UnannClassType"]+p[1 :])
+    p[0].extra["last_rule"] = "UnannReferenceType"
 
-# def p_AnnotationS(p):
-#     '''AnnotationS : Annotation AnnotationS
-#                     | empty
-#     '''
+
 
 
 def p_UnannClassType(p):
     '''UnannClassType : IDENT TypeArguments
-                        | UnannClassType PERIOD IDENT
-                        | UnannClassType PERIOD IDENT TypeArguments
-                        | UnannClassType PERIOD AnnotationS IDENT
-                        | UnannClassType PERIOD AnnotationS IDENT TypeArguments
-                        | IDENT PERIOD IDENT TypeArguments
-                        | IDENT PERIOD AnnotationS IDENT
-                        | IDENT PERIOD AnnotationS IDENT TypeArguments
-    '''
+                      | UnannClassType PERIOD IDENT
+                      | IDENT PERIOD IDENT TypeArguments
+                      | UnannClassType PERIOD IDENT TypeArguments
+                      | UnannClassType PERIOD AnnotationS IDENT
+                      | UnannClassType PERIOD AnnotationS IDENT TypeArguments
+                      | IDENT PERIOD AnnotationS IDENT
+                      | IDENT PERIOD AnnotationS IDENT TypeArguments'''
     # p[0] = mytuple(["UnannClassType"]+p[1:])
 
-# def p_UnannInterfaceType(p):
-#     '''UnannClassType : UnannClassType
-#     '''
-#     # p[0] = mytuple(["UnannClassType"]+p[1 :])
+    raise NameError(str(p.lineno(1)) + ": One or more of TypeArguments and AnnotationS not implemented in UnannClassType.")
 
-# def p_UnannTypeVariable(p):
-#     '''IDENT : IDENT
-#     '''
-#     # p[0] = mytuple(["IDENT"]+p[1 :])
+    p[0].extra["last_rule"] = "UnannClassType"
+
 
 
 def p_UnannArrayType(p):
@@ -3354,13 +3237,9 @@ def p_UnannArrayType(p):
                         | IDENT Dims
     '''
     # p[0] = mytuple(["UnannArrayType"]+p[1:])
+    # TODO (anay) !!! Implement this with array code!!!
 
 
-# def p_MethodModifierS(p):
-#     '''CommonModifierS : CommonModifier CommonModifierS
-#                         | CommonModifier
-#     '''
-#     # p[0] = mytuple(["CommonModifierS"]+p[1 :])
 def p_MethodDeclaration(p):
     '''MethodDeclaration : CommonModifierS MethodHeader MethodBody
                          | MethodHeader MethodBody
@@ -3369,19 +3248,13 @@ def p_MethodDeclaration(p):
     '''
     # p[0] = mytuple(["MethodDeclaration"]+p[1:])
 
-# def p_MethodModifier(p):
-#     '''CommonModifier : Annotation
-#                     | PUBLIC
-#                     | PROTECTED
-#                     | PRIVATE
-#                     | ABSTRACT
-#                     | STATIC
-#                     | FINAL
-#                     | SYNCHRONIZED
-#                     | NATIVE
-#                     | STRICTFP
-#     '''
-#     # p[0] = mytuple(["CommonModifier"]+p[1 :])
+    # TODO (anay): handle CommonModifierS here
+    if len(p) == 4:
+        p[2].extra["meth_obj"].modifiers = p[1].extra["CommonModifierS"]
+    else:
+        p[2].extra["meth_obj"].modifiers = []
+
+    p[0].extra["last_rule"] = "MethodDeclaration"
 
 
 # TODO: Major hacks here!!! We removed Throws non-terminal
@@ -3456,27 +3329,27 @@ def p_MethodHeader(p):
                     | TypeParameters VOID MethodDeclarator
                     | TypeParameters AnnotationS IDENT MethodDeclarator
                     | TypeParameters IDENT MethodDeclarator
+                    | BOOLEAN MethodDeclarator
                     | BOOLEAN MethodDeclarator THROWS IDENT
                     | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT
                     | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
                     | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | BOOLEAN MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
-                    | BOOLEAN MethodDeclarator
+                    | IDENT MethodDeclarator
                     | IDENT MethodDeclarator THROWS IDENT
                     | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT
                     | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
                     | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | IDENT MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
-                    | IDENT MethodDeclarator
+                    | VOID MethodDeclarator
                     | VOID MethodDeclarator THROWS IDENT
                     | VOID MethodDeclarator THROWS IDENT PERIOD IDENT
                     | VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
                     | VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | VOID MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
-                    | VOID MethodDeclarator
                     | UnannType MethodDeclarator
                     | UnannType MethodDeclarator THROWS IDENT
                     | UnannType MethodDeclarator THROWS IDENT PERIOD IDENT
@@ -3484,23 +3357,33 @@ def p_MethodHeader(p):
                     | UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | UnannType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
+                    | NumericType MethodDeclarator
                     | NumericType MethodDeclarator THROWS IDENT
                     | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT
                     | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT
                     | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
                     | NumericType MethodDeclarator THROWS IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT PERIOD IDENT
-                    | NumericType MethodDeclarator
+
     '''
     # p[0] = mytuple(["MethodHeader"]+p[1:])
 
     if p[1].extra["last_rule"] == "TypeParameters":
         raise NameError(str(p.lineno(1)) + ": TypeParameters in MethodHeader have not been implemented yet.")
 
-# def p_Result(p):
-#     '''Result :  UnannType
-#     '''
-#     # p[0] = mytuple(["Result"]+p[1 :])
+    if hasattr(p[1], 'type'):
+        p[0].extra["return_type"] = p[1].value
+        p[0].extra["meth_obj"].return_type = p[0].extra["return_type"]
+    else:
+        p[0].extra["return_type"] = p[1].type_list[0]
+        p[0].extra["meth_obj"].return_type = p[0].extra["return_type"]
+
+    # TODO (anay) !!! Handle throws !!!
+    # TODO (anay) ^ Don't need them right now (might need them in 3AC)
+    # TODO (anay): we might have incorrect CFG here for THROWS
+
+    p[0].extra["last_rule"] = "MethodHeader"
+
 
 
 def p_MethodDeclarator(p):
@@ -3519,6 +3402,7 @@ def p_MethodDeclarator(p):
         meth.param_list = p[3].extra["parameter_id_list"]
         meth.is_opt = [True] * len(meth.param_list) # TODO (anay): update the is_opt list when incorporating ReceiverParameters
 
+    p[0].extra["meth_obj"] = meth
     scope_stack[-1].insert_method(meth.name, meth)
 
     # TODO (anay): Do we need to store anything else in p[0]?
@@ -3558,18 +3442,6 @@ def p_COMMAFormalParameterS(p):
 
     p[0].extra["last_rule"] = "COMMAFormalParameterS"
 
-# def p_VariableModifier(p):
-#     '''CommonModifier : Annotation
-#                         | FINAL
-#     '''
-#     # p[0] = mytuple(["CommonModifier"] + p[1 :])
-
-
-# def p_VariableModifierS(p):
-#     '''CommonModifierS : CommonModifier CommonModifierS
-#                         | empty
-#     '''
-#     # p[0] = mytuple(["CommonModifierS"] + p[1 :])
 
 def p_FormalParameters(p):
     '''FormalParameters : FormalParameter COMMAFormalParameterS
@@ -3752,23 +3624,12 @@ def p_MethodBody(p):
     # p[0] = mytuple(["MethodBody"] + p[1:])
     p[0] = p[1]
 
-# def p_InstanceInitializer(p):
-#     '''Block : Block
-#     '''
-#     # p[0] = mytuple(["Block"] + p[1 :])
 
 
 def p_StaticInitializer(p):
     '''StaticInitializer : STATIC Block
     '''
     # p[0] = mytuple(["StaticInitializer"] + p[1:])
-
-# def p_ConstructorModifierS(p):
-#     '''ConstructorModifierS : ConstructorModifier ConstructorModifierS
-#                             | ConstructorModifier
-#     '''
-#     # p[0] = mytuple(["ConstructorModifierS"] + p[1 :])
-
 
 def p_ConstructorDeclaration(p):
     '''ConstructorDeclaration : CommonModifierS ConstructorDeclarator ConstructorBody
@@ -3778,15 +3639,6 @@ def p_ConstructorDeclaration(p):
     '''
     # p[0] = mytuple(["ConstructorDeclaration"] + p[1:])
 
-
-# def p_ConstructorModifier(p):
-#     '''ConstructorModifier : Annotation
-#                             | PUBLIC
-#                             | PROTECTED
-#                             | PRIVATE
-#     '''
-#     # p[0] = mytuple(["ConstructorModifier"] + p[1 :])
-
 def p_ConstructorDeclarator(p):
     '''ConstructorDeclarator : TypeParameters IDENT LPAREN FormalParameterList RPAREN
                             | IDENT LPAREN FormalParameterList RPAREN
@@ -3794,12 +3646,6 @@ def p_ConstructorDeclarator(p):
                             | IDENT LPAREN  RPAREN
     '''
     # p[0] = mytuple(["ConstructorDeclarator"] + p[1:])
-
-# def p_SimpleTypeName(p):
-#     '''IDENT : IDENT
-#     '''
-#     # p[0] = mytuple(["IDENT"] + p[1 :])
-
 
 def p_ConstructorBody(p):
     '''ConstructorBody : LBRACE  ExplicitConstructorInvocation BlockStatements  RBRACE
@@ -3834,20 +3680,6 @@ def p_ExplicitConstructorInvocation(p):
                                     | Primary PERIOD  SUPER LPAREN  RPAREN SEMICOLON
     '''
     # p[0] = mytuple(["ExplicitConstructorInvocation"] + p[1:])
-
-# def p_ClassModifierS(p):
-#     '''ClassModifierS : Annotation ClassModifierS
-#                         | PUBLIC ClassModifierS
-#                         | PROTECTED ClassModifierS
-#                         | PRIVATE ClassModifierS
-#                         | FINAL ClassModifierS
-#                         | ABSTRACT ClassModifierS
-#                         | STATIC ClassModifierS
-#                         | STRICTFP ClassModifierS
-#                         | empty
-#     '''
-#     # p[0] = mytuple(["ClassModifierS"] + p[1 :])
-
 
 def p_EnumDeclaration(p):
     '''EnumDeclaration : CommonModifierS ENUM IDENT Superinterfaces EnumBody
@@ -3921,25 +3753,12 @@ def p_EnumBodyDeclarations(p):
 # Section 4
 # #################################
 
-# def p_Type(p):
-#     '''Type : PrimitiveType
-#             | ReferenceType
-#             | IDENT'''
-#     p[0]=mytuple(["Type"]+p[1 :])
-
-#
-
 
 def p_PrimitiveType(p):
     '''PrimitiveType : AnnotationS NumericType
                      | NumericType
                      | AnnotationS BOOLEAN'''
     # p[0] = mytuple(["PrimitiveType"]+p[1:])
-
-# def p_AnnotationS(p):
-#     '''AnnotationS : Annotation AnnotationS
-#                        | empty '''
-#     p[0]=mytuple(["AnnotationS"]+p[1 :])
 
 #
 
@@ -3980,16 +3799,6 @@ def p_ReferenceType(p):
     p[0] = p[1]
 #
 
-# def p_ClassOrInterfaceType(p):
-#     '''ClassType : ClassType '''
-#     p[0]=mytuple(["ClassType"]+p[1 :])
-
-#
-
-# def p_ClassType(p):
-#     '''ClassType : AnnotationS IDENT ZooTypeArguments
-#                  | ClassType PERIOD AnnotationS IDENT ZooTypeArguments '''
-#     p[0]=mytuple(["ClassType"]+p[1 :])
 
 
 def p_ClassType(p):
@@ -4003,12 +3812,6 @@ def p_ClassType(p):
                  | ClassType PERIOD IDENT
                  | IDENT PERIOD TypeVariable'''
     # p[0] = mytuple(["ClassType"]+p[1:])
-
-
-
-# def p_InterfaceType(p):
-#     '''ClassType : ClassType'''
-#     p[0]=mytuple(["ClassType"]+p[1 :])
 
 #
 def p_TypeVariable(p):
@@ -4175,11 +3978,6 @@ def p_BlockStatements(p):
         p[0].place_list += p[2].place_list
     # p[0] = mytuple(["BlockStatements"]+p[1:])
 
-# def p_BlockStatementsS(p):
-#     '''BlockStatementsS : BlockStatement BlockStatementsS
-# | empty'''
-#     p[0]=mytuple(["BlockStatementsS"]+p[1 :])
-
 #*H
 def p_BlockStatement(p):
     '''BlockStatement : LocalVariableDeclarationStatement
@@ -4339,10 +4137,6 @@ def p_LocalVariableDeclaration(p):
                 p[0].type_list += p[3].type_list
                 p[0].place_list += p[3].place_list
     # p[0] = mytuple(["LocalVariableDeclaration"]+p[1:])
-# def p_VariableModifierS(p):
-#     '''CommonModifierS : CommonModifier CommonModifierS
-# | empty'''
-#     p[0]=mytuple(["CommonModifierS"]+p[1 :])
 
 #*H
 def p_Statement(p):
@@ -4383,11 +4177,6 @@ def p_StatementWithoutTrailingSubstatement(p):
             '''
     # p[0] = mytuple(["StatementWithoutTrailingSubstatement"]+p[1:])
     p[0] = p[1]
-
-# def p_EmptyStatement(p):
-#     '''EmptyStatement : SEMICOLON
-# '''
-#     p[0]=mytuple(["EmptyStatement"]+p[1 :])
 
 #*
 def p_LabeledStatement(p):
@@ -4560,11 +4349,6 @@ def p_SwitchBlockStatementGroupS(p):
 | empty'''
     # p[0] = mytuple(["SwitchBlockStatementGroupS"]+p[1:])
 
-# def p_SwitchBlockStatementGroupS(p):
-#     '''SwitchBlockStatementGroupS : SwitchBlockStatementGroup SwitchBlockStatementGroupS
-# | empty'''
-#     p[0]=mytuple(["SwitchBlockStatementGroupS"]+p[1 :])
-
 
 def p_SwitchBlockStatementGroup(p):
     '''SwitchBlockStatementGroup : SwitchLabels BlockStatements
@@ -4582,23 +4366,11 @@ def p_SwitchLabels(p):
 '''
     # p[0] = mytuple(["SwitchLabels"]+p[1:])
 
-# def p_SwitchLabelS(p):
-#     '''SwitchLabelS : SwitchLabelS SwitchLabel
-# | empty'''
-#     p[0]=mytuple(["SwitchLabelS"]+p[1 :])
-
-
 # DOUBT (anay): removed the following rule   `| CASE IDENT COLON`
 # incorrect grammar as per codechef.
 def p_SwitchLabel(p):
     '''SwitchLabel : CASE ConstantExpression COLON'''
     # p[0] = mytuple(["SwitchLabel"]+p[1:])
-
-# def p_EnumConstantName(p):
-#     '''IDENT : IDENT
-# '''
-#     p[0]=mytuple(["IDENT"]+p[1 :])
-
 
 def p_WhileStatement(p):
     '''WhileStatement : WHILE LPAREN Expression RPAREN Statement
@@ -5003,8 +4775,7 @@ def p_EnhancedForStatementNoShortIf(p):
 #* DOUBT IDENT waala verify karna hai
 def p_BreakStatement(p):
     '''BreakStatement : BREAK SEMICOLON
-                    | BREAK IDENT SEMICOLON
-'''
+                    | BREAK IDENT SEMICOLON'''
     p[0] = Node()
     if (not in_scope("__BeginFor")) and (not in_scope("__BeginSwitch") and (not in_scope("__BeginWhile") and (not in_scope("__BeginDo")):
         raise SyntaxError(str(p.lineno(1)) + ": error: break outside switch or loop")
@@ -5228,14 +4999,7 @@ def p_StartCompilationUnit(p):
     '''start : INC CompilationUnit'''
     p[0] = p[2]
 
-# def p_start_expression( p):
-#     '''start : DEC expression'''
-#     p[0] = p[2]
 
-
-# def p_start_statement( p):
-#     '''start : MUL block_statement'''
-#     p[0] = p[2]
 
 #</editor-fold> Section 14 #########################
 
@@ -5420,3 +5184,334 @@ if(verbose_flag):
 # plot_ast(reduce(reduce_epsilon(reduce(parse_out))), output_file,input_file)
 if(verbose_flag):
     print("Graph Plotting Ended")
+
+
+# def p_VariableModifierS(p):
+#     '''CommonModifierS : CommonModifier CommonModifierS
+# | empty'''
+#     p[0]=mytuple(["CommonModifierS"]+p[1 :])
+
+
+# def p_InterfaceModifierS(p):
+#     '''InterfaceModifierS : Annotation InterfaceModifierS
+#                           | PUBLIC InterfaceModifierS
+#                           | PROTECTED InterfaceModifierS
+#                           | PRIVATE InterfaceModifierS
+#                           | ABSTRACT InterfaceModifierS
+#                           | STATIC InterfaceModifierS
+#                           | STRICTFP InterfaceModifierS
+#                           | empty'''
+#     # p[0] = mytuple(["InterfaceModifierS"]+p[1 :])
+
+# def p_InterfaceModifier(p):
+#     '''InterfaceModifier :
+#                          | ABSTRACT
+#                          | STATIC
+#                          | STRICTFP'''
+#     # p[0] = mytuple(["InterfaceModifier"]+p[1 :])
+
+
+# def p_ConstantModifierS(p):
+#     '''ConstantModifierS : ConstantModifier ConstantModifierS
+#                         | empty '''
+#     # p[0] = mytuple(["ConstantModifierS"]+p[1 :])
+
+# def p_ConstantModifier(p):
+#     '''ConstantModifier : Annotation
+#                        | PUBLIC
+#                        | STATIC
+#                        | FINAL'''
+#     # p[0] = mytuple(["ConstantModifier"]+p[1 :])
+
+
+
+# def p_InterfaceMethodModifierS(p):
+#     '''InterfaceMethodModifierS : InterfaceMethodModifier InterfaceMethodModifierS
+#                                | empty'''
+#     # p[0] = mytuple(["InterfaceMethodModifierS"]+p[1 :])
+
+# def p_InterfaceMethodModifier(p):
+#     '''InterfaceMethodModifier :  Annotation
+#                                 | PUBLIC
+#                                 | ABSTRACT
+#                                 | DEFAULT
+#                                 | STATIC
+#                                 | STRICTFP'''
+#     # p[0] = mytuple(["InterfaceMethodModifier"]+p[1 :])
+
+# def p_InterfaceModifierS(p):
+#     '''InterfaceModifierS : InterfaceModifier InterfaceModifierS
+#                          | empty'''
+#     # p[0] = mytuple(["InterfaceModifierS"]+p[1 :])
+
+# def p_AnnotationTypeElementModifierS(p):
+#     '''AnnotationTypeElementModifierS : AnnotationTypeElementModifier AnnotationTypeElementModifierS
+#                                       | empty'''
+#     # p[0] = mytuple(["AnnotationTypeElementModifierS"]+p[1 :])
+
+# def p_AnnotationTypeElementModifier(p):
+#     '''AnnotationTypeElementModifier : Annotation
+#                                      | PUBLIC
+#                                      | ABSTRACT'''
+#     # p[0] = mytuple(["AnnotationTypeElementModifier"]+p[1 :])
+
+# def p_lbrace(p):
+#     '''LBRACE : LBRACE'''
+#     # p[0] = mytuple(["LBRACE"]+p[1:])
+
+
+# def p_rbrace(p):
+#     '''RBRACE : RBRACE'''
+#     # p[0] = mytuple(["RBRACE"]+p[1:])
+
+# def p_DimExprS(p):
+#     '''DimExprS : DimExprS DimExpr
+#                | DimExpr'''
+#     # p[0] = mytuple(["DimExprS"]+p[1 :])
+
+
+# def p_TypeName(p):
+#     '''CommonName : IDENT
+#                 | CommonName PERIOD IDENT '''
+#     # p[0] = mytuple(["type_name"]+p[1 :])
+
+# def p_TypeName(p):
+#     '''TypeName : CommonName'''
+#     # p[0] = mytuple(["type_name"]+p[1 :])
+
+# def p_PackageOrTypeName(p):
+#     '''CommonName : IDENT
+#                         | CommonName PERIOD IDENT '''
+#     # p[0] = mytuple(["CommonName"]+p[1 :])
+
+# def p_MethodName(p):
+#     '''MethodName : IDENT'''
+#     # p[0] = mytuple(["MethodName"]+p[1 :])
+
+# def p_PackageName(p):
+#     '''PackageName : IDENT
+#                     | PackageName PERIOD IDENT'''
+#     # p[0] = mytuple(["PackageName"]+p[1 :])
+
+# def p_AmbiguousName(p):
+#     '''CommonName : IDENT
+#                     | CommonName PERIOD IDENT'''
+#     # p[0] = mytuple(["CommonName"]+p[1 :])
+
+# def p_Superinterfaces(p):
+#     '''Superinterfaces : IMPLEMENTS InterfaceTypeList
+#     '''
+#     # p[0] = mytuple(["Superinterfaces"] + p[1:])
+
+# def p_ClassModifier(p):
+#     '''ClassModifier : Annotation
+#                     | PUBLIC
+#                     | PROTECTED
+#                     | PRIVATE
+#                     | ABSTRACT
+#                     | STATIC
+#                     | FINAL
+#                     | STRICTFP
+#     '''
+#     # p[0] = mytuple(["ClassModifier"]+p[1 :])
+
+# def p_ClassModifier(p):
+#     '''ClassModifier : Annotation
+#                     | Annotation
+#                     | PUBLIC
+#                     | PROTECTED
+#                     | PRIVATE
+#                     | FINAL
+#                     | ABSTRACT
+#                     | STATIC
+#                     | STRICTFP
+#     '''
+#     # p[0] = mytuple(["ClassModifier"]+p[1 :])
+
+
+# def p_Superclass(p):
+#     '''Superclass : EXTENDS ClassType
+#     '''
+#     # p[0] = mytuple(["Superclass"]+p[1 :])
+
+# def p_FieldModifierS(p):
+#     '''CommonModifierS : CommonModifier CommonModifierS
+#                         | CommonModifier
+#     '''
+#     # p[0] = mytuple(["CommonModifierS"]+p[1 :])
+
+# def p_FieldModifier(p):
+#     '''CommonModifier : Annotation
+#                     | PUBLIC
+#                     | PROTECTED
+#                     | PRIVATE
+#                      | STATIC
+#                      | FINAL
+#                      | TRANSIENT
+#                      | VOLATILE
+#     '''
+#     # p[0] = mytuple(["CommonModifier"]+p[1 :])
+
+# def p_UnannPrimitiveType(p):
+#     '''UnannPrimitiveType :  NumericType
+#     '''
+#     # p[0] = mytuple(["UnannPrimitiveType"]+p[1 :])
+
+# def p_UnannClassOrInterfaceType(p):
+#     '''UnannClassType :  UnannClassType'''
+#     # p[0] = mytuple(["UnannClassType"]+p[1 :])
+
+# def p_AnnotationS(p):
+#     '''AnnotationS : Annotation AnnotationS
+#                     | empty
+#     '''
+
+# def p_UnannInterfaceType(p):
+#     '''UnannClassType : UnannClassType
+#     '''
+#     # p[0] = mytuple(["UnannClassType"]+p[1 :])
+
+# def p_UnannTypeVariable(p):
+#     '''IDENT : IDENT
+#     '''
+#     # p[0] = mytuple(["IDENT"]+p[1 :])
+
+# def p_MethodModifierS(p):
+#     '''CommonModifierS : CommonModifier CommonModifierS
+#                         | CommonModifier
+#     '''
+#     # p[0] = mytuple(["CommonModifierS"]+p[1 :])
+
+
+# def p_MethodModifier(p):
+#     '''CommonModifier : Annotation
+#                     | PUBLIC
+#                     | PROTECTED
+#                     | PRIVATE
+#                     | ABSTRACT
+#                     | STATIC
+#                     | FINAL
+#                     | SYNCHRONIZED
+#                     | NATIVE
+#                     | STRICTFP
+#     '''
+#     # p[0] = mytuple(["CommonModifier"]+p[1 :])
+
+# def p_Result(p):
+#     '''Result :  UnannType
+#     '''
+#     # p[0] = mytuple(["Result"]+p[1 :])
+
+
+# def p_VariableModifier(p):
+#     '''CommonModifier : Annotation
+#                         | FINAL
+#     '''
+#     # p[0] = mytuple(["CommonModifier"] + p[1 :])
+
+
+# def p_VariableModifierS(p):
+#     '''CommonModifierS : CommonModifier CommonModifierS
+#                         | empty
+#     '''
+#     # p[0] = mytuple(["CommonModifierS"] + p[1 :])
+
+# def p_InstanceInitializer(p):
+#     '''Block : Block
+#     '''
+#     # p[0] = mytuple(["Block"] + p[1 :])
+
+# def p_ConstructorModifierS(p):
+#     '''ConstructorModifierS : ConstructorModifier ConstructorModifierS
+#                             | ConstructorModifier
+#     '''
+#     # p[0] = mytuple(["ConstructorModifierS"] + p[1 :])
+
+
+# def p_ConstructorModifier(p):
+#     '''ConstructorModifier : Annotation
+#                             | PUBLIC
+#                             | PROTECTED
+#                             | PRIVATE
+#     '''
+#     # p[0] = mytuple(["ConstructorModifier"] + p[1 :])
+
+# def p_SimpleTypeName(p):
+#     '''IDENT : IDENT
+#     '''
+#     # p[0] = mytuple(["IDENT"] + p[1 :])
+
+# def p_ClassModifierS(p):
+#     '''ClassModifierS : Annotation ClassModifierS
+#                         | PUBLIC ClassModifierS
+#                         | PROTECTED ClassModifierS
+#                         | PRIVATE ClassModifierS
+#                         | FINAL ClassModifierS
+#                         | ABSTRACT ClassModifierS
+#                         | STATIC ClassModifierS
+#                         | STRICTFP ClassModifierS
+#                         | empty
+#     '''
+#     # p[0] = mytuple(["ClassModifierS"] + p[1 :])
+
+# def p_Type(p):
+#     '''Type : PrimitiveType
+#             | ReferenceType
+#             | IDENT'''
+#     p[0]=mytuple(["Type"]+p[1 :])
+
+# def p_AnnotationS(p):
+#     '''AnnotationS : Annotation AnnotationS
+#                        | empty '''
+#     p[0]=mytuple(["AnnotationS"]+p[1 :])
+
+
+# def p_ClassOrInterfaceType(p):
+#     '''ClassType : ClassType '''
+#     p[0]=mytuple(["ClassType"]+p[1 :])
+
+#
+
+# def p_ClassType(p):
+#     '''ClassType : AnnotationS IDENT ZooTypeArguments
+#                  | ClassType PERIOD AnnotationS IDENT ZooTypeArguments '''
+#     p[0]=mytuple(["ClassType"]+p[1 :])
+
+
+# def p_InterfaceType(p):
+#     '''ClassType : ClassType'''
+#     p[0]=mytuple(["ClassType"]+p[1 :])
+
+# def p_BlockStatementsS(p):
+#     '''BlockStatementsS : BlockStatement BlockStatementsS
+# | empty'''
+#     p[0]=mytuple(["BlockStatementsS"]+p[1 :])
+
+# def p_EmptyStatement(p):
+#     '''EmptyStatement : SEMICOLON
+# '''
+#     p[0]=mytuple(["EmptyStatement"]+p[1 :])
+
+# def p_SwitchBlockStatementGroupS(p):
+#     '''SwitchBlockStatementGroupS : SwitchBlockStatementGroup SwitchBlockStatementGroupS
+# | empty'''
+#     p[0]=mytuple(["SwitchBlockStatementGroupS"]+p[1 :])
+
+# def p_SwitchLabelS(p):
+#     '''SwitchLabelS : SwitchLabelS SwitchLabel
+# | empty'''
+#     p[0]=mytuple(["SwitchLabelS"]+p[1 :])
+
+# def p_EnumConstantName(p):
+#     '''IDENT : IDENT
+# '''
+#     p[0]=mytuple(["IDENT"]+p[1 :])
+
+# def p_start_expression( p):
+#     '''start : DEC expression'''
+#     p[0] = p[2]
+
+
+# def p_start_statement( p):
+#     '''start : MUL block_statement'''
+#     p[0] = p[2]

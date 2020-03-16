@@ -93,12 +93,16 @@ class MethodObj():
         self.param_list = []
         self.is_opt = []
         self.type = []
+        self.return_type = "unknown"
+        self.modifiers = []
 
     def __init__(self, name_):
         self.name = name_
         self.param_list = []
         self.is_opt = []
         self.type = []
+        self.return_type = "unknown"
+        self.modifiers = []
 
     def look_up(self, name):
         return (name in self.param_list)
