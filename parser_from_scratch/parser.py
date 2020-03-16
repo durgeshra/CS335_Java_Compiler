@@ -21,7 +21,7 @@ type_dict = {'boolean': {'size': 1, 'pid': -1, 'lvl': 0}, \
              'byte': {'size': 1, 'pid': 'short', 'lvl': 6}, \
              'short': {'size': 2, 'pid': 'int', 'lvl': 5}, \
              'char': {'size': 2, 'pid': 'int', 'lvl': 5}, \
-             'int': {'size': 4, 'pid': 'long', 'lvl': 4}, \
+             'int': {'size': 4, 'pidpid': 'long', 'lvl': 4}, \
              'long': {'size': 8, 'pid': 'float', 'lvl': 3}, \
              'float': {'size': 4, 'pid': 'double', 'lvl': 2}, \
              'double': {'size': 8, 'pid': -1, 'lvl': 1}, \
@@ -195,20 +195,18 @@ def add_scope(p = None, scope_starter):
         #     scopes[current_scope].insert("__EndFuncLabel", end_func_label, "value")
         #     p[0].code += [["label", func_label], ["func_begin", p[-1]]]
 
-        # elif p[-1] == "else":
-        #     p[0] = Node()
-        #     temp_label = new_label()
-        #     p[0].extra["ElseLabel"] = temp_label
-        #     p[0].code += [["label", temp_label]]
+        elif scope_starter == "else":
+            temp_label = new_label()
+            scopeNode.extra["ElseLabel"] = temp_label
+            scopeNode.code += [["label", temp_label]]
 
-        # elif p[-2] == "if":
-        #     p[0] = Node()
-        #     temp_label = new_label()
-        #     end_if_label = "_end_if_" + temp_label
-        #     scopes[current_scope].insert("__EndIf", end_if_label, "value")
-        #     p[0].extra["IfLabel"] = temp_label
-        #     p[0].extra["EndIfLabel"] = end_if_label
-        #     p[0].code += [["label", temp_label]]
+        elif scope_starter == "if":
+            temp_label = new_label()
+            end_if_label = "_end_if_" + temp_label
+            scopes[current_scope].insert("__EndIf", end_if_label, "value")
+            scopeNode.extra["IfLabel"] = temp_label
+            scopeNode.extra["EndIfLabel"] = end_if_label
+            scopeNode.code += [["label", temp_label]]
 
         # elif p[-2] == "switch":
         #     temp_label = new_label()
@@ -232,7 +230,6 @@ def end_scope(p = None, scope_starter):
 
     if p is not None:
         if scope_starter == "for":
-            endScopeNode = Node()
             for_label = find_info("__BeginFor", p.lexer.lineno, current_scope)["value"]
             end_for_label = "_end_" + for_label
             endScopeNode.code += [["goto", for_label]]
@@ -243,10 +240,9 @@ def end_scope(p = None, scope_starter):
     #         end_func_label = find_info("__EndFuncLabel", p.lexer.lineno, current_scope)["value"]
     #         p[0].code += [["func_end", end_func_label]]
 
-    #     elif p[-4] == "if":
-    #         p[0] = Node()
-    #         end_if_label = find_info("__EndIf", p.lexer.lineno, current_scope)["value"]
-    #         p[0].code += [["goto", end_if_label]]
+        elif scope_starter == "if":
+            end_if_label = find_info("__EndIf", p.lexer.lineno, current_scope)["value"]
+            endScopeNode.code += [["goto", end_if_label]]
 
     #     elif p[-6] == "switch":
     #         p[0] = Node()
@@ -1559,13 +1555,13 @@ def p_literal(p):
         | CHAR_LIT'''
     # # p[0] = mytuple(["Literal"]+p[1:])
 
-    if p[1] == "true" or p[1] == "false":   # bool
+    if p[1].value == "true" or p[1].value == "false":   # bool
         temp_v = new_temp()
         p[0] = Node()
         p[0].place_list = [temp_v]
         p[0].type_list = ["boolean"]
         p[0].extra["size"] = type_dict["boolean"]["size"]
-        if p[1] == "true":
+        if p[1].value == "true":
             p[0].code = [["=", temp_v, True], ["goto", temp_v]]
             p[0].extra["true_list"] = [temp_v]
             p[0].extra["false_list"] = []
@@ -1573,7 +1569,7 @@ def p_literal(p):
             p[0].code = [["=", temp_v, False], ["goto", temp_v]]
             p[0].extra["true_list"] = []
             p[0].extra["false_list"] = [temp_v]
-    elif p[1] == "null":                    # null
+    elif p[1].value == "null":                    # null
         temp_v = new_temp()
         p[0] = Node()
         p[0].place_list = [temp_v]
@@ -1655,7 +1651,7 @@ def p_InterfaceMemberDeclarationS(p):
                                     | InterfaceMemberDeclarationS SEMICOLON
                                     | empty '''
     # p[0] = mytuple(["InterfaceMemberDeclarationS"]+p[1:])
-    if len(p) == 3 and p[2] == ";":
+    if len(p) == 3 and p[2].value == ";":
         p[0] = p[1]
     elif len(p) == 3:
         p[0] = p[1]
@@ -1719,7 +1715,7 @@ def p_AnnotationTypeMemberDeclarationS(p):
                         | AnnotationTypeMemberDeclarationS SEMICOLON
                          | empty'''
     # p[0] = mytuple(["AnnotationTypeMemberDeclarationS"]+p[1:])
-    if len(p) == 3 and p[2] == ";":
+    if len(p) == 3 and p[2].value == ";":
         p[0] = p[1]
     elif len(p) == 3:
         p[0] = p[1]
@@ -2016,7 +2012,7 @@ def p_PrimaryNoNewArray(p):
         p[0] = p[1]
     elif len(p) == 2:
         p[0] = Node()
-    elif p[1] == "(":
+    elif p[1].value == "(":
         if type(p[2]) == str:
             p[0] = Node()
             p[0].id_list = [p[2]]
@@ -4190,7 +4186,7 @@ def p_LabeledStatement(p):
         temp_l = new_label()
         scopes[current_scope].insert(p[1], "label")
         scopes[current_scope].update(p[1], temp_l, "value")
-        if p[3] == ";":
+        if p[3].value == ";":
             p[0] = Node()
         else:
             p[0] = p[3]
@@ -4208,7 +4204,7 @@ def p_LabeledStatementNoShortIf(p):
         temp_l = new_label()
         scopes[current_scope].insert(p[1], "label")
         scopes[current_scope].update(p[1], temp_l, "value")
-        if p[3] == ";":
+        if p[3].value == ";":
             p[0] = Node()
         else:
             p[0] = p[3]
@@ -4243,7 +4239,7 @@ def p_IfThenStatement(p):
     else:
         p[0] = Node()
         p[0].code += p[3].code
-        if p[5] != ";":
+        if p[5].value != ";":
             scopeNode = add_scope(p, "if")
             p[0].code += scopeNode.code
             p[0].code += p[5].code
@@ -4264,13 +4260,13 @@ def p_IfThenElseStatement(p):
     else:
         p[0] = Node()
         p[0].code += p[3].code
-        if p[5] != ";":
+        if p[5].value != ";":
             scopeNode = add_scope(p, "if")
             p[0].code += scopeNode.code
             p[0].code += p[5].code
             endScopeNode = end_scope(p, "if")
             p[0].code += endScopeNode.code
-        if p[7] != ";":
+        if p[7].value != ";":
             scopeNode = add_scope(p, "else")
             p[0].code += scopeNode.code
             p[0].code += p[7].code
@@ -4291,13 +4287,13 @@ def p_IfThenElseStatementNoShortIf(p):
     else:
         p[0] = Node()
         p[0].code += p[3].code
-        if p[5] != ";":
+        if p[5].value != ";":
             scopeNode = add_scope(p, "if")
             p[0].code += scopeNode.code
             p[0].code += p[5].code
             endScopeNode = end_scope(p, "if")
             p[0].code += endScopeNode.code
-        if p[7] != ";":
+        if p[7].value != ";":
             scopeNode = add_scope(p, "else")
             p[0].code += scopeNode.code
             p[0].code += p[7].code
@@ -4465,7 +4461,7 @@ def p_BasicForStatement(p):
     elif len(p) == 9:
         if p[3].value != ";" and p[5].value != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
-        elif p[3] == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
+        elif p[3].value == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         elif p[8]!=";":         # aakhri agar semicolon hai to the for loop is useless, let's ignore it completely
             tmp = 1
@@ -4586,7 +4582,7 @@ def p_BasicForStatementNoShortIf(p):
     elif len(p) == 9:
         if p[3].value != ";" and p[5].value != ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
-        elif p[3] == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
+        elif p[3].value == ";" and higher(p[5].type_list[0], 'boolean') != 'boolean':
             NameError(str(p.lineno(1)) + ": Lossy conversion from " + p[5].type_list[0] + " to boolean.")
         elif p[8]!=";":         # aakhri agar semicolon hai to the for loop is useless, let's ignore it completely
             tmp = 1
@@ -4777,9 +4773,9 @@ def p_BreakStatement(p):
     '''BreakStatement : BREAK SEMICOLON
                     | BREAK IDENT SEMICOLON'''
     p[0] = Node()
-    if (not in_scope("__BeginFor")) and (not in_scope("__BeginSwitch") and (not in_scope("__BeginWhile") and (not in_scope("__BeginDo")):
+    if (not in_scope("__BeginFor")) and (not in_scope("__BeginSwitch")) and (not in_scope("__BeginWhile")) and (not in_scope("__BeginDo")):
         raise SyntaxError(str(p.lineno(1)) + ": error: break outside switch or loop")
-    if len(p) == 4 and (not in_scope(str(IDENT))):
+    if len(p) == 4 and (not in_scope(p[2].value)):
         raise SyntaxError(str(p.lineno(1)) + ": " + str(p[3]) + " label is not defined in the scope.")
 
     if len(p) == 3:
@@ -4803,9 +4799,9 @@ def p_ContinueStatement(p):
                         | CONTINUE SEMICOLON
 '''
     p[0] = Node()
-    if (not in_scope("__BeginFor")) and (not in_scope("__BeginWhile") and (not in_scope("__BeginDo")):
+    if (not in_scope("__BeginFor")) and (not in_scope("__BeginWhile")) and (not in_scope("__BeginDo")):
         raise SyntaxError(str(p.lineno(1)) + ": error: break outside loop")
-    if len(p) == 4 and (not in_scope(str(IDENT))):
+    if len(p) == 4 and (not in_scope(p[2].value)):
         raise SyntaxError(str(p.lineno(1)) + ": " + str(p[3]) + " label is not defined in the scope.")
 
     if len(p) == 3:
